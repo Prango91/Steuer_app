@@ -586,7 +586,8 @@
     <div class="info-box" style="margin-bottom: 16px; margin-top: 0;">
       ℹ️ <strong>Verteilungs-Schlüssel:</strong> Gesamtwohnfläche: <strong>170 m²</strong> (EG: 70 m² / 41,18% | OG: 100 m² / 58,82%).<br>
       • <strong>Direktzuordnung:</strong> Posten mit Wohnung EG/OG werden zu 100% der jeweiligen Wohnung zugerechnet.<br>
-      • <strong>Gesamtobjekt:</strong> Wird automatisch im Verhältnis 70/170 zu 100/170 verteilt.
+      • <strong>Gesamtobjekt:</strong> Wird automatisch im Verhältnis 70/170 zu 100/170 verteilt.<br>
+      • <strong>Heizung & Wasser:</strong> Werden direkt über Brunata abgerechnet (Bogen wird als Anlage beigefügt).
     </div>
     
     <h3>1. Monatliche Nebenkostenvorauszahlungen der Mieter</h3>
@@ -612,8 +613,8 @@
           <label for="nkZuordnung">Zuordnung / Verteilschlüssel</label>
           <select id="nkZuordnung">
             <option value="Gesamtobjekt / Allgemein (170 m²)">Gesamtobjekt (Aufteilung 70m² zu 100m²)</option>
-            <option value="Wohnung EG (70 m²)">Wohnung EG direkt (z.B. Zwischenzähler / Brunata EG)</option>
-            <option value="Wohnung OG (100 m²)">Wohnung OG direkt (z.B. Zwischenzähler / Brunata OG)</option>
+            <option value="Wohnung EG (70 m²)">Wohnung EG direkt (z.B. Zwischenzähler Strom EG)</option>
+            <option value="Wohnung OG (100 m²)">Wohnung OG direkt (z.B. Zwischenzähler Strom OG)</option>
           </select>
         </div>
       </div>
@@ -622,12 +623,8 @@
         <div>
           <label for="nkKategorie">Kategorie / Art der Kosten</label>
           <select id="nkKategorie" onchange="autoFillDienstleister()">
-            <option value="Brunata">Brunata</option>
-            <option value="Heißwasser">Heißwasser</option>
-            <option value="Kaltwasser">Kaltwasser</option>
-            <option value="Abwasser">Abwasser</option>
-            <option value="Heizkosten">Heizkosten</option>
-            <option value="Stromkosten">Stromkosten</option>
+            <option value="Stromkosten">Stromkosten (Zwischenzähler)</option>
+            <option value="Brunata">Brunata Abrechnung (Einzelbogen Anlage)</option>
             <option value="Müll">Müll</option>
             <option value="Straßenreinigung">Straßenreinigung</option>
             <option value="Grundsteuer">Grundsteuer</option>
@@ -639,7 +636,30 @@
         </div>
         <div>
           <label for="nkGeschaeft">Rechnungssteller / Dienstleister</label>
-          <input type="text" id="nkGeschaeft" placeholder="z. B. Brunata / Stadtwerke / Buxtehude" required>
+          <input type="text" id="nkGeschaeft" placeholder="z. B. Stadtwerke Buxtehude / Stadt Buxtehude" required>
+        </div>
+      </div>
+
+      <!-- Erfassung für Strom-Zwischenzähler -->
+      <div id="stromDetails" style="background:#f8f9fa; border:1px solid #e5e5ea; padding:12px; border-radius:8px; margin-top:10px; margin-bottom:10px;">
+        <label style="margin-top:0; color:var(--primary);">⚡ Details Strom-Zwischenzähler (Optional für Nachvollziehbarkeit)</label>
+        <div class="flex-row">
+          <div>
+            <label for="nkZaehlerNr">Zählernummer</label>
+            <input type="text" id="nkZaehlerNr" placeholder="z.B. Z-EG-01">
+          </div>
+          <div>
+            <label for="nkZaehlerAlt">Stand Alt (kWh)</label>
+            <input type="number" id="nkZaehlerAlt" placeholder="1000" oninput="calcStromVerbrauch()">
+          </div>
+          <div>
+            <label for="nkZaehlerNeu">Stand Neu (kWh)</label>
+            <input type="number" id="nkZaehlerNeu" placeholder="1500" oninput="calcStromVerbrauch()">
+          </div>
+          <div>
+            <label for="nkZaehlerVerbrauch">Verbrauch (kWh)</label>
+            <input type="number" id="nkZaehlerVerbrauch" placeholder="500" readonly>
+          </div>
         </div>
       </div>
 
@@ -650,7 +670,7 @@
         </div>
         <div>
           <label for="nkGrund">Beschreibung / Hinweis</label>
-          <input type="text" id="nkGrund" placeholder="z. B. Jahresabrechnung 2026">
+          <input type="text" id="nkGrund" placeholder="z. B. Abrechnung 2026">
         </div>
       </div>
 
@@ -765,7 +785,7 @@
         </div>
         <div>
           <label for="vName">Mieter Name / Bezeichnung</label>
-          <input type="text" id="vName" placeholder="z. B. Max Mustermann" required>
+          <input type="text" id="vName" placeholder="z. B. Mert Aykaya" required>
         </div>
       </div>
 
@@ -784,7 +804,7 @@
     </div>
   </div>
 
-  <!-- DRUCK-AREAL FÜR RECHTSSICHERE NEBENKOSTENABRECHNUNG -->
+  <!-- DRUCK-AREAL FÜR RECHTSSICHE NEBENKOSTENABRECHNUNG -->
   <div id="printArea" style="display:none; padding:30px; background:white; font-family:Arial, sans-serif;">
     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 25px;">
       <div style="font-size:13px; line-height:1.5;">
@@ -970,19 +990,38 @@
     document.getElementById('nkDatum').valueAsDate = new Date();
     document.getElementById('fZeit').value = new Date().toTimeString().substring(0,5);
 
+    function calcStromVerbrauch() {
+      const alt = parseFloat(document.getElementById('nkZaehlerAlt').value) || 0;
+      const neu = parseFloat(document.getElementById('nkZaehlerNeu').value) || 0;
+      if (neu >= alt) {
+        document.getElementById('nkZaehlerVerbrauch').value = (neu - alt).toFixed(1);
+      } else {
+        document.getElementById('nkZaehlerVerbrauch').value = '';
+      }
+    }
+
     function autoFillDienstleister() {
       const kat = document.getElementById('nkKategorie').value;
       const gInput = document.getElementById('nkGeschaeft');
+      const stromBox = document.getElementById('stromDetails');
+
+      if (kat === 'Stromkosten') {
+        stromBox.style.display = 'block';
+        gInput.value = "Stadtwerke Buxtehude";
+      } else {
+        stromBox.style.display = 'none';
+      }
+
       if (kat === 'Brunata') {
         gInput.value = "BRUNATA Wärmemesser Hagen GmbH & Co. KG";
       } else if (kat === 'Rauchmelder-Wartung') {
-        gInput.value = "Brunata / Wartungsdienst";
+        gInput.value = "Wartungsdienst";
       } else if (kat === 'Heizung-Wartung') {
         gInput.value = "Heizungsfachbetrieb";
       } else if (kat === 'Schornsteinfeger') {
         gInput.value = "Schornsteinfegermeister";
-      } else if (kat === 'Grundsteuer' || kat === 'Abwasser' || kat === 'Kaltwasser' || kat === 'Straßenreinigung' || kat === 'Müll') {
-        gInput.value = "Stadt Buxtehude / Stadtwerke";
+      } else if (kat === 'Grundsteuer' || kat === 'Straßenreinigung' || kat === 'Müll') {
+        gInput.value = "Stadt Buxtehude";
       }
     }
 
@@ -1030,15 +1069,25 @@
       e.preventDefault();
       const fileInput = document.getElementById('nkDatei');
       const file = fileInput.files[0];
+      const kat = document.getElementById('nkKategorie').value;
+
+      let zaehlerNr = document.getElementById('nkZaehlerNr').value;
+      let zaehlerAlt = document.getElementById('nkZaehlerAlt').value;
+      let zaehlerNeu = document.getElementById('nkZaehlerNeu').value;
+      let verbrauch = document.getElementById('nkZaehlerVerbrauch').value;
 
       const saveEntry = (fileDataUrl = null, fileName = null) => {
         nebenkosten.push({
           datum: document.getElementById('nkDatum').value,
           zuordnung: document.getElementById('nkZuordnung').value,
-          kategorie: document.getElementById('nkKategorie').value,
+          kategorie: kat,
           geschaeft: document.getElementById('nkGeschaeft').value,
           betrag: parseFloat(document.getElementById('nkBetrag').value).toFixed(2),
           grund: document.getElementById('nkGrund').value,
+          zaehlerNr: kat === 'Stromkosten' ? zaehlerNr : null,
+          zaehlerAlt: kat === 'Stromkosten' ? zaehlerAlt : null,
+          zaehlerNeu: kat === 'Stromkosten' ? zaehlerNeu : null,
+          verbrauch: kat === 'Stromkosten' ? verbrauch : null,
           fileDataUrl: fileDataUrl,
           fileName: fileName
         });
@@ -1046,6 +1095,7 @@
         updateTabellen();
         e.target.reset();
         document.getElementById('nkDatum').valueAsDate = new Date();
+        autoFillDienstleister();
       };
 
       if (file) {
@@ -1093,7 +1143,7 @@
       const displayYear = isTestMode ? `${currentYear} (Übung)` : selectedYearVal;
 
       const mieterObj = vertraege.find(v => v.zuordnung === wohnung);
-      const mieterName = mieterObj ? mieterObj.name : "Max Mustermann (Platzhalter)";
+      const mieterName = mieterObj ? mieterObj.name : "Mert Aykaya";
 
       const isEG = wohnung.includes('EG');
       const qm = isEG ? 70 : 100;
@@ -1111,7 +1161,14 @@
           const betrag = parseFloat(nk.betrag);
 
           if (nk.zuordnung === wohnung) {
-            verteiler = "100% Direktzuordnung (Zwischenzähler/Brunata)";
+            if (nk.kategorie === 'Stromkosten') {
+              let details = nk.verbrauch ? ` (${nk.verbrauch} kWh)` : '';
+              verteiler = `Direktzuordnung nach geeichtem Zwischenzähler${details}`;
+            } else if (nk.kategorie === 'Brunata') {
+              verteiler = "Direktübernahme laut Brunata-Einzelabrechnung (Anlage)";
+            } else {
+              verteiler = "100% Direktzuordnung";
+            }
             anteil = betrag;
           } else if (nk.zuordnung.includes('Gesamtobjekt')) {
             if (isEG) {
@@ -1272,7 +1329,7 @@
         datum: `${yearForRecord}-12-31`,
         zuordnung: zuordnung,
         kategorie: kategorie,
-        geschaeft: "Pauschale / Jahresbetrag",
+        geschaeft: "Pausalierung / Jahresbetrag",
         betrag: betrag.toFixed(2),
         grund: title
       });
@@ -1455,12 +1512,15 @@
           const fileLink = nk.fileDataUrl 
             ? `<span class="file-link" onclick="openDataUrlInNewTab(nebenkosten[${i}].fileDataUrl, '${escapeHtml(nk.fileName || 'Beleg')}')">📷 Beleg anzeigen</span>` 
             : '-';
+          
+          let verbrauchInfo = nk.verbrauch ? ` [${nk.verbrauch} kWh]` : '';
+
           nkHtml += `
             <tr>
               <td>${escapeHtml(nk.datum)}</td>
               <td>${escapeHtml(nk.zuordnung)}</td>
               <td>${escapeHtml(nk.kategorie)}</td>
-              <td>${escapeHtml(nk.geschaeft)} (${escapeHtml(nk.grund)})</td>
+              <td>${escapeHtml(nk.geschaeft)} (${escapeHtml(nk.grund)}${verbrauchInfo})</td>
               <td>${parseFloat(nk.betrag).toFixed(2)} €</td>
               <td>${fileLink}</td>
               <td><button type="button" class="btn-danger" onclick="deleteNK(${i})">❌</button></td>
@@ -1566,6 +1626,7 @@
     }
 
     loadData();
+    autoFillDienstleister();
   </script>
 </body>
 </html>

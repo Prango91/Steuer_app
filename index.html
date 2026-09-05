@@ -191,7 +191,7 @@
 </head>
 <body>
 
-  <h1>🏠 Steuer-Manager & Nebenkosten</h1>
+  <h1>🏠 Steuer-Manager &amp; Nebenkosten</h1>
 
   <!-- STEUERJAHR AUSWAHL -->
   <div class="year-select-box" id="yearBox">
@@ -214,29 +214,29 @@
     <form id="fahrtForm">
       <div class="flex-row">
         <div>
-          <label>Datum</label>
+          <label for="fDatum">Datum</label>
           <input type="date" id="fDatum" required>
         </div>
         <div>
-          <label>Uhrzeit</label>
+          <label for="fZeit">Uhrzeit</label>
           <input type="time" id="fZeit" required>
         </div>
       </div>
 
-      <label>Startadresse</label>
+      <label for="fStart">Startadresse</label>
       <input type="text" id="fStart" value="Langenfelde 1, 21614 Buxtehude" required>
 
-      <label>Zieladresse (Tippen für Vorschläge)</label>
+      <label for="fZiel">Zieladresse (Tippen für Vorschläge)</label>
       <div class="autocomplete-wrapper">
         <input type="text" id="fZiel" placeholder="z. B. An den Geestbergen 12, Buxtehude" autocomplete="off" required>
         <div id="suggestions" class="suggestions" style="display: none;"></div>
       </div>
 
-      <label>Anlass / Grund der Fahrt</label>
+      <label for="fGrund">Anlass / Grund der Fahrt</label>
       <input type="text" id="fGrund" placeholder="z. B. Müllentsorgung Renovierung" required>
 
       <div class="info-box" id="kmInfo">
-        📏 Einfache Strecke: 0.0 km (Gesamt Hin & Zurück: 0.0 km)<br>
+        📏 Einfache Strecke: 0.0 km (Gesamt Hin &amp; Zurück: 0.0 km)<br>
         💰 Absetzbarer Betrag: 0.00 €
       </div>
 
@@ -250,11 +250,11 @@
     <form id="belegForm">
       <div class="flex-row">
         <div>
-          <label>Datum</label>
+          <label for="bDatum">Datum</label>
           <input type="date" id="bDatum" required>
         </div>
         <div>
-          <label>Zuordnung</label>
+          <label for="bZuordnung">Zuordnung</label>
           <select id="bZuordnung">
             <option>Wohnung EG (70 m²)</option>
             <option>Wohnung OG (100 m²)</option>
@@ -265,7 +265,7 @@
       
       <div class="flex-row">
         <div>
-          <label>Kategorie</label>
+          <label for="bKategorie">Kategorie</label>
           <select id="bKategorie">
             <option>Instandhaltung / Reparatur</option>
             <option>Material / Baumarkt</option>
@@ -277,23 +277,23 @@
           </select>
         </div>
         <div>
-          <label>Geschäft / Rechnungssteller</label>
+          <label for="bGeschaeft">Geschäft / Rechnungssteller</label>
           <input type="text" id="bGeschaeft" placeholder="z. B. Telekom / Bauhaus" required>
         </div>
       </div>
 
       <div class="flex-row">
         <div>
-          <label>Bruttobetrag (€)</label>
+          <label for="bBetrag">Bruttobetrag (€)</label>
           <input type="number" step="0.01" id="bBetrag" placeholder="0.00" required>
         </div>
         <div>
-          <label>Grund / Beschreibung</label>
+          <label for="bGrund">Grund / Beschreibung</label>
           <input type="text" id="bGrund" placeholder="z. B. Ersatz-Wasserhahn Bad">
         </div>
       </div>
 
-      <label>📷 Beleg / Kassenbon einscannen oder hochladen (Foto / PDF)</label>
+      <label for="bDatei">📷 Beleg / Kassenbon einscannen oder hochladen (Foto / PDF)</label>
       <input type="file" id="bDatei" accept="image/*,application/pdf">
 
       <button type="submit">➕ Beleg speichern</button>
@@ -302,7 +302,7 @@
 
   <!-- 3. STEUER-CHECKLISTE & PAUSCHALEN -->
   <div class="card">
-    <h2>📋 Steuer-Checkliste & Pauschalen (Anlage V)</h2>
+    <h2>📋 Steuer-Checkliste &amp; Pauschalen (Anlage V)</h2>
     <p style="font-size:14px; color:#666;">Wähle absetzbare Posten aus. Entscheide zwischen der Richtwert-Pauschale oder trage deine tatsächlichen Kosten ein.</p>
 
     <!-- Handytarif -->
@@ -311,19 +311,19 @@
       <div class="checklist-sub">Anteilige Absetzung der monatlichen Grundgebühr (empfohlen: 20 % bis 50 %).</div>
       <div class="flex-row">
         <div>
-          <label>Monatliche Rechnung (€)</label>
+          <label for="ck_handy_monat">Monatliche Rechnung (€)</label>
           <input type="number" id="ck_handy_monat" value="30.00" oninput="calcHandy()">
         </div>
         <div>
-          <label>Beruflicher Anteil (%)</label>
+          <label for="ck_handy_prozent">Beruflicher Anteil (%)</label>
           <input type="number" id="ck_handy_prozent" value="30" oninput="calcHandy()">
         </div>
         <div>
-          <label>Jahres-Abzug (€)</label>
+          <label for="ck_handy_val">Jahres-Abzug (€)</label>
           <input type="number" step="0.01" id="ck_handy_val" value="108.00" readonly>
         </div>
         <div>
-          <label>Zuordnung</label>
+          <label for="ck_handy_obj">Zuordnung</label>
           <select id="ck_handy_obj">
             <option>Gesamtobjekt / Allgemein (170 m²)</option>
             <option>Wohnung EG (70 m²)</option>
@@ -340,19 +340,19 @@
       <div class="checklist-sub">Sofortabschreibung im Kaufjahr mit anteiligem Nutzungsprozentsatz.</div>
       <div class="flex-row">
         <div>
-          <label>Kaufpreis brutto (€)</label>
+          <label for="ck_kauf_preis">Kaufpreis brutto (€)</label>
           <input type="number" id="ck_kauf_preis" placeholder="z. B. 800.00" oninput="calcKauf()">
         </div>
         <div>
-          <label>Beruflicher Anteil (%)</label>
+          <label for="ck_kauf_prozent">Beruflicher Anteil (%)</label>
           <input type="number" id="ck_kauf_prozent" value="30" oninput="calcKauf()">
         </div>
         <div>
-          <label>Absetzbarer Betrag (€)</label>
+          <label for="ck_kauf_val">Absetzbarer Betrag (€)</label>
           <input type="number" step="0.01" id="ck_kauf_val" placeholder="0.00" readonly>
         </div>
         <div>
-          <label>Zuordnung</label>
+          <label for="ck_kauf_obj">Zuordnung</label>
           <select id="ck_kauf_obj">
             <option>Gesamtobjekt / Allgemein (170 m²)</option>
             <option>Wohnung EG (70 m²)</option>
@@ -369,18 +369,18 @@
       <div class="checklist-sub">Anerkannter Richtwert der Finanzämter: ca. 16,00 € pro Jahr.</div>
       <div class="flex-row">
         <div>
-          <label>Abrechnungsart</label>
+          <label for="ck_konto_typ">Abrechnungsart</label>
           <select id="ck_konto_typ" onchange="toggleKontoInput()">
             <option value="pauschale">Pauschale nutzen (16,00 €)</option>
             <option value="custom">Tatsächliche Kosten eintragen</option>
           </select>
         </div>
         <div>
-          <label>Betrag (€)</label>
+          <label for="ck_konto_val">Betrag (€)</label>
           <input type="number" step="0.01" id="ck_konto_val" value="16.00" disabled>
         </div>
         <div>
-          <label>Zuordnung</label>
+          <label for="ck_konto_obj">Zuordnung</label>
           <select id="ck_konto_obj">
             <option>Gesamtobjekt / Allgemein (170 m²)</option>
             <option>Wohnung EG (70 m²)</option>
@@ -392,23 +392,23 @@
     </div>
 
     <!-- Büromaterial -->
-    <div class="checklist-item" data-title="Büromaterial & Porto">
-      <div class="checklist-header">4. Büromaterial & Porto</div>
+    <div class="checklist-item" data-title="Büromaterial &amp; Porto">
+      <div class="checklist-header">4. Büromaterial &amp; Porto</div>
       <div class="checklist-sub">Porto, Briefumschläge, Schreibwaren, Ordner.</div>
       <div class="flex-row">
         <div>
-          <label>Abrechnungsart</label>
+          <label for="ck_buero_typ">Abrechnungsart</label>
           <select id="ck_buero_typ" onchange="toggleBueroInput()">
             <option value="pauschale">Pauschale nutzen (20,00 €)</option>
             <option value="custom">Tatsächliche Kosten eintragen</option>
           </select>
         </div>
         <div>
-          <label>Betrag (€)</label>
+          <label for="ck_buero_val">Betrag (€)</label>
           <input type="number" step="0.01" id="ck_buero_val" value="20.00" disabled>
         </div>
         <div>
-          <label>Zuordnung</label>
+          <label for="ck_buero_obj">Zuordnung</label>
           <select id="ck_buero_obj">
             <option>Gesamtobjekt / Allgemein (170 m²)</option>
             <option>Wohnung EG (70 m²)</option>
@@ -416,24 +416,24 @@
           </select>
         </div>
       </div>
-      <button type="button" onclick="addChecklistItem('Büromaterial & Porto', 'ck_buero_val', 'ck_buero_obj', 'Verwaltung / Büro')">➕ In Steuerbericht übernehmen</button>
+      <button type="button" onclick="addChecklistItem('Büromaterial &amp; Porto', 'ck_buero_val', 'ck_buero_obj', 'Verwaltung / Büro')">➕ In Steuerbericht übernehmen</button>
     </div>
 
     <!-- Homeoffice -->
     <div class="checklist-item" data-title="Homeoffice Verwaltungspauschale">
       <div class="checklist-header">5. Arbeitszimmer / Verwaltung zu Hause (Tagespauschale)</div>
-      <div class="checklist-sub">6,00 € pro Tag für Verwaltungsarbeiten (deckt auch Strom & Heim-Internet ab).</div>
+      <div class="checklist-sub">6,00 € pro Tag für Verwaltungsarbeiten (deckt auch Strom &amp; Heim-Internet ab).</div>
       <div class="flex-row">
         <div>
-          <label>Anzahl Verwaltungstage im Jahr</label>
+          <label for="ck_ho_tage">Anzahl Verwaltungstage im Jahr</label>
           <input type="number" id="ck_ho_tage" value="10" oninput="calcHomeoffice()">
         </div>
         <div>
-          <label>Berechneter Betrag (6,00 € / Tag)</label>
+          <label for="ck_ho_val">Berechneter Betrag (6,00 € / Tag)</label>
           <input type="number" step="0.01" id="ck_ho_val" value="60.00" readonly>
         </div>
         <div>
-          <label>Zuordnung</label>
+          <label for="ck_ho_obj">Zuordnung</label>
           <select id="ck_ho_obj">
             <option>Gesamtobjekt / Allgemein (170 m²)</option>
             <option>Wohnung EG (70 m²)</option>
@@ -450,11 +450,11 @@
       <div class="checklist-sub">Jährlicher AfA-Betrag lt. Kaufvertrag/Steuerbescheid.</div>
       <div class="flex-row">
         <div>
-          <label>Jahres-AfA (€)</label>
+          <label for="ck_afa_val">Jahres-AfA (€)</label>
           <input type="number" step="0.01" id="ck_afa_val" placeholder="z. B. 4500.00">
         </div>
         <div>
-          <label>Zuordnung</label>
+          <label for="ck_afa_obj">Zuordnung</label>
           <select id="ck_afa_obj">
             <option>Gesamtobjekt / Allgemein (170 m²)</option>
             <option>Wohnung EG (70 m²)</option>
@@ -468,7 +468,7 @@
 
   <!-- 4. NEBENKOSTEN-MANAGER & ABRECHNUNG -->
   <div class="card">
-    <h2>🏢 Nebenkosten-Manager & Betriebskostenabrechnung</h2>
+    <h2>🏢 Nebenkosten-Manager &amp; Betriebskostenabrechnung</h2>
     <div style="background:#e5f1ff; border-left:4px solid #007aff; padding:10px; margin-bottom:15px; border-radius:4px; font-size:13px;">
       ℹ️ <strong>Verteilungs-Schlüssel:</strong> Gesamtwohnfläche: <strong>170 m²</strong> (EG: 70 m² / 41,18% | OG: 100 m² / 58,82%).<br>
       • <strong>Direktzuordnung:</strong> Posten mit Wohnung EG/OG werden zu 100% der jeweiligen Wohnung zugerechnet.<br>
@@ -478,11 +478,11 @@
     <h3>1. Monatliche Nebenkostenvorauszahlungen der Mieter</h3>
     <div class="flex-row">
       <div>
-        <label>Wohnung EG (€ / Monat)</label>
+        <label for="nk_abs_eg">Wohnung EG (€ / Monat)</label>
         <input type="number" id="nk_abs_eg" placeholder="z. B. 150.00" oninput="saveNKSettings()">
       </div>
       <div>
-        <label>Wohnung OG (€ / Monat)</label>
+        <label for="nk_abs_og">Wohnung OG (€ / Monat)</label>
         <input type="number" id="nk_abs_og" placeholder="z. B. 180.00" oninput="saveNKSettings()">
       </div>
     </div>
@@ -491,11 +491,11 @@
     <form id="nkForm">
       <div class="flex-row">
         <div>
-          <label>Datum / Jahr</label>
+          <label for="nkDatum">Datum / Jahr</label>
           <input type="date" id="nkDatum" required>
         </div>
         <div>
-          <label>Zuordnung / Verteilschlüssel</label>
+          <label for="nkZuordnung">Zuordnung / Verteilschlüssel</label>
           <select id="nkZuordnung">
             <option value="Gesamtobjekt / Allgemein (170 m²)">Gesamtobjekt (Aufteilung 70m² zu 100m²)</option>
             <option value="Wohnung EG (70 m²)">Wohnung EG direkt (z.B. Zwischenzähler / Brunata EG)</option>
@@ -506,7 +506,7 @@
 
       <div class="flex-row">
         <div>
-          <label>Kategorie / Art der Kosten</label>
+          <label for="nkKategorie">Kategorie / Art der Kosten</label>
           <select id="nkKategorie" onchange="autoFillDienstleister()">
             <option value="Brunata">Brunata</option>
             <option value="Heißwasser">Heißwasser</option>
@@ -524,23 +524,23 @@
           </select>
         </div>
         <div>
-          <label>Rechnungssteller / Dienstleister</label>
+          <label for="nkGeschaeft">Rechnungssteller / Dienstleister</label>
           <input type="text" id="nkGeschaeft" placeholder="z. B. Brunata / Stadtwerke / Buxtehude" required>
         </div>
       </div>
 
       <div class="flex-row">
         <div>
-          <label>Rechnungsbetrag brutto (€)</label>
+          <label for="nkBetrag">Rechnungsbetrag brutto (€)</label>
           <input type="number" step="0.01" id="nkBetrag" placeholder="0.00" required>
         </div>
         <div>
-          <label>Beschreibung / Hinweis</label>
+          <label for="nkGrund">Beschreibung / Hinweis</label>
           <input type="text" id="nkGrund" placeholder="z. B. Jahresabrechnung 2026">
         </div>
       </div>
 
-      <label>📷 Rechnung / Beleg einscannen oder hochladen (Foto / PDF)</label>
+      <label for="nkDatei">📷 Rechnung / Beleg einscannen oder hochladen (Foto / PDF)</label>
       <input type="file" id="nkDatei" accept="image/*,application/pdf">
 
       <button type="submit">➕ Nebenkostenposten speichern</button>
@@ -565,10 +565,10 @@
 
   <!-- 5. ÜBERSICHT & EXPORT -->
   <div class="card" id="exportCard">
-    <h2>📊 Gesamte Steuer-Jahresübersicht & Export</h2>
+    <h2>📊 Gesamte Steuer-Jahresübersicht &amp; Export</h2>
     <button type="button" id="pdfBtn" onclick="exportPDF()" class="btn-green">📄 Steuerbericht als PDF speichern / drucken</button>
 
-    <h3>Erfasste Einzelbelege & Pauschalen</h3>
+    <h3>Erfasste Einzelbelege &amp; Pauschalen</h3>
     <div class="table-responsive">
       <table id="belegTabelle">
         <thead><tr><th>Datum</th><th>Zuordnung</th><th>Kategorie</th><th>Geschäft / Bezeichnung</th><th>Betrag (€)</th><th>Beleg / Bon</th><th>Aktion</th></tr></thead>
@@ -591,19 +591,19 @@
     <form id="vertragForm">
       <div class="flex-row">
         <div>
-          <label>Zuordnung</label>
+          <label for="vZuordnung">Zuordnung</label>
           <select id="vZuordnung">
             <option>Wohnung EG (70 m²)</option>
             <option>Wohnung OG (100 m²)</option>
           </select>
         </div>
         <div>
-          <label>Mieter Name / Bezeichnung</label>
+          <label for="vName">Mieter Name / Bezeichnung</label>
           <input type="text" id="vName" placeholder="z. B. Max Mustermann" required>
         </div>
       </div>
 
-      <label>Mietvertrag hochladen (PDF oder Bild)</label>
+      <label for="vDatei">Mietvertrag hochladen (PDF oder Bild)</label>
       <input type="file" id="vDatei" accept="application/pdf,image/*" required>
 
       <button type="submit">📤 Mietvertrag speichern</button>
@@ -627,7 +627,7 @@
     <h2>Betriebskostenabrechnung für das Kalenderjahr <span id="pJahr"></span></h2>
     
     <div style="margin-bottom:20px; font-size:14px; line-height:1.5;">
-      <strong>Vermieter:</strong> Daniel Prang<br>
+      <strong>Vermisster / Vermieter:</strong> Daniel Prang<br>
       <strong>Mietobjekt / Einheit:</strong> <span id="pEinheit"></span> (Wohnfläche: <span id="pFlaeche"></span> m² / Gesamt: 170 m²)<br>
       <strong>Abrechnungszeitraum:</strong> 01.01.<span id="pJahrPeriod1"></span> bis 31.12.<span id="pJahrPeriod2"></span><br>
       <strong>Mieter:</strong> <span id="pMieterName"></span>
@@ -635,7 +635,7 @@
 
     <hr style="border:0; border-top:1px solid #ccc; margin:20px 0;">
 
-    <h3>1. Aufstellung der Gesamtkosten & Verteilerschlüssel</h3>
+    <h3>1. Aufstellung der Gesamtkosten &amp; Verteilerschlüssel</h3>
     <table style="width:100%; border-collapse:collapse; margin-top:10px; font-size:12px;">
       <thead>
         <tr style="background:#f0f0f0;">
@@ -657,7 +657,7 @@
     </div>
 
     <div style="margin-top:20px; font-size:12px; border:1px dashed #aaa; padding:10px; background:#fff8e7;">
-      <strong>Hinweis nach § 35a EStG (Haushaltsnahe Dienstleistungen & Handwerkerleistungen):</strong><br>
+      <strong>Hinweis nach § 35a EStG (Haushaltsnahe Dienstleistungen &amp; Handwerkerleistungen):</strong><br>
       In den oben genannten Betriebskosten sind folgende absetzbare Lohnkosten/Dienstleistungen enthalten:<br>
       • Arbeitskosten Haushaltsnahe Dienstleistungen / Schornsteinfeger / Wartungsarbeiten / Brunata Messdienst: <strong><span id="p35aBetrag"></span> €</strong>
     </div>
@@ -666,7 +666,7 @@
       Bitte überweisen Sie den Nachforderungsbetrag bis zum <strong><span id="pZahlungsziel"></span></strong> auf das bekannte Mietkonto. Im Falle eines Guthabens wird dieses zeitnah auf Ihr Konto überwiesen.<br><br>
       Mit freundlichen Grüßen,<br><br><br>
       ____________________________________<br>
-      Daniel Prang (Vermieter)
+      Daniel Prang (Vermisster / Vermieter)
     </div>
 
     <div style="margin-top:30px;" class="no-print">
@@ -1283,109 +1283,5 @@
 
     loadData();
   </script>
-  <!-- Anfang: Bescheinigung § 35a EStG -->
-<div class="steuer-block">
-  <h3>Bescheinigung für das Finanzamt (§ 35a EStG)</h3>
-  <p class="intro-text">
-    Für die im Abrechnungszeitraum <strong>{ABRECHNUNGSZEITRAUM}</strong> angefallenen Betriebskosten sind folgende Lohn-, Arbeits- und Fahrtkosten enthalten, die als haushaltsnahe Dienstleistungen (§ 35a Abs. 2 EStG) bzw. Handwerkerleistungen (§ 35a Abs. 3 EStG) steuerlich geltend gemacht werden können:
-  </p>
-
-  <table class="steuer-tabelle">
-    <thead>
-      <tr>
-        <th>Leistungsart</th>
-        <th class="text-right">Gesamtkosten (€)</th>
-        <th class="text-right">Ihr Anteil (€)</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>
-          <strong>Haushaltsnahe Dienstleistungen</strong><br>
-          <small>(z. B. Gebäudereinigung, Gartenpflege, Winterdienst)</small>
-        </td>
-        <td class="text-right">{GESAMT_HAUSHALTSNAH}</td>
-        <td class="text-right"><strong>{ANTEIL_HAUSHALTSNAH}</strong></td>
-      </tr>
-      <tr>
-        <td>
-          <strong>Handwerkerleistungen</strong><br>
-          <small>(z. B. Heizungswartung, Schornsteinfeger, Dacharbeiten)</small>
-        </td>
-        <td class="text-right">{GESAMT_HANDWERKER}</td>
-        <td class="text-right"><strong>{ANTEIL_HANDWERKER}</strong></td>
-      </tr>
-    </tbody>
-  </table>
-
-  <p class="hinweis-text">
-    <strong>Hinweis:</strong> Materialkosten sind in den oben genannten Beträgen nicht enthalten und wurden herausgerechnet. Die Bezahlung aller Positionen erfolgte unbar.
-  </p>
-</div>
-
-<style>
-  /* Styling für den § 35a EStG Block */
-  .steuer-block {
-    margin-top: 30px;
-    padding: 15px;
-    border: 1px solid #ccc;
-    background-color: #f9f9f9;
-    font-family: Arial, sans-serif;
-    font-size: 13px;
-    line-height: 1.4;
-    page-break-inside: avoid; /* Verhindert unschöne Seitenumbrüche beim Drucken */
-  }
-
-  .steuer-block h3 {
-    margin-top: 0;
-    margin-bottom: 10px;
-    font-size: 15px;
-    color: #333;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 5px;
-  }
-
-  .steuer-block .intro-text {
-    margin-bottom: 12px;
-  }
-
-  .steuer-tabelle {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 12px;
-    background-color: #fff;
-  }
-
-  .steuer-tabelle th, 
-  .steuer-tabelle td {
-    border: 1px solid #ddd;
-    padding: 8px 10px;
-    text-align: left;
-    vertical-align: top;
-  }
-
-  .steuer-tabelle th {
-    background-color: #f0f0f0;
-    font-weight: bold;
-  }
-
-  .steuer-tabelle small {
-    color: #666;
-    font-size: 11px;
-  }
-
-  .text-right {
-    text-align: right !important;
-  }
-
-  .hinweis-text {
-    font-size: 11px;
-    color: #555;
-    margin-bottom: 0;
-    font-style: italic;
-  }
-</style>
-<!-- Ende: Bescheinigung § 35a EStG -->
-
 </body>
 </html>

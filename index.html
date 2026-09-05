@@ -6,46 +6,85 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Steuer-App">
-  <title>Steuer-Manager & Nebenkostenabrechnung</title>
+  <title>Steuer-Manager &amp; Nebenkostenabrechnung</title>
 
   <style>
     :root {
       --primary: #007aff;
+      --primary-hover: #0062cc;
       --primary-active: #0051a8;
       --success: #34c759;
+      --success-hover: #2db34f;
       --success-active: #248a3d;
       --warning: #ff9500;
+      --warning-hover: #e08300;
       --warning-active: #cc7700;
       --danger: #ff3b30;
+      --danger-hover: #d73027;
       --purple: #5856d6;
+      --purple-hover: #4745b8;
       --purple-active: #3634a3;
       --bg-color: #f2f2f7;
       --card-bg: #ffffff;
       --text-color: #1c1c1e;
       --text-muted: #8e8e93;
       --border-color: #e5e5ea;
+      --focus-ring: rgba(0, 122, 255, 0.25);
+    }
+
+    * {
+      box-sizing: border-box;
     }
 
     body { 
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
       background: var(--bg-color); 
       margin: 0; 
-      padding: 20px; 
+      padding: 24px; 
       color: var(--text-color); 
-      line-height: 1.4;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
     }
 
-    h1, h2, h3 { 
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #1c1c1e;
+      margin-top: 0;
+      margin-bottom: 20px;
+    }
+
+    h2 { 
+      font-size: 20px;
+      font-weight: 600;
       color: var(--primary); 
       margin-top: 0;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-top: 20px;
+      margin-bottom: 10px;
+      color: #2c2c2e;
     }
 
     .card { 
       background: var(--card-bg); 
       border-radius: 12px; 
-      padding: 20px; 
-      margin-bottom: 20px; 
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
+      padding: 24px; 
+      margin-bottom: 24px; 
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04); 
+      border: 1px solid rgba(0, 0, 0, 0.05);
     }
 
     label { 
@@ -53,64 +92,107 @@
       font-weight: 600; 
       margin-top: 12px; 
       margin-bottom: 6px; 
-      font-size: 14px;
+      font-size: 13px;
+      color: #3a3a3c;
     }
 
     input, select, button { 
       width: 100%; 
-      padding: 12px; 
+      padding: 10px 12px; 
       border-radius: 8px; 
       border: 1px solid #c7c7cc; 
-      font-size: 15px; 
-      box-sizing: border-box; 
-      transition: border-color 0.2s ease;
+      font-size: 14px; 
+      transition: all 0.2s ease;
+      font-family: inherit;
     }
 
     input:focus, select:focus {
       outline: none;
       border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--focus-ring);
     }
 
     button { 
       background: var(--primary); 
       color: white; 
       border: none; 
-      font-weight: bold; 
-      margin-top: 15px; 
+      font-weight: 600; 
+      margin-top: 16px; 
       cursor: pointer; 
       border-radius: 8px; 
-      transition: background 0.2s ease;
+      padding: 12px 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
     }
 
+    button:hover { background: var(--primary-hover); }
     button:active { background: var(--primary-active); }
+    
     .btn-green { background: var(--success); }
+    .btn-green:hover { background: var(--success-hover); }
     .btn-green:active { background: var(--success-active); }
-    .btn-orange { background: var(--warning); margin-top: 5px; }
+
+    .btn-orange { background: var(--warning); margin-top: 0; }
+    .btn-orange:hover { background: var(--warning-hover); }
     .btn-orange:active { background: var(--warning-active); }
+
     .btn-purple { background: var(--purple); }
+    .btn-purple:hover { background: var(--purple-hover); }
     .btn-purple:active { background: var(--purple-active); }
-    .btn-danger { background: var(--danger); margin: 0; padding: 6px 10px; width: auto; }
+
+    .btn-danger { 
+      background: var(--danger); 
+      margin: 0; 
+      padding: 6px 10px; 
+      width: auto; 
+      font-size: 12px;
+      border-radius: 6px;
+    }
+    .btn-danger:hover { background: var(--danger-hover); }
 
     .table-responsive {
       width: 100%;
       overflow-x: auto;
-      margin-top: 10px;
+      margin-top: 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
     }
 
     table { 
       width: 100%; 
       border-collapse: collapse; 
       min-width: 600px;
+      background: white;
     }
 
     th, td { 
       border-bottom: 1px solid var(--border-color); 
-      padding: 10px; 
+      padding: 12px; 
       text-align: left; 
-      font-size: 14px; 
+      font-size: 13px; 
     }
 
-    th { background: #f9f9fb; font-weight: 600; }
+    th { 
+      background: #f8f8fc; 
+      font-weight: 600; 
+      color: #48484a;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:nth-child(even) td {
+      background-color: #fafafc;
+    }
+
+    tfoot td {
+      background-color: #f0f0f5 !important;
+      font-weight: bold;
+      border-top: 2px solid var(--border-color);
+    }
 
     .flex-row { display: flex; gap: 12px; flex-wrap: wrap; }
     .flex-row > div { flex: 1; min-width: 200px; }
@@ -127,75 +209,107 @@
       z-index: 1000; 
       max-height: 200px; 
       overflow-y: auto; 
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
     }
-    .suggestion-item { padding: 12px; cursor: pointer; border-bottom: 1px solid var(--bg-color); font-size: 14px; }
+    .suggestion-item { padding: 10px 12px; cursor: pointer; border-bottom: 1px solid var(--bg-color); font-size: 13px; }
     .suggestion-item:hover { background-color: #e5f1ff; }
 
     .info-box { 
       background: #e5f1ff; 
       border-left: 4px solid var(--primary); 
-      padding: 12px; 
-      margin-top: 15px; 
-      border-radius: 4px; 
-      font-weight: 600; 
-      font-size: 14px;
+      padding: 12px 16px; 
+      margin-top: 16px; 
+      border-radius: 0 8px 8px 0; 
+      font-weight: 500; 
+      font-size: 13px;
+      color: #004085;
     }
     
     .checklist-item { 
       border: 1px solid var(--border-color); 
-      padding: 15px; 
-      border-radius: 8px; 
+      padding: 16px; 
+      border-radius: 10px; 
       margin-bottom: 12px; 
       background: #fafafa; 
-      transition: all 0.3s ease; 
+      transition: all 0.2s ease; 
     }
-    .checklist-header { font-weight: bold; font-size: 16px; color: var(--text-color); margin-bottom: 5px; }
-    .checklist-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 10px; }
+    .checklist-header { font-weight: 600; font-size: 15px; color: var(--text-color); margin-bottom: 4px; }
+    .checklist-sub { font-size: 12px; color: var(--text-muted); margin-bottom: 12px; }
 
     .checklist-item.posten-uebernommen {
-      opacity: 0.6;
-      background: #eef2f5;
+      opacity: 0.65;
+      background: #f2f4f7;
       border-color: #d1d1d6;
     }
     .checklist-item.posten-uebernommen:focus-within,
     .checklist-item.posten-uebernommen:hover {
-      opacity: 0.95;
+      opacity: 1;
     }
     
     .year-select-box { 
       background: var(--primary); 
       color: white; 
       border-radius: 12px; 
-      padding: 15px 20px; 
-      margin-bottom: 20px; 
+      padding: 16px 20px; 
+      margin-bottom: 24px; 
       display: flex; 
       align-items: center; 
       justify-content: space-between; 
       transition: background 0.3s ease; 
+      box-shadow: 0 4px 12px rgba(0, 122, 255, 0.2);
     }
-    .year-select-box.testmode { background: var(--warning); }
-    .year-select-box select { width: auto; font-size: 16px; font-weight: bold; background: white; color: var(--primary); border: none; }
+    .year-select-box.testmode { 
+      background: var(--warning); 
+      box-shadow: 0 4px 12px rgba(255, 149, 0, 0.2);
+    }
+    .year-select-box select { 
+      width: auto; 
+      font-size: 15px; 
+      font-weight: 600; 
+      background: white; 
+      color: var(--text-color); 
+      border: none; 
+      padding: 8px 12px;
+    }
 
-    .summary-box { background: #f8f9fa; border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-top: 15px; }
-    .file-link { color: var(--primary); text-decoration: underline; font-weight: bold; cursor: pointer; }
+    .summary-box { 
+      background: #f8f9fa; 
+      border: 1px solid var(--border-color); 
+      padding: 16px; 
+      border-radius: 8px; 
+      margin-top: 16px; 
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .file-link { 
+      color: var(--primary); 
+      text-decoration: none; 
+      font-weight: 600; 
+      cursor: pointer; 
+    }
+    .file-link:hover {
+      text-decoration: underline;
+    }
 
     @media print {
       body { background: white; padding: 0; color: black; }
+      .container { max-width: 100%; }
       button, .no-print, form, .checklist-item, .autocomplete-wrapper, #yearBox, h1 { display: none !important; }
       .card { box-shadow: none; border: none; padding: 0; margin-bottom: 20px; }
       th, td { border-bottom: 1px solid #ccc; }
       #printArea { display: block !important; position: absolute; left: 0; top: 0; width: 100%; }
+      tr { page-break-inside: avoid; }
     }
   </style>
 </head>
 <body>
 
+<div class="container">
   <h1>🏠 Steuer-Manager &amp; Nebenkosten</h1>
 
   <!-- STEUERJAHR AUSWAHL -->
   <div class="year-select-box" id="yearBox">
-    <span style="font-size: 18px; font-weight: bold;" id="yearBoxText">📅 Aktives Steuerjahr:</span>
+    <span style="font-size: 16px; font-weight: bold;" id="yearBoxText">📅 Aktives Steuerjahr:</span>
     <select id="selectedYear" onchange="switchYear()"></select>
   </div>
 
@@ -203,7 +317,7 @@
   <div class="card">
     <h2>🚗 Fahrt fürs Fahrtenbuch erfassen</h2>
     
-    <div style="margin-bottom: 15px;">
+    <div style="margin-bottom: 16px;">
       <label>Schnell-Eingabe (Vorlagen für Kontrollfahrten):</label>
       <div class="flex-row">
         <button type="button" class="btn-orange" onclick="fillQuickDrive('Wohnung EG')">⚡ Kontrollfahrt Wohnung EG</button>
@@ -303,7 +417,7 @@
   <!-- 3. STEUER-CHECKLISTE & PAUSCHALEN -->
   <div class="card">
     <h2>📋 Steuer-Checkliste &amp; Pauschalen (Anlage V)</h2>
-    <p style="font-size:14px; color:#666;">Wähle absetzbare Posten aus. Entscheide zwischen der Richtwert-Pauschale oder trage deine tatsächlichen Kosten ein.</p>
+    <p style="font-size:13px; color:#666; margin-bottom:16px;">Wähle absetzbare Posten aus. Entscheide zwischen der Richtwert-Pauschale oder trage deine tatsächlichen Kosten ein.</p>
 
     <!-- Handytarif -->
     <div class="checklist-item" data-title="Handytarif Anteil">
@@ -469,7 +583,7 @@
   <!-- 4. NEBENKOSTEN-MANAGER & ABRECHNUNG -->
   <div class="card">
     <h2>🏢 Nebenkosten-Manager &amp; Betriebskostenabrechnung</h2>
-    <div style="background:#e5f1ff; border-left:4px solid #007aff; padding:10px; margin-bottom:15px; border-radius:4px; font-size:13px;">
+    <div class="info-box" style="margin-bottom: 16px; margin-top: 0;">
       ℹ️ <strong>Verteilungs-Schlüssel:</strong> Gesamtwohnfläche: <strong>170 m²</strong> (EG: 70 m² / 41,18% | OG: 100 m² / 58,82%).<br>
       • <strong>Direktzuordnung:</strong> Posten mit Wohnung EG/OG werden zu 100% der jeweiligen Wohnung zugerechnet.<br>
       • <strong>Gesamtobjekt:</strong> Wird automatisch im Verhältnis 70/170 zu 100/170 verteilt.
@@ -487,7 +601,7 @@
       </div>
     </div>
 
-    <h3 style="margin-top:25px;">2. Betriebskosten/Nebenkostenposition erfassen</h3>
+    <h3 style="margin-top:24px;">2. Betriebskosten/Nebenkostenposition erfassen</h3>
     <form id="nkForm">
       <div class="flex-row">
         <div>
@@ -516,7 +630,7 @@
             <option value="Stromkosten">Stromkosten</option>
             <option value="Müll">Müll</option>
             <option value="Straßenreinigung">Straßenreinigung</option>
-            <option value="Grundersteuer">Grundersteuer</option>
+            <option value="Grundsteuer">Grundsteuer</option>
             <option value="Schornsteinfeger">Schornsteinfeger</option>
             <option value="Versicherung">Versicherung</option>
             <option value="Rauchmelder-Wartung">Rauchmelder-Wartung</option>
@@ -548,7 +662,7 @@
 
     <div class="summary-box" id="nkSummary"></div>
 
-    <h3 style="margin-top:20px;">📄 Rechtssichere Nebenkostenabrechnung generieren</h3>
+    <h3 style="margin-top:24px;">📄 Rechtssichere Nebenkostenabrechnung generieren</h3>
     <div class="flex-row">
       <button type="button" onclick="generateAbrechnung('Wohnung EG (70 m²)')" class="btn-purple">📑 Abrechnung EG (70 m²) erstellen</button>
       <button type="button" onclick="generateAbrechnung('Wohnung OG (100 m²)')" class="btn-purple">📑 Abrechnung OG (100 m²) erstellen</button>
@@ -557,8 +671,25 @@
     <h3>Erfasste Betriebskosten für das Steuerjahr</h3>
     <div class="table-responsive">
       <table id="nkTabelle">
-        <thead><tr><th>Datum</th><th>Zuordnung</th><th>Kategorie</th><th>Bezeichnung</th><th>Betrag (€)</th><th>Beleg / Bon</th><th>Aktion</th></tr></thead>
+        <thead>
+          <tr>
+            <th>Datum</th>
+            <th>Zuordnung</th>
+            <th>Kategorie</th>
+            <th>Bezeichnung</th>
+            <th>Betrag (€)</th>
+            <th>Beleg / Bon</th>
+            <th>Aktion</th>
+          </tr>
+        </thead>
         <tbody></tbody>
+        <tfoot>
+          <tr>
+            <td colspan="4" style="text-align: right;">Gesamtsumme Betriebskosten:</td>
+            <td id="nkTabelleSumme">0.00 €</td>
+            <td colspan="2"></td>
+          </tr>
+        </tfoot>
       </table>
     </div>
   </div>
@@ -571,16 +702,51 @@
     <h3>Erfasste Einzelbelege &amp; Pauschalen</h3>
     <div class="table-responsive">
       <table id="belegTabelle">
-        <thead><tr><th>Datum</th><th>Zuordnung</th><th>Kategorie</th><th>Geschäft / Bezeichnung</th><th>Betrag (€)</th><th>Beleg / Bon</th><th>Aktion</th></tr></thead>
+        <thead>
+          <tr>
+            <th>Datum</th>
+            <th>Zuordnung</th>
+            <th>Kategorie</th>
+            <th>Geschäft / Bezeichnung</th>
+            <th>Betrag (€)</th>
+            <th>Beleg / Bon</th>
+            <th>Aktion</th>
+          </tr>
+        </thead>
         <tbody></tbody>
+        <tfoot>
+          <tr>
+            <td colspan="4" style="text-align: right;">Gesamtsumme Belege &amp; Pauschalen:</td>
+            <td id="belegTabelleSumme">0.00 €</td>
+            <td colspan="2"></td>
+          </tr>
+        </tfoot>
       </table>
     </div>
 
     <h3>Erfasste Fahrten</h3>
     <div class="table-responsive">
       <table id="fahrtTabelle">
-        <thead><tr><th>Datum</th><th>Start</th><th>Ziel</th><th>Grund</th><th>Gesamt-KM</th><th>Erstattung (€)</th><th>Aktion</th></tr></thead>
+        <thead>
+          <tr>
+            <th>Datum</th>
+            <th>Start</th>
+            <th>Ziel</th>
+            <th>Grund</th>
+            <th>Gesamt-KM</th>
+            <th>Erstattung (€)</th>
+            <th>Aktion</th>
+          </tr>
+        </thead>
         <tbody></tbody>
+        <tfoot>
+          <tr>
+            <td colspan="4" style="text-align: right;">Gesamtsumme Fahrterstattung:</td>
+            <td id="fahrtTabelleSummeKM">0.0 km</td>
+            <td id="fahrtTabelleSummeEuro">0.00 €</td>
+            <td></td>
+          </tr>
+        </tfoot>
       </table>
     </div>
   </div>
@@ -683,6 +849,7 @@
       <button type="button" onclick="closeAbrechnung()" style="background:#8e8e93; margin-top:10px;">❌ Schließen</button>
     </div>
   </div>
+</div>
 
   <script>
     let isTestMode = false;
@@ -712,7 +879,6 @@
     testOption.innerText = '🧪 Testmodus / Übungsmodus';
     yearSelect.appendChild(testOption);
 
-    /* Hilfsfunktion: Wandelt Base64 Data-URL in Blob um und öffnet/lädt sie zuverlässig herunter */
     function openDataUrlInNewTab(dataUrl, fileName = 'Dokument') {
       try {
         const arr = dataUrl.split(',');
@@ -815,7 +981,7 @@
         gInput.value = "Heizungsfachbetrieb";
       } else if (kat === 'Schornsteinfeger') {
         gInput.value = "Schornsteinfegermeister";
-      } else if (kat === 'Grundersteuer' || kat === 'Abwasser' || kat === 'Kaltwasser' || kat === 'Straßenreinigung' || kat === 'Müll') {
+      } else if (kat === 'Grundsteuer' || kat === 'Abwasser' || kat === 'Kaltwasser' || kat === 'Straßenreinigung' || kat === 'Müll') {
         gInput.value = "Stadt Buxtehude / Stadtwerke";
       }
     }
@@ -1278,6 +1444,7 @@
     function updateTabellen() {
       const selectedYearVal = document.getElementById('selectedYear').value;
 
+      // 1. Nebenkosten-Tabelle & Summe
       const nkBody = document.querySelector('#nkTabelle tbody');
       let nkHtml = '';
       let summeNK = 0;
@@ -1302,6 +1469,7 @@
         }
       });
       nkBody.innerHTML = nkHtml || `<tr><td colspan="7" style="text-align:center; color:#8e8e93;">Keine Nebenkosten für diesen Modus/Jahr erfasst</td></tr>`;
+      document.getElementById('nkTabelleSumme').innerText = `${summeNK.toFixed(2)} €`;
 
       const jahresAbschlagEG = (nkSettings.eg || 0) * 12;
       const jahresAbschlagOG = (nkSettings.og || 0) * 12;
@@ -1321,10 +1489,13 @@
         </span>
       `;
 
+      // 2. Beleg-Tabelle & Summe
       const bBody = document.querySelector('#belegTabelle tbody');
       let bHtml = '';
+      let summeBelege = 0;
       belege.forEach((b, i) => {
         if (isTestMode || b.datum.startsWith(selectedYearVal)) {
+          summeBelege += parseFloat(b.betrag);
           const fileLink = b.fileDataUrl 
             ? `<span class="file-link" onclick="openDataUrlInNewTab(belege[${i}].fileDataUrl, '${escapeHtml(b.fileName || 'Beleg')}')">📷 Beleg anzeigen</span>` 
             : '-';
@@ -1342,11 +1513,17 @@
         }
       });
       bBody.innerHTML = bHtml || `<tr><td colspan="7" style="text-align:center; color:#8e8e93;">Keine Belege vorhanden</td></tr>`;
+      document.getElementById('belegTabelleSumme').innerText = `${summeBelege.toFixed(2)} €`;
 
+      // 3. Fahrt-Tabelle & Summe
       const fBody = document.querySelector('#fahrtTabelle tbody');
       let fHtml = '';
+      let summeKM = 0;
+      let summeKosten = 0;
       fahrten.forEach((f, i) => {
         if (isTestMode || f.datum.startsWith(selectedYearVal)) {
+          summeKM += parseFloat(f.kmGesamt) || 0;
+          summeKosten += parseFloat(f.kosten) || 0;
           fHtml += `
             <tr>
               <td>${escapeHtml(f.datum)} ${escapeHtml(f.zeit)}</td>
@@ -1361,7 +1538,10 @@
         }
       });
       fBody.innerHTML = fHtml || `<tr><td colspan="7" style="text-align:center; color:#8e8e93;">Keine Fahrten vorhanden</td></tr>`;
+      document.getElementById('fahrtTabelleSummeKM').innerText = `${summeKM.toFixed(1)} km`;
+      document.getElementById('fahrtTabelleSummeEuro').innerText = `${summeKosten.toFixed(2)} €`;
 
+      // 4. Mietverträge
       const vBody = document.querySelector('#vertragTabelle tbody');
       vBody.innerHTML = vertraege.map((v, i) => {
         const fileDisplay = v.dataUrl 

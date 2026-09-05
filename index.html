@@ -646,7 +646,7 @@
     </div>
 
     <div style="margin-top:30px; font-size:12px; line-height:1.5;">
-      Bitte überweisen Sie den Nachforderungsbetrag bis zum <strong><span id="pZahlungsziel"></span></strong> auf das bekannte Mietkonto. Im Falle eines Guthabens wird dieses zeitnah auf Ihr Konto überwiesen.<br><br>
+      Bitte überweisen Sie den Nachforderungsbetrag bis zum <strong><span id="pZahlungsziel"></span></strong> auf das bekannte Mietkonto. Im Falle eines Guthabens wird dieses zeitnah auf Ihr Konto überraschen.<br><br>
       Mit freundlichen Grüßen,<br><br><br>
       ____________________________________<br>
       Daniel Prang (Vermieter)
@@ -823,6 +823,29 @@
       }
     });
 
+    document.getElementById('fahrtForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      fahrten.push({
+        datum: document.getElementById('fDatum').value,
+        zeit: document.getElementById('fZeit').value,
+        start: document.getElementById('fStart').value,
+        ziel: document.getElementById('fZiel').value,
+        grund: document.getElementById('fGrund').value,
+        kmGesamt: calculatedGesamtKm,
+        kosten: calculatedKosten
+      });
+      saveData();
+      updateTabellen();
+      e.target.reset();
+      document.getElementById('fStart').value = "Langenfelde 1, 21614 Buxtehude";
+      document.getElementById('fDatum').valueAsDate = new Date();
+      document.getElementById('fZeit').value = new Date().toTimeString().substring(0,5);
+      document.getElementById('kmInfo').innerHTML = "📏 Einfache Strecke: 0.0 km (Gesamt Hin & Zurück: 0.0 km)<br>💰 Absetzbarer Betrag: 0.00 €";
+      calculatedEinfachKm = 0.0;
+      calculatedGesamtKm = 0.0;
+      calculatedKosten = 0.0;
+    });
+
     function deleteNK(realIndex) {
       nebenkosten.splice(realIndex, 1);
       saveData();
@@ -868,7 +891,7 @@
 
           mieterGesamtAnteil += anteil;
 
-          if (['Schornsteinfeger', 'Gartenpflege / Winterdienst'].includes(nk.kategorie) || nk.geschaeft.includes('BRUNATA')) {
+          if (['Schornsteinfeger', 'Gartenpflege / Winterdienst'].includes(nk.kategorie) || (nk.geschaeft && nk.geschaeft.includes('BRUNATA'))) {
             paragraph35aGesamt += anteil;
           }
 
@@ -1091,8 +1114,8 @@
                   calculatedKosten = (betragEinfach * 2).toFixed(2);
 
                   document.getElementById('kmInfo').innerHTML = `
-                    📏 **Einfache Strecke:** ${calculatedEinfachKm.toFixed(1)} km (Gesamt Hin & Zurück: ${calculatedGesamtKm} km)<br>
-                    💰 **Absetzbarer Betrag:** ${calculatedKosten} €
+                    📏 <strong>Einfache Strecke:</strong> ${calculatedEinfachKm.toFixed(1)} km (Gesamt Hin & Zurück: ${calculatedGesamtKm} km)<br>
+                    💰 <strong>Absetzbarer Betrag:</strong> ${calculatedKosten} €
                   `;
                 }
               });
@@ -1228,28 +1251,6 @@
 
       updateChecklistStatus();
     }
-
-    document.getElementById('fahrtForm').addEventListener('submit', (e) => {
-      e.preventDefault();
-      fahrten.push({
-        datum: document.getElementById('fDatum').value,
-        zeit: document.getElementById('fZeit').value,
-        start: document.getElementById('fStart').value,
-        ziel: document.getElementById('fZiel').value,
-        grund: document.getElementById('fGrund').value,
-        kmGesamt: calculatedGesamtKm,
-        kosten: calculatedKosten
-      });
-      saveData();
-      updateTabellen();
-      e.target.reset();
-      document.getElementById('fStart').value = "Langenfelde 1, 21614 Buxtehude";
-      document.getElementById('fDatum').valueAsDate = new Date();
-      document.getElementById('kmInfo').innerHTML = "📏 Einfache Strecke: 0.0 km (Gesamt Hin & Zurück: 0.0 km)<br>💰 Absetzbarer Betrag: 0.00 €";
-      calculatedEinfachKm = 0.0;
-      calculatedGesamtKm = 0.0;
-      calculatedKosten = 0.0;
-    });
 
     function exportPDF() {
       window.print();

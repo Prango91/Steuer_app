@@ -9,38 +9,152 @@
   <title>Steuer-Manager & Nebenkostenabrechnung</title>
 
   <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f2f2f7; margin: 0; padding: 20px; color: #1c1c1e; }
-    h1, h2, h3 { color: #007aff; }
-    .card { background: #ffffff; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-    label { display: block; font-weight: 600; margin-top: 10px; margin-bottom: 5px; }
-    input, select, button { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #c7c7cc; font-size: 16px; box-sizing: border-box; }
-    button { background: #007aff; color: white; border: none; font-weight: bold; margin-top: 15px; cursor: pointer; border-radius: 8px; }
-    button:active { background: #0051a8; }
-    .btn-green { background: #34c759; }
-    .btn-green:active { background: #248a3d; }
-    .btn-orange { background: #ff9500; margin-top: 5px; }
-    .btn-orange:active { background: #cc7700; }
-    .btn-purple { background: #5856d6; }
-    .btn-purple:active { background: #3634a3; }
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    th, td { border-bottom: 1px solid #e5e5ea; padding: 10px; text-align: left; font-size: 14px; }
-    th { background: #f2f2f7; }
-    .flex-row { display: flex; gap: 10px; }
-    .flex-row > div { flex: 1; }
+    :root {
+      --primary: #007aff;
+      --primary-active: #0051a8;
+      --success: #34c759;
+      --success-active: #248a3d;
+      --warning: #ff9500;
+      --warning-active: #cc7700;
+      --danger: #ff3b30;
+      --purple: #5856d6;
+      --purple-active: #3634a3;
+      --bg-color: #f2f2f7;
+      --card-bg: #ffffff;
+      --text-color: #1c1c1e;
+      --text-muted: #8e8e93;
+      --border-color: #e5e5ea;
+    }
+
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+      background: var(--bg-color); 
+      margin: 0; 
+      padding: 20px; 
+      color: var(--text-color); 
+      line-height: 1.4;
+    }
+
+    h1, h2, h3 { 
+      color: var(--primary); 
+      margin-top: 0;
+    }
+
+    .card { 
+      background: var(--card-bg); 
+      border-radius: 12px; 
+      padding: 20px; 
+      margin-bottom: 20px; 
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
+    }
+
+    label { 
+      display: block; 
+      font-weight: 600; 
+      margin-top: 12px; 
+      margin-bottom: 6px; 
+      font-size: 14px;
+    }
+
+    input, select, button { 
+      width: 100%; 
+      padding: 12px; 
+      border-radius: 8px; 
+      border: 1px solid #c7c7cc; 
+      font-size: 15px; 
+      box-sizing: border-box; 
+      transition: border-color 0.2s ease;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    button { 
+      background: var(--primary); 
+      color: white; 
+      border: none; 
+      font-weight: bold; 
+      margin-top: 15px; 
+      cursor: pointer; 
+      border-radius: 8px; 
+      transition: background 0.2s ease;
+    }
+
+    button:active { background: var(--primary-active); }
+    .btn-green { background: var(--success); }
+    .btn-green:active { background: var(--success-active); }
+    .btn-orange { background: var(--warning); margin-top: 5px; }
+    .btn-orange:active { background: var(--warning-active); }
+    .btn-purple { background: var(--purple); }
+    .btn-purple:active { background: var(--purple-active); }
+    .btn-danger { background: var(--danger); margin: 0; padding: 6px 10px; width: auto; }
+
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+      margin-top: 10px;
+    }
+
+    table { 
+      width: 100%; 
+      border-collapse: collapse; 
+      min-width: 600px;
+    }
+
+    th, td { 
+      border-bottom: 1px solid var(--border-color); 
+      padding: 10px; 
+      text-align: left; 
+      font-size: 14px; 
+    }
+
+    th { background: #f9f9fb; font-weight: 600; }
+
+    .flex-row { display: flex; gap: 12px; flex-wrap: wrap; }
+    .flex-row > div { flex: 1; min-width: 200px; }
     
     .autocomplete-wrapper { position: relative; }
-    .suggestions { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #c7c7cc; border-radius: 0 0 8px 8px; z-index: 1000; max-height: 200px; overflow-y: auto; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-    .suggestion-item { padding: 12px; cursor: pointer; border-bottom: 1px solid #f2f2f7; font-size: 14px; }
+    .suggestions { 
+      position: absolute; 
+      top: 100%; 
+      left: 0; 
+      right: 0; 
+      background: white; 
+      border: 1px solid #c7c7cc; 
+      border-radius: 0 0 8px 8px; 
+      z-index: 1000; 
+      max-height: 200px; 
+      overflow-y: auto; 
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+    }
+    .suggestion-item { padding: 12px; cursor: pointer; border-bottom: 1px solid var(--bg-color); font-size: 14px; }
     .suggestion-item:hover { background-color: #e5f1ff; }
-    .info-box { background: #e5f1ff; border-left: 4px solid #007aff; padding: 10px; margin-top: 10px; border-radius: 4px; font-weight: 600; }
+
+    .info-box { 
+      background: #e5f1ff; 
+      border-left: 4px solid var(--primary); 
+      padding: 12px; 
+      margin-top: 15px; 
+      border-radius: 4px; 
+      font-weight: 600; 
+      font-size: 14px;
+    }
     
-    /* Checklisten-Styling & Ausgegrauter Zustand */
-    .checklist-item { border: 1px solid #e5e5ea; padding: 15px; border-radius: 8px; margin-bottom: 12px; background: #fafafa; transition: all 0.3s ease; }
-    .checklist-header { font-weight: bold; font-size: 16px; color: #1c1c1e; margin-bottom: 5px; }
-    .checklist-sub { font-size: 13px; color: #8e8e93; margin-bottom: 10px; }
+    .checklist-item { 
+      border: 1px solid var(--border-color); 
+      padding: 15px; 
+      border-radius: 8px; 
+      margin-bottom: 12px; 
+      background: #fafafa; 
+      transition: all 0.3s ease; 
+    }
+    .checklist-header { font-weight: bold; font-size: 16px; color: var(--text-color); margin-bottom: 5px; }
+    .checklist-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 10px; }
 
     .checklist-item.posten-uebernommen {
-      opacity: 0.55;
+      opacity: 0.6;
       background: #eef2f5;
       border-color: #d1d1d6;
     }
@@ -49,21 +163,29 @@
       opacity: 0.95;
     }
     
-    .year-select-box { background: #007aff; color: white; border-radius: 12px; padding: 15px 20px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; transition: background 0.3s ease; }
-    .year-select-box.testmode { background: #ff9500; }
-    .year-select-box select { width: auto; font-size: 18px; font-weight: bold; background: white; color: #007aff; }
+    .year-select-box { 
+      background: var(--primary); 
+      color: white; 
+      border-radius: 12px; 
+      padding: 15px 20px; 
+      margin-bottom: 20px; 
+      display: flex; 
+      align-items: center; 
+      justify-content: space-between; 
+      transition: background 0.3s ease; 
+    }
+    .year-select-box.testmode { background: var(--warning); }
+    .year-select-box select { width: auto; font-size: 16px; font-weight: bold; background: white; color: var(--primary); border: none; }
 
-    .summary-box { background: #f8f9fa; border: 1px solid #e5e5ea; padding: 15px; border-radius: 8px; margin-top: 15px; }
-
-    .file-link { color: #007aff; text-decoration: underline; font-weight: bold; cursor: pointer; }
+    .summary-box { background: #f8f9fa; border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-top: 15px; }
+    .file-link { color: var(--primary); text-decoration: underline; font-weight: bold; cursor: pointer; }
 
     @media print {
       body { background: white; padding: 0; color: black; }
-      button, .no-print, form, .checklist-item, .autocomplete-wrapper, #yearBox { display: none !important; }
+      button, .no-print, form, .checklist-item, .autocomplete-wrapper, #yearBox, h1 { display: none !important; }
       .card { box-shadow: none; border: none; padding: 0; margin-bottom: 20px; }
       th, td { border-bottom: 1px solid #ccc; }
-      body * { visibility: visible; }
-      #printArea { position: absolute; left: 0; top: 0; width: 100%; }
+      #printArea { display: block !important; position: absolute; left: 0; top: 0; width: 100%; }
     }
   </style>
 </head>
@@ -74,8 +196,7 @@
   <!-- STEUERJAHR AUSWAHL -->
   <div class="year-select-box" id="yearBox">
     <span style="font-size: 18px; font-weight: bold;" id="yearBoxText">📅 Aktives Steuerjahr:</span>
-    <select id="selectedYear" onchange="switchYear()">
-    </select>
+    <select id="selectedYear" onchange="switchYear()"></select>
   </div>
 
   <!-- 1. FAHRT ERFASSEN -->
@@ -172,7 +293,6 @@
         </div>
       </div>
 
-      <!-- Kamera & Datei Upload für Belege (Auswahlmenü für Foto, Kamera oder Dateien-App) -->
       <label>📷 Beleg / Kassenbon einscannen oder hochladen (Foto / PDF)</label>
       <input type="file" id="bDatei" accept="image/*,application/pdf">
 
@@ -403,15 +523,13 @@
         </div>
       </div>
 
-      <!-- Kamera & Datei Upload für Nebenkosten (Auswahlmenü für Foto, Kamera oder Dateien-App) -->
       <label>📷 Rechnung / Beleg einscannen oder hochladen (Foto / PDF)</label>
       <input type="file" id="nkDatei" accept="image/*,application/pdf">
 
       <button type="submit">➕ Nebenkostenposten speichern</button>
     </form>
 
-    <div class="summary-box" id="nkSummary">
-    </div>
+    <div class="summary-box" id="nkSummary"></div>
 
     <h3 style="margin-top:20px;">📄 Rechtssichere Nebenkostenabrechnung generieren</h3>
     <div class="flex-row">
@@ -420,10 +538,12 @@
     </div>
 
     <h3>Erfasste Betriebskosten für das Steuerjahr</h3>
-    <table id="nkTabelle">
-      <thead><tr><th>Datum</th><th>Zuordnung</th><th>Kategorie</th><th>Bezeichnung</th><th>Betrag (€)</th><th>Beleg / Bon</th><th>Aktion</th></tr></thead>
-      <tbody></tbody>
-    </table>
+    <div class="table-responsive">
+      <table id="nkTabelle">
+        <thead><tr><th>Datum</th><th>Zuordnung</th><th>Kategorie</th><th>Bezeichnung</th><th>Betrag (€)</th><th>Beleg / Bon</th><th>Aktion</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
   </div>
 
   <!-- 5. ÜBERSICHT & EXPORT -->
@@ -432,16 +552,20 @@
     <button type="button" id="pdfBtn" onclick="exportPDF()" class="btn-green">📄 Steuerbericht als PDF speichern / drucken</button>
 
     <h3>Erfasste Einzelbelege & Pauschalen</h3>
-    <table id="belegTabelle">
-      <thead><tr><th>Datum</th><th>Zuordnung</th><th>Kategorie</th><th>Geschäft / Bezeichnung</th><th>Betrag (€)</th><th>Beleg / Bon</th><th>Aktion</th></tr></thead>
-      <tbody></tbody>
-    </table>
+    <div class="table-responsive">
+      <table id="belegTabelle">
+        <thead><tr><th>Datum</th><th>Zuordnung</th><th>Kategorie</th><th>Geschäft / Bezeichnung</th><th>Betrag (€)</th><th>Beleg / Bon</th><th>Aktion</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
 
     <h3>Erfasste Fahrten</h3>
-    <table id="fahrtTabelle">
-      <thead><tr><th>Datum</th><th>Start</th><th>Ziel</th><th>Grund</th><th>Gesamt-KM</th><th>Erstattung (€)</th><th>Aktion</th></tr></thead>
-      <tbody></tbody>
-    </table>
+    <div class="table-responsive">
+      <table id="fahrtTabelle">
+        <thead><tr><th>Datum</th><th>Start</th><th>Ziel</th><th>Grund</th><th>Gesamt-KM</th><th>Erstattung (€)</th><th>Aktion</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
   </div>
 
   <!-- 6. MIETVERTRÄGE UPLOAD -->
@@ -469,10 +593,12 @@
     </form>
 
     <h3>Gespeicherte Mietverträge</h3>
-    <table id="vertragTabelle">
-      <thead><tr><th>Wohnung</th><th>Mieter</th><th>Dateiname</th><th>Aktion</th></tr></thead>
-      <tbody></tbody>
-    </table>
+    <div class="table-responsive">
+      <table id="vertragTabelle">
+        <thead><tr><th>Wohnung</th><th>Mieter</th><th>Dateiname</th><th>Aktion</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
   </div>
 
   <!-- DRUCK-AREAL FÜR RECHTSSICHERE NEBENKOSTENABRECHNUNG -->
@@ -560,6 +686,16 @@
     testOption.innerText = '🧪 Testmodus / Übungsmodus';
     yearSelect.appendChild(testOption);
 
+    function escapeHtml(text) {
+      if (!text) return '';
+      return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
     function loadData() {
       const selectedValue = yearSelect.value;
       isTestMode = (selectedValue === 'TESTMODE');
@@ -620,6 +756,39 @@
       saveData();
       updateTabellen();
     }
+
+    document.getElementById('belegForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const fileInput = document.getElementById('bDatei');
+      const file = fileInput.files[0];
+
+      const saveEntry = (fileDataUrl = null, fileName = null) => {
+        belege.push({
+          datum: document.getElementById('bDatum').value,
+          zuordnung: document.getElementById('bZuordnung').value,
+          kategorie: document.getElementById('bKategorie').value,
+          geschaeft: document.getElementById('bGeschaeft').value,
+          betrag: parseFloat(document.getElementById('bBetrag').value).toFixed(2),
+          grund: document.getElementById('bGrund').value,
+          fileDataUrl: fileDataUrl,
+          fileName: fileName
+        });
+        saveData();
+        updateTabellen();
+        e.target.reset();
+        document.getElementById('bDatum').valueAsDate = new Date();
+      };
+
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          saveEntry(evt.target.result, file.name);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        saveEntry();
+      }
+    });
 
     document.getElementById('nkForm').addEventListener('submit', (e) => {
       e.preventDefault();
@@ -705,7 +874,7 @@
 
           tableBodyHtml += `
             <tr>
-              <td style="border:1px solid #ddd; padding:8px;">${nk.kategorie} (${nk.geschaeft})</td>
+              <td style="border:1px solid #ddd; padding:8px;">${escapeHtml(nk.kategorie)} (${escapeHtml(nk.geschaeft)})</td>
               <td style="border:1px solid #ddd; padding:8px;">${betrag.toFixed(2)} €</td>
               <td style="border:1px solid #ddd; padding:8px;">${verteiler}</td>
               <td style="border:1px solid #ddd; padding:8px; font-weight:bold;">${anteil.toFixed(2)} €</td>
@@ -727,7 +896,7 @@
       document.getElementById('pJahrPeriod2').innerText = selectedYearVal === 'TESTMODE' ? currentYear : selectedYearVal;
       document.getElementById('pEinheit').innerText = wohnung;
       document.getElementById('pFlaeche').innerText = qm;
-      document.getElementById('pMieterName').innerText = mieterName;
+      document.getElementById('pMieterName').innerText = escapeHtml(mieterName);
 
       document.getElementById('pPostenTable').innerHTML = tableBodyHtml;
       document.getElementById('pGesamtAnteil').innerText = mieterGesamtAnteil.toFixed(2);
@@ -977,13 +1146,13 @@
           const fileLink = nk.fileDataUrl ? `<a href="${nk.fileDataUrl}" target="_blank" class="file-link">📷 Beleg anzeigen</a>` : '-';
           nkHtml += `
             <tr>
-              <td>${nk.datum}</td>
-              <td>${nk.zuordnung}</td>
-              <td>${nk.kategorie}</td>
-              <td>${nk.geschaeft} (${nk.grund})</td>
+              <td>${escapeHtml(nk.datum)}</td>
+              <td>${escapeHtml(nk.zuordnung)}</td>
+              <td>${escapeHtml(nk.kategorie)}</td>
+              <td>${escapeHtml(nk.geschaeft)} (${escapeHtml(nk.grund)})</td>
               <td>${parseFloat(nk.betrag).toFixed(2)} €</td>
               <td>${fileLink}</td>
-              <td><button type="button" onclick="deleteNK(${i})" style="margin:0; padding:5px; background:#ff3b30;">❌</button></td>
+              <td><button type="button" class="btn-danger" onclick="deleteNK(${i})">❌</button></td>
             </tr>
           `;
         }
@@ -1015,13 +1184,13 @@
           const fileLink = b.fileDataUrl ? `<a href="${b.fileDataUrl}" target="_blank" class="file-link">📷 Beleg anzeigen</a>` : '-';
           bHtml += `
             <tr>
-              <td>${b.datum}</td>
-              <td>${b.zuordnung}</td>
-              <td>${b.kategorie}</td>
-              <td>${b.geschaeft} (${b.grund})</td>
+              <td>${escapeHtml(b.datum)}</td>
+              <td>${escapeHtml(b.zuordnung)}</td>
+              <td>${escapeHtml(b.kategorie)}</td>
+              <td>${escapeHtml(b.geschaeft)} (${escapeHtml(b.grund)})</td>
               <td>${parseFloat(b.betrag).toFixed(2)} €</td>
               <td>${fileLink}</td>
-              <td><button type="button" onclick="deleteBeleg(${i})" style="margin:0; padding:5px; background:#ff3b30;">❌</button></td>
+              <td><button type="button" class="btn-danger" onclick="deleteBeleg(${i})">❌</button></td>
             </tr>
           `;
         }
@@ -1034,13 +1203,13 @@
         if (isTestMode || f.datum.startsWith(selectedYearVal)) {
           fHtml += `
             <tr>
-              <td>${f.datum} ${f.zeit}</td>
-              <td>${f.start}</td>
-              <td>${f.ziel}</td>
-              <td>${f.grund}</td>
-              <td>${f.kmGesamt} km</td>
-              <td>${f.kosten} €</td>
-              <td><button type="button" onclick="deleteFahrt(${i})" style="margin:0; padding:5px; background:#ff3b30;">❌</button></td>
+              <td>${escapeHtml(f.datum)} ${escapeHtml(f.zeit)}</td>
+              <td>${escapeHtml(f.start)}</td>
+              <td>${escapeHtml(f.ziel)}</td>
+              <td>${escapeHtml(f.grund)}</td>
+              <td>${escapeHtml(f.kmGesamt)} km</td>
+              <td>${escapeHtml(f.kosten)} €</td>
+              <td><button type="button" class="btn-danger" onclick="deleteFahrt(${i})">❌</button></td>
             </tr>
           `;
         }
@@ -1050,48 +1219,15 @@
       const vBody = document.querySelector('#vertragTabelle tbody');
       vBody.innerHTML = vertraege.map((v, i) => `
         <tr>
-          <td>${v.zuordnung}</td>
-          <td>${v.name}</td>
-          <td><a href="${v.dataUrl}" target="_blank" style="color:#007aff;">${v.filename}</a></td>
-          <td><button type="button" onclick="deleteVertrag(${i})" style="margin:0; padding:5px; background:#ff3b30;">❌</button></td>
+          <td>${escapeHtml(v.zuordnung)}</td>
+          <td>${escapeHtml(v.name)}</td>
+          <td><a href="${v.dataUrl}" target="_blank" style="color:#007aff;">${escapeHtml(v.filename)}</a></td>
+          <td><button type="button" class="btn-danger" onclick="deleteVertrag(${i})">❌</button></td>
         </tr>
       `).join('');
 
       updateChecklistStatus();
     }
-
-    document.getElementById('belegForm').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const fileInput = document.getElementById('bDatei');
-      const file = fileInput.files[0];
-
-      const saveEntry = (fileDataUrl = null, fileName = null) => {
-        belege.push({
-          datum: document.getElementById('bDatum').value,
-          zuordnung: document.getElementById('bZuordnung').value,
-          kategorie: document.getElementById('bKategorie').value,
-          geschaeft: document.getElementById('bGeschaeft').value,
-          betrag: parseFloat(document.getElementById('bBetrag').value).toFixed(2),
-          grund: document.getElementById('bGrund').value,
-          fileDataUrl: fileDataUrl,
-          fileName: fileName
-        });
-        saveData();
-        updateTabellen();
-        e.target.reset();
-        document.getElementById('bDatum').valueAsDate = new Date();
-      };
-
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(evt) {
-          saveEntry(evt.target.result, file.name);
-        };
-        reader.readAsDataURL(file);
-      } else {
-        saveEntry();
-      }
-    });
 
     document.getElementById('fahrtForm').addEventListener('submit', (e) => {
       e.preventDefault();

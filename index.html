@@ -603,8 +603,8 @@
         </div>
       </div>
 
-      <label for="vDatei">Mietvertrag hochladen (PDF oder Bild)</label>
-      <input type="file" id="vDatei" accept="application/pdf,image/*" required>
+      <label for="vDatei">Mietvertrag hochladen (PDF oder Bild, optional)</label>
+      <input type="file" id="vDatei" accept="application/pdf,image/*">
 
       <button type="submit">📤 Mietvertrag speichern</button>
     </form>
@@ -1064,26 +1064,55 @@
       alert(`✅ "${title}" (${betrag.toFixed(2)} €) wurde übernommen!`);
     }
 
+    /* KORRIGIERTER MIETVERTRAGS-UPLOAD */
     document.getElementById('vertragForm').addEventListener('submit', (e) => {
       e.preventDefault();
+      
+      const zuordnungVal = document.getElementById('vZuordnung').value;
+      const nameVal = document.getElementById('vName').value.trim();
       const fileInput = document.getElementById('vDatei');
       const file = fileInput.files[0];
 
+      if (!nameVal) {
+        alert("Bitte gib den Namen des Mieters ein.");
+        return;
+      }
+
+      const addVertragEntry = (dataUrl = null, filename = "Kein Anhang") => {
+        // Bestehenden Vertrag für diese Wohnung ersetzen
+        const existingIdx = vertraege.findIndex(v => v.zuordnung === zuordnungVal);
+        const newEntry = {
+          zuordnung: zuordnungVal,
+          name: nameVal,
+          filename: filename,
+          dataUrl: dataUrl
+        };
+
+        if (existingIdx !== -1) {
+          vertraege[existingIdx] = newEntry;
+        } else {
+          vertraege.push(newEntry);
+        }
+
+        saveData();
+        updateTabellen();
+        e.target.reset();
+        alert(`✅ Mietvertrag für ${nameVal} (${zuordnungVal}) wurde erfolgreich gespeichert!`);
+      };
+
       if (file) {
+        // Datei vorhanden -> per FileReader einlesen
         const reader = new FileReader();
         reader.onload = function(evt) {
-          vertraege.push({
-            zuordnung: document.getElementById('vZuordnung').value,
-            name: document.getElementById('vName').value,
-            filename: file.name,
-            dataUrl: evt.target.result
-          });
-          saveData();
-          updateTabellen();
-          e.target.reset();
-          alert("✅ Mietvertrag gespeichert!");
+          addVertragEntry(evt.target.result, file.name);
+        };
+        reader.onerror = function() {
+          alert("Fehler beim Lesen der Datei. Bitte erneut versuchen.");
         };
         reader.readAsDataURL(file);
+      } else {
+        // Keine Datei hochgeladen -> Daten (Name/Wohnung) trotzdem speichern
+        addVertragEntry();
       }
     });
 
@@ -1282,14 +1311,20 @@
       fBody.innerHTML = fHtml || `<tr><td colspan="7" style="text-align:center; color:#8e8e93;">Keine Fahrten vorhanden</td></tr>`;
 
       const vBody = document.querySelector('#vertragTabelle tbody');
-      vBody.innerHTML = vertraege.map((v, i) => `
-        <tr>
-          <td>${escapeHtml(v.zuordnung)}</td>
-          <td>${escapeHtml(v.name)}</td>
-          <td><a href="${v.dataUrl}" target="_blank" style="color:#007aff;">${escapeHtml(v.filename)}</a></td>
-          <td><button type="button" class="btn-danger" onclick="deleteVertrag(${i})">❌</button></td>
-        </tr>
-      `).join('');
+      vBody.innerHTML = vertraege.map((v, i) => {
+        const fileDisplay = v.dataUrl 
+          ? `<a href="${v.dataUrl}" target="_blank" style="color:#007aff;">📄 ${escapeHtml(v.filename)}</a>` 
+          : `<span style="color:#8e8e93;">Kein Dokument</span>`;
+
+        return `
+          <tr>
+            <td>${escapeHtml(v.zuordnung)}</td>
+            <td>${escapeHtml(v.name)}</td>
+            <td>${fileDisplay}</td>
+            <td><button type="button" class="btn-danger" onclick="deleteVertrag(${i})">❌</button></td>
+          </tr>
+        `;
+      }).join('') || `<tr><td colspan="4" style="text-align:center; color:#8e8e93;">Keine Mietverträge erfasst</td></tr>`;
 
       updateChecklistStatus();
     }

@@ -620,17 +620,28 @@
 
   <!-- DRUCK-AREAL FÜR RECHTSSICHERE NEBENKOSTENABRECHNUNG -->
   <div id="printArea" style="display:none; padding:30px; background:white; font-family:Arial, sans-serif;">
-    <div style="text-align:right; margin-bottom:20px; font-size:12px; color:#555;">
-      Datum: <span id="pAbrechnungsDatum"></span>
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 25px;">
+      <div style="font-size:13px; line-height:1.5;">
+        <strong>Vermieter:</strong><br>
+        Daniel Prang<br>
+        Langenfelde 1<br>
+        21614 Buxtehude
+      </div>
+      <div style="text-align:right; font-size:13px; line-height:1.5;">
+        <strong>Datum:</strong> <span id="pAbrechnungsDatum"></span><br><br>
+        <strong>Mieter / Empfänger:</strong><br>
+        <span id="pMieterName" style="font-weight:bold;"></span><br>
+        An den Geestbergen 12<br>
+        21614 Buxtehude
+      </div>
     </div>
     
     <h2>Betriebskostenabrechnung für das Kalenderjahr <span id="pJahr"></span></h2>
     
-    <div style="margin-bottom:20px; font-size:14px; line-height:1.5;">
-      <strong>Vermieter:</strong> Daniel Prang<br>
-      <strong>Mietobjekt / Einheit:</strong> <span id="pEinheit"></span> (Wohnfläche: <span id="pFlaeche"></span> m² / Gesamt: 170 m²)<br>
-      <strong>Abrechnungszeitraum:</strong> 01.01.<span id="pJahrPeriod1"></span> bis 31.12.<span id="pJahrPeriod2"></span><br>
-      <strong>Mieter:</strong> <span id="pMieterName"></span>
+    <div style="margin-bottom:20px; font-size:14px; line-height:1.6;">
+      <strong>Abrechnungsobjekt:</strong> An den Geestbergen 12, 21614 Buxtehude<br>
+      <strong>Mieteinheit:</strong> <span id="pEinheit"></span> (Wohnfläche: <span id="pFlaeche"></span> m² / Gesamtfläche Objekt: 170 m²)<br>
+      <strong>Abrechnungszeitraum:</strong> 01.01.<span id="pJahrPeriod1"></span> bis 31.12.<span id="pJahrPeriod2"></span>
     </div>
 
     <hr style="border:0; border-top:1px solid #ccc; margin:20px 0;">
@@ -656,14 +667,14 @@
       <span style="font-size:16px;" id="pFinalResult"></span>
     </div>
 
-    <div style="margin-top:20px; font-size:12px; border:1px dashed #aaa; padding:10px; background:#fff8e7;">
+    <div style="margin-top:20px; font-size:12px; border:1px dashed #aaa; padding:10px; background:#fff8e7; line-height:1.5;">
       <strong>Hinweis nach § 35a EStG (Haushaltsnahe Dienstleistungen &amp; Handwerkerleistungen):</strong><br>
       In den oben genannten Betriebskosten sind folgende absetzbare Lohn- und Arbeitskosten enthalten:<br>
       • Arbeitskosten Haushaltsnahe Dienstleistungen / Schornsteinfeger / Wartungsarbeiten / Brunata Messdienst: <strong><span id="p35aBetrag"></span> €</strong><br>
       <em>Sämtliche Beträge wurden unbar beglichen. Die Originalbelege liegen beim Vermieter vor und können bei Bedarf eingesehen werden.</em>
     </div>
 
-    <div style="margin-top:30px; font-size:12px; line-height:1.5;" id="pZahlungshinweis">
+    <div style="margin-top:25px; font-size:12px; line-height:1.6;" id="pZahlungshinweis">
       <!-- Dynamischer Text für Nachforderung oder Guthaben -->
     </div>
 
@@ -992,7 +1003,11 @@
       if (differenz > 0) {
         document.getElementById('pFinalResult').innerHTML = `<strong>Nachforderung zu Gunsten des Vermieters: <span style="color:#d9534f;">+ ${differenz.toFixed(2)} €</span></strong>`;
         document.getElementById('pZahlungshinweis').innerHTML = `
-          Bitte überweisen Sie den Nachforderungsbetrag in Höhe von <strong>${differenz.toFixed(2)} €</strong> bis zum <strong>${zahlungszielStr}</strong> auf das bekannte Mietkonto.<br><br>
+          Bitte überweisen Sie den Nachforderungsbetrag in Höhe von <strong>${differenz.toFixed(2)} €</strong> bis zum <strong>${zahlungszielStr}</strong> auf folgendes Bankkonto:<br><br>
+          <strong>Kontoinhaber:</strong> Daniel Prang<br>
+          <strong>Bank:</strong> Haspa Buxtehude<br>
+          <strong>IBAN:</strong> DE04 2005 0550 1385 4394 17<br><br>
+          Gegen diese Abrechnung kann innerhalb von 12 Monaten nach Zugang schriftlich Einwand erhoben werden (§ 556 Abs. 3 BGB).<br><br>
           Mit freundlichen Grüßen,<br><br><br>
           ____________________________________<br>
           Daniel Prang (Vermieter)
@@ -1001,7 +1016,8 @@
         const guthabenBetrag = Math.abs(differenz).toFixed(2);
         document.getElementById('pFinalResult').innerHTML = `<strong>Guthaben zu Gunsten des Mieters: <span style="color:#34c759;">${guthabenBetrag} €</span></strong>`;
         document.getElementById('pZahlungshinweis').innerHTML = `
-          Das Guthaben in Höhe von <strong>${guthabenBetrag} €</strong> wird zeitnah auf Ihr bekanntes Bankkonto überweisen.<br><br>
+          Das Guthaben in Höhe von <strong>${guthabenBetrag} €</strong> wird zeitnah auf Ihr bekanntes Bankkonto überwiesen.<br><br>
+          Gegen diese Abrechnung kann innerhalb von 12 Monaten nach Zugang schriftlich Einwand erhoben werden (§ 556 Abs. 3 BGB).<br><br>
           Mit freundlichen Grüßen,<br><br><br>
           ____________________________________<br>
           Daniel Prang (Vermieter)
@@ -1033,7 +1049,7 @@
       document.getElementById('fZeit').value = new Date().toTimeString().substring(0,5);
       document.getElementById('fStart').value = "Langenfelde 1, 21614 Buxtehude";
       document.getElementById('fZiel').value = "An den Geestbergen 12, 21614 Buxtehude";
-      document.getElementById('fGrund').value = `Objektkontrolle & Sichtprüfung (${wohnung})`;
+      document.getElementById('fGrund').value = `Objektkontrolle & Schnittprüfung (${wohnung})`;
 
       fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(document.getElementById('fZiel').value)}`)
         .then(res => res.json())

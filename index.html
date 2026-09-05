@@ -1283,5 +1283,109 @@
 
     loadData();
   </script>
+  <!-- Anfang: Bescheinigung § 35a EStG -->
+<div class="steuer-block">
+  <h3>Bescheinigung für das Finanzamt (§ 35a EStG)</h3>
+  <p class="intro-text">
+    Für die im Abrechnungszeitraum <strong>{ABRECHNUNGSZEITRAUM}</strong> angefallenen Betriebskosten sind folgende Lohn-, Arbeits- und Fahrtkosten enthalten, die als haushaltsnahe Dienstleistungen (§ 35a Abs. 2 EStG) bzw. Handwerkerleistungen (§ 35a Abs. 3 EStG) steuerlich geltend gemacht werden können:
+  </p>
+
+  <table class="steuer-tabelle">
+    <thead>
+      <tr>
+        <th>Leistungsart</th>
+        <th class="text-right">Gesamtkosten (€)</th>
+        <th class="text-right">Ihr Anteil (€)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <strong>Haushaltsnahe Dienstleistungen</strong><br>
+          <small>(z. B. Gebäudereinigung, Gartenpflege, Winterdienst)</small>
+        </td>
+        <td class="text-right">{GESAMT_HAUSHALTSNAH}</td>
+        <td class="text-right"><strong>{ANTEIL_HAUSHALTSNAH}</strong></td>
+      </tr>
+      <tr>
+        <td>
+          <strong>Handwerkerleistungen</strong><br>
+          <small>(z. B. Heizungswartung, Schornsteinfeger, Dacharbeiten)</small>
+        </td>
+        <td class="text-right">{GESAMT_HANDWERKER}</td>
+        <td class="text-right"><strong>{ANTEIL_HANDWERKER}</strong></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="hinweis-text">
+    <strong>Hinweis:</strong> Materialkosten sind in den oben genannten Beträgen nicht enthalten und wurden herausgerechnet. Die Bezahlung aller Positionen erfolgte unbar.
+  </p>
+</div>
+
+<style>
+  /* Styling für den § 35a EStG Block */
+  .steuer-block {
+    margin-top: 30px;
+    padding: 15px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    line-height: 1.4;
+    page-break-inside: avoid; /* Verhindert unschöne Seitenumbrüche beim Drucken */
+  }
+
+  .steuer-block h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 15px;
+    color: #333;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+  }
+
+  .steuer-block .intro-text {
+    margin-bottom: 12px;
+  }
+
+  .steuer-tabelle {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 12px;
+    background-color: #fff;
+  }
+
+  .steuer-tabelle th, 
+  .steuer-tabelle td {
+    border: 1px solid #ddd;
+    padding: 8px 10px;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .steuer-tabelle th {
+    background-color: #f0f0f0;
+    font-weight: bold;
+  }
+
+  .steuer-tabelle small {
+    color: #666;
+    font-size: 11px;
+  }
+
+  .text-right {
+    text-align: right !important;
+  }
+
+  .hinweis-text {
+    font-size: 11px;
+    color: #555;
+    margin-bottom: 0;
+    font-style: italic;
+  }
+</style>
+<!-- Ende: Bescheinigung § 35a EStG -->
+
 </body>
 </html>

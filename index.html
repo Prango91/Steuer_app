@@ -10,26 +10,28 @@
 
   <style>
     :root {
-      --primary: #007aff;
-      --primary-hover: #0062cc;
-      --primary-active: #0051a8;
+      --primary: #0071e3;
+      --primary-hover: #005bb5;
+      --primary-active: #004494;
+      --primary-light: #e8f2fc;
       --success: #34c759;
-      --success-hover: #2db34f;
-      --success-active: #248a3d;
+      --success-hover: #28a745;
+      --success-active: #1e7e34;
       --warning: #ff9500;
-      --warning-hover: #e08300;
-      --warning-active: #cc7700;
+      --warning-hover: #d97e00;
+      --warning-active: #b36800;
       --danger: #ff3b30;
-      --danger-hover: #d73027;
+      --danger-hover: #d70015;
       --purple: #5856d6;
-      --purple-hover: #4745b8;
-      --purple-active: #3634a3;
-      --bg-color: #f2f2f7;
+      --purple-hover: #4442b1;
+      --bg-color: #f5f5f7;
       --card-bg: #ffffff;
-      --text-color: #1c1c1e;
-      --text-muted: #8e8e93;
+      --text-color: #1d1d1f;
+      --text-muted: #86868b;
       --border-color: #e5e5ea;
-      --focus-ring: rgba(0, 122, 255, 0.25);
+      --border-radius: 16px;
+      --focus-ring: rgba(0, 113, 227, 0.25);
+      --box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
     }
 
     * {
@@ -37,79 +39,84 @@
     }
 
     body { 
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
       background: var(--bg-color); 
       margin: 0; 
-      padding: 24px; 
+      padding: 40px 20px; 
       color: var(--text-color); 
       line-height: 1.5;
       -webkit-font-smoothing: antialiased;
     }
 
     .container {
-      max-width: 1100px;
+      max-width: 1120px;
       margin: 0 auto;
     }
 
     h1 {
-      font-size: 28px;
+      font-size: 32px;
       font-weight: 700;
-      color: #1c1c1e;
+      color: var(--text-color);
       margin-top: 0;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
+      letter-spacing: -0.5px;
     }
 
     h2 { 
       font-size: 20px;
       font-weight: 600;
-      color: var(--primary); 
+      color: var(--text-color); 
       margin-top: 0;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
+      letter-spacing: -0.3px;
     }
 
     h3 {
       font-size: 16px;
       font-weight: 600;
-      margin-top: 20px;
-      margin-bottom: 10px;
-      color: #2c2c2e;
+      margin-top: 24px;
+      margin-bottom: 12px;
+      color: var(--text-color);
     }
 
     .card { 
       background: var(--card-bg); 
-      border-radius: 12px; 
-      padding: 24px; 
-      margin-bottom: 24px; 
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04); 
-      border: 1px solid rgba(0, 0, 0, 0.05);
+      border-radius: var(--border-radius); 
+      padding: 28px; 
+      margin-bottom: 28px; 
+      box-shadow: var(--box-shadow); 
+      border: 1px solid rgba(0, 0, 0, 0.04);
     }
 
     label { 
       display: block; 
       font-weight: 600; 
-      margin-top: 12px; 
+      margin-top: 14px; 
       margin-bottom: 6px; 
       font-size: 13px;
-      color: #3a3a3c;
+      color: #424245;
+      letter-spacing: -0.1px;
     }
 
     input, select, button { 
       width: 100%; 
-      padding: 10px 12px; 
-      border-radius: 8px; 
-      border: 1px solid #c7c7cc; 
+      padding: 12px 14px; 
+      border-radius: 10px; 
+      border: 1px solid var(--border-color); 
       font-size: 14px; 
-      transition: all 0.2s ease;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
       font-family: inherit;
+      background-color: #fafafa;
     }
 
     input:focus, select:focus {
       outline: none;
       border-color: var(--primary);
-      box-shadow: 0 0 0 3px var(--focus-ring);
+      background-color: #fff;
+      box-shadow: 0 0 0 4px var(--focus-ring);
     }
 
     button { 
@@ -117,67 +124,106 @@
       color: white; 
       border: none; 
       font-weight: 600; 
-      margin-top: 16px; 
+      margin-top: 20px; 
       cursor: pointer; 
-      border-radius: 8px; 
-      padding: 12px 16px;
+      border-radius: 10px; 
+      padding: 12px 20px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: 8px;
+      box-shadow: 0 2px 6px rgba(0, 113, 227, 0.15);
     }
 
-    button:hover { background: var(--primary-hover); }
-    button:active { background: var(--primary-active); }
+    button:hover { 
+      background: var(--primary-hover); 
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 113, 227, 0.25);
+    }
+    button:active { 
+      background: var(--primary-active); 
+      transform: translateY(0);
+    }
     
-    .btn-green { background: var(--success); }
-    .btn-green:hover { background: var(--success-hover); }
-    .btn-green:active { background: var(--success-active); }
+    .btn-green { 
+      background: var(--success); 
+      box-shadow: 0 2px 6px rgba(52, 199, 89, 0.15);
+    }
+    .btn-green:hover { 
+      background: var(--success-hover); 
+      box-shadow: 0 4px 12px rgba(52, 199, 89, 0.25);
+    }
 
-    .btn-orange { background: var(--warning); margin-top: 0; }
-    .btn-orange:hover { background: var(--warning-hover); }
-    .btn-orange:active { background: var(--warning-active); }
+    .btn-orange { 
+      background: #fff5e6; 
+      color: var(--warning-hover);
+      border: 1px solid rgba(255, 149, 0, 0.3);
+      margin-top: 0; 
+      box-shadow: none;
+    }
+    .btn-orange:hover { 
+      background: var(--warning); 
+      color: white;
+      box-shadow: 0 4px 12px rgba(255, 149, 0, 0.25);
+    }
 
-    .btn-purple { background: var(--purple); }
-    .btn-purple:hover { background: var(--purple-hover); }
-    .btn-purple:active { background: var(--purple-active); }
+    .btn-purple { 
+      background: var(--purple); 
+      box-shadow: 0 2px 6px rgba(88, 86, 214, 0.15);
+    }
+    .btn-purple:hover { 
+      background: var(--purple-hover); 
+      box-shadow: 0 4px 12px rgba(88, 86, 214, 0.25);
+    }
 
     .btn-danger { 
-      background: var(--danger); 
+      background: #fff0f0; 
+      color: var(--danger);
+      border: 1px solid rgba(255, 59, 48, 0.2);
       margin: 0; 
-      padding: 6px 10px; 
+      padding: 6px 12px; 
       width: auto; 
-      font-size: 12px;
-      border-radius: 6px;
+      font-size: 13px;
+      border-radius: 8px;
+      box-shadow: none;
     }
-    .btn-danger:hover { background: var(--danger-hover); }
+    .btn-danger:hover { 
+      background: var(--danger); 
+      color: white;
+      box-shadow: 0 2px 8px rgba(255, 59, 48, 0.25);
+    }
 
     .table-responsive {
       width: 100%;
       overflow-x: auto;
-      margin-top: 12px;
-      border-radius: 8px;
+      margin-top: 16px;
+      border-radius: 12px;
       border: 1px solid var(--border-color);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
     }
 
     table { 
       width: 100%; 
-      border-collapse: collapse; 
+      border-collapse: separate; 
+      border-spacing: 0;
       min-width: 600px;
       background: white;
     }
 
     th, td { 
       border-bottom: 1px solid var(--border-color); 
-      padding: 12px; 
+      padding: 14px 16px; 
       text-align: left; 
-      font-size: 13px; 
+      font-size: 13.5px; 
     }
 
     th { 
-      background: #f8f8fc; 
+      background: #f9f9fb; 
       font-weight: 600; 
-      color: #48484a;
+      color: #6e6e73;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.5px;
     }
 
     tr:last-child td {
@@ -185,17 +231,18 @@
     }
 
     tr:nth-child(even) td {
-      background-color: #fafafc;
+      background-color: #fcfcfd;
     }
 
     tfoot td {
-      background-color: #f0f0f5 !important;
-      font-weight: bold;
+      background-color: #f4f4f7 !important;
+      font-weight: 600;
       border-top: 2px solid var(--border-color);
+      color: var(--text-color);
     }
 
-    .flex-row { display: flex; gap: 12px; flex-wrap: wrap; }
-    .flex-row > div { flex: 1; min-width: 200px; }
+    .flex-row { display: flex; gap: 16px; flex-wrap: wrap; }
+    .flex-row > div { flex: 1; min-width: 220px; }
     
     .autocomplete-wrapper { position: relative; }
     .suggestions { 
@@ -204,40 +251,41 @@
       left: 0; 
       right: 0; 
       background: white; 
-      border: 1px solid #c7c7cc; 
-      border-radius: 0 0 8px 8px; 
+      border: 1px solid var(--border-color); 
+      border-radius: 0 0 10px 10px; 
       z-index: 1000; 
       max-height: 200px; 
       overflow-y: auto; 
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
     }
-    .suggestion-item { padding: 10px 12px; cursor: pointer; border-bottom: 1px solid var(--bg-color); font-size: 13px; }
-    .suggestion-item:hover { background-color: #e5f1ff; }
+    .suggestion-item { padding: 12px 14px; cursor: pointer; border-bottom: 1px solid var(--bg-color); font-size: 13px; }
+    .suggestion-item:hover { background-color: var(--primary-light); color: var(--primary); }
 
     .info-box { 
-      background: #e5f1ff; 
+      background: var(--primary-light); 
       border-left: 4px solid var(--primary); 
-      padding: 12px 16px; 
-      margin-top: 16px; 
-      border-radius: 0 8px 8px 0; 
+      padding: 14px 18px; 
+      margin-top: 18px; 
+      border-radius: 8px; 
       font-weight: 500; 
-      font-size: 13px;
+      font-size: 13.5px;
       color: #004085;
+      line-height: 1.6;
     }
     
     .checklist-item { 
       border: 1px solid var(--border-color); 
-      padding: 16px; 
-      border-radius: 10px; 
-      margin-bottom: 12px; 
+      padding: 20px; 
+      border-radius: 12px; 
+      margin-bottom: 16px; 
       background: #fafafa; 
       transition: all 0.2s ease; 
     }
     .checklist-header { font-weight: 600; font-size: 15px; color: var(--text-color); margin-bottom: 4px; }
-    .checklist-sub { font-size: 12px; color: var(--text-muted); margin-bottom: 12px; }
+    .checklist-sub { font-size: 12.5px; color: var(--text-muted); margin-bottom: 14px; }
 
     .checklist-item.posten-uebernommen {
-      opacity: 0.65;
+      opacity: 0.7;
       background: #f2f4f7;
       border-color: #d1d1d6;
     }
@@ -247,20 +295,20 @@
     }
     
     .year-select-box { 
-      background: var(--primary); 
+      background: linear-gradient(135deg, var(--primary), #005bb5); 
       color: white; 
-      border-radius: 12px; 
-      padding: 16px 20px; 
-      margin-bottom: 24px; 
+      border-radius: var(--border-radius); 
+      padding: 20px 24px; 
+      margin-bottom: 28px; 
       display: flex; 
       align-items: center; 
       justify-content: space-between; 
-      transition: background 0.3s ease; 
-      box-shadow: 0 4px 12px rgba(0, 122, 255, 0.2);
+      transition: all 0.3s ease; 
+      box-shadow: 0 8px 20px rgba(0, 113, 227, 0.25);
     }
     .year-select-box.testmode { 
-      background: var(--warning); 
-      box-shadow: 0 4px 12px rgba(255, 149, 0, 0.2);
+      background: linear-gradient(135deg, var(--warning), #d97e00); 
+      box-shadow: 0 8px 20px rgba(255, 149, 0, 0.25);
     }
     .year-select-box select { 
       width: auto; 
@@ -269,15 +317,16 @@
       background: white; 
       color: var(--text-color); 
       border: none; 
-      padding: 8px 12px;
+      padding: 10px 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
 
     .summary-box { 
-      background: #f8f9fa; 
+      background: #f9f9fb; 
       border: 1px solid var(--border-color); 
-      padding: 16px; 
-      border-radius: 8px; 
-      margin-top: 16px; 
+      padding: 18px; 
+      border-radius: 12px; 
+      margin-top: 20px; 
       font-size: 14px;
       line-height: 1.6;
     }
@@ -286,6 +335,9 @@
       text-decoration: none; 
       font-weight: 600; 
       cursor: pointer; 
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
     }
     .file-link:hover {
       text-decoration: underline;
@@ -641,7 +693,7 @@
       </div>
 
       <!-- Erfassung für Strom-Zwischenzähler -->
-      <div id="stromDetails" style="background:#f8f9fa; border:1px solid #e5e5ea; padding:12px; border-radius:8px; margin-top:10px; margin-bottom:10px;">
+      <div id="stromDetails" style="background:#f8f9fa; border:1px solid #e5e5ea; padding:16px; border-radius:12px; margin-top:14px; margin-bottom:14px;">
         <label style="margin-top:0; color:var(--primary);">⚡ Details Strom-Zwischenzähler (Optional für Nachvollziehbarkeit)</label>
         <div class="flex-row">
           <div>
@@ -809,62 +861,60 @@
   </div>
 
   <!-- DRUCK-AREAL FÜR RECHTSSICHE NEBENKOSTENABRECHNUNG -->
-  <div id="printArea" style="display:none; padding:30px; background:white; font-family:Arial, sans-serif;">
-    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 25px;">
-      <div style="font-size:13px; line-height:1.5;">
-        <strong>Vermieter:</strong><br>
+  <div id="printArea" style="display:none; padding:40px; background:white; font-family:Arial, sans-serif; border: 1px solid #e5e5ea; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; border-bottom: 2px solid #0071e3; padding-bottom: 20px;">
+      <div style="font-size:13px; line-height:1.6;">
+        <strong style="color:#0071e3; font-size: 15px;">Vermieter:</strong><br>
         Daniel Prang<br>
         Langenfelde 1<br>
         21614 Buxtehude
       </div>
-      <div style="text-align:right; font-size:13px; line-height:1.5;">
+      <div style="text-align:right; font-size:13px; line-height:1.6;">
         <strong>Datum:</strong> <span id="pAbrechnungsDatum"></span><br><br>
-        <strong>Mieter / Empfänger:</strong><br>
+        <strong style="color:#0071e3; font-size: 15px;">Mieter / Empfänger:</strong><br>
         <span id="pMieterName" style="font-weight:bold;"></span><br>
         An den Geestbergen 12<br>
         21614 Buxtehude
       </div>
     </div>
     
-    <h2>Betriebskostenabrechnung für das Kalenderjahr <span id="pJahr"></span></h2>
+    <h2 style="color:#1d1d1f; font-size: 22px; margin-bottom: 20px;">Betriebskostenabrechnung für das Kalenderjahr <span id="pJahr"></span></h2>
     
-    <div style="margin-bottom:20px; font-size:14px; line-height:1.6;">
+    <div style="margin-bottom:24px; font-size:14px; line-height:1.7; background: #f9f9fb; padding: 16px; border-radius: 8px;">
       <strong>Abrechnungsobjekt:</strong> An den Geestbergen 12, 21614 Buxtehude<br>
       <strong>Mieteinheit:</strong> <span id="pEinheit"></span> (Wohnfläche: <span id="pFlaeche"></span> m² / Gesamtfläche Objekt: 170 m²)<br>
       <strong>Abrechnungszeitraum:</strong> 01.01.<span id="pJahrPeriod1"></span> bis 31.12.<span id="pJahrPeriod2"></span>
     </div>
 
-    <hr style="border:0; border-top:1px solid #ccc; margin:20px 0;">
-
     <h3>1. Aufstellung der Gesamtkosten &amp; Verteilerschlüssel</h3>
-    <table style="width:100%; border-collapse:collapse; margin-top:10px; font-size:12px;">
+    <table style="width:100%; border-collapse:collapse; margin-top:12px; font-size:12.5px;">
       <thead>
-        <tr style="background:#f0f0f0;">
-          <th style="border:1px solid #ddd; padding:8px;">Kategorie / Dienstleister</th>
-          <th style="border:1px solid #ddd; padding:8px;">Gesamtkosten (€)</th>
-          <th style="border:1px solid #ddd; padding:8px;">Verteilerschlüssel</th>
-          <th style="border:1px solid #ddd; padding:8px;">Anteil Mieter (€)</th>
+        <tr style="background:#f4f4f7; color: #424245;">
+          <th style="border:1px solid #e5e5ea; padding:10px;">Kategorie / Dienstleister</th>
+          <th style="border:1px solid #e5e5ea; padding:10px;">Gesamtkosten (€)</th>
+          <th style="border:1px solid #e5e5ea; padding:10px;">Verteilerschlüssel</th>
+          <th style="border:1px solid #e5e5ea; padding:10px;">Anteil Mieter (€)</th>
         </tr>
       </thead>
       <tbody id="pPostenTable"></tbody>
     </table>
 
-    <div style="margin-top:20px; font-size:14px; line-height:1.8; background:#f9f9f9; padding:15px; border-radius:5px;">
-      <h3>2. Abrechnungsergebnis</h3>
+    <div style="margin-top:24px; font-size:14px; line-height:1.8; background:#f5f5f7; padding:20px; border-radius:10px; border: 1px solid #e5e5ea;">
+      <h3 style="margin-top:0; color:#0071e3;">2. Abrechnungsergebnis</h3>
       Gesamtkosten Anteil Mieter: <strong><span id="pGesamtAnteil"></span> €</strong><br>
       Abzüglich geleistete Vorauszahlungen (12 × <span id="pMonatsAbschlag"></span> €): <strong><span id="pGeleistet"></span> €</strong><br>
-      <hr style="border:0; border-top:1px solid #ccc; margin:10px 0;">
+      <hr style="border:0; border-top:1px solid #d1d1d6; margin:12px 0;">
       <span style="font-size:16px;" id="pFinalResult"></span>
     </div>
 
-    <div style="margin-top:20px; font-size:12px; border:1px dashed #aaa; padding:10px; background:#fff8e7; line-height:1.5;">
-      <strong>Hinweis nach § 35a EStG (Haushaltsnahe Dienstleistungen &amp; Handwerkerleistungen):</strong><br>
+    <div style="margin-top:20px; font-size:12px; border:1px solid #ffe3b3; padding:14px; background:#fffcf5; border-radius:8px; line-height:1.6;">
+      <strong style="color: #b36800;">Hinweis nach § 35a EStG (Haushaltsnahe Dienstleistungen &amp; Handwerkerleistungen):</strong><br>
       In den oben genannten Betriebskosten sind folgende absetzbare Lohn- und Arbeitskosten enthalten:<br>
       • Arbeitskosten Haushaltsnahe Dienstleistungen / Schornsteinfeger / Wartungsarbeiten: <strong><span id="p35aBetrag"></span> €</strong><br>
       <em>Sämtliche Beträge wurden unbar beglichen. Die Originalbelege liegen beim Vermieter vor und können bei Bedarf eingesehen werden.</em>
     </div>
 
-    <div style="margin-top:25px; font-size:12px; line-height:1.6;" id="pZahlungshinweis">
+    <div style="margin-top:25px; font-size:13px; line-height:1.6;" id="pZahlungshinweis">
       <!-- Dynamischer Text für Nachforderung oder Guthaben -->
     </div>
 
@@ -1200,7 +1250,6 @@
 
           mieterGesamtAnteil += anteil;
 
-          // BRUNATA AUS § 35a ENTFERNT:
           if (['Schornsteinfeger', 'Rauchmelder-Wartung', 'Heizung-Wartung'].includes(nk.kategorie)) {
             paragraph35aGesamt += anteil;
           }
@@ -1250,7 +1299,7 @@
           Gegen diese Abrechnung kann innerhalb von 12 Monaten nach Zugang schriftlich Einwand erhoben werden (§ 556 Abs. 3 BGB).<br><br>
           Mit freundlichen Grüßen,<br><br><br>
           ____________________________________<br>
-          Daniel Prang (Vermisster)
+          Daniel Prang (Vermieter)
         `;
       } else if (differenz < 0) {
         const guthabenBetrag = Math.abs(differenz).toFixed(2);

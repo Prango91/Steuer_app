@@ -349,7 +349,6 @@
       button, .no-print, form, .checklist-item, .autocomplete-wrapper, #yearBox, h1 { display: none !important; }
       .card { box-shadow: none; border: none; padding: 0; margin-bottom: 20px; }
       th, td { border-bottom: 1px solid #ccc; }
-      #printArea { display: block !important; position: absolute; left: 0; top: 0; width: 100%; }
       tr { page-break-inside: avoid; }
     }
   </style>
@@ -361,7 +360,7 @@
 
   <!-- STEUERJAHR AUSWAHL -->
   <div class="year-select-box" id="yearBox">
-    <span style="font-size: 16px; font-weight: bold;" id="yearBoxText">📅 Aktives Steuerjahr:</span>
+    <label for="selectedYear" style="font-size: 16px; font-weight: bold; color: white; margin: 0;" id="yearBoxText">📅 Aktives Steuerjahr:</label>
     <select id="selectedYear" onchange="switchYear()"></select>
   </div>
 
@@ -925,7 +924,7 @@
   </div>
 </div>
 
-  <script>
+<script>
     let isTestMode = false;
     let belege = [];
     let fahrten = [];
@@ -1693,6 +1692,6 @@
 
     loadData();
     autoFillDienstleister();
-  </script>
+</script>
 </body>
 </html>

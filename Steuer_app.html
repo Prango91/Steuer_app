@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Steuer-Manager & Nebenkostenabrechnung</title>
+
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f2f2f7; margin: 0; padding: 20px; color: #1c1c1e; }
+    h1, h2, h3 { color: #007aff; }
+    .card { background: #ffffff; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    label { display: block; font-weight: 600; margin-top: 10px; margin-bottom: 5px; }
+    input, select, button { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #c7c7cc; font-size: 16px; box-sizing: border-box; }
+    button { background: #007aff; color: white; border: none; font-weight: bold; margin-top: 15px; cursor: pointer; border-radius: 8px; }
+    button:active { background: #0051a8; }
+    .btn-green { background: #34c759; }
+    .btn-green:active { background: #248a3d; }
+    .btn-orange { background: #ff9500; margin-top: 5px; }
+    .btn-orange:active { background: #cc7700; }
+    .btn-purple { background: #5856d6; }
+    .btn-purple:active { background: #3634a3; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border-bottom: 1px solid #e5e5ea; padding: 10px; text-align: left; font-size: 14px; }
+    th { background: #f2f2f7; }
+    .flex-row { display: flex; gap: 10px; }
+    .flex-row > div { flex: 1; }
+    
+    .autocomplete-wrapper { position: relative; }
+    .suggestions { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #c7c7cc; border-radius: 0 0 8px 8px; z-index: 1000; max-height: 200px; overflow-y: auto; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    .suggestion-item { padding: 12px; cursor: pointer; border-bottom: 1px solid #f2f2f7; font-size: 14px; }
+    .suggestion-item:hover { background-color: #e5f1ff; }
+    .info-box { background: #e5f1ff; border-left: 4px solid #007aff; padding: 10px; margin-top: 10px; border-radius: 4px; font-weight: 600; }
+    
+    .checklist-item { border: 1px solid #e5e5ea; padding: 15px; border-radius: 8px; margin-bottom: 12px; background: #fafafa; }
+    .checklist-header { font-weight: bold; font-size: 16px; color: #1c1c1e; margin-bottom: 5px; }
+    .checklist-sub { font-size: 13px; color: #8e8e93; margin-bottom: 10px; }
+    
+    .year-select-box { background: #007aff; color: white; border-radius: 12px; padding: 15px 20px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; transition: background 0.3s ease; }
+    .year-select-box.testmode { background: #ff9500; }
+    .year-select-box select { width: auto; font-size: 18px; font-weight: bold; background: white; color: #007aff; }
+
+    .summary-box { background: #f8f9fa; border: 1px solid #e5e5ea; padding: 15px; border-radius: 8px; margin-top: 15px; }
+
+    @media print {
+      body { background: white; padding: 0; color: black; }
+      button, .no-print, form, .checklist-item, .autocomplete-wrapper, #yearBox { display: none !important; }
+      .card { box-shadow: none; border: none; padding: 0; margin-bottom: 20px; }
+      th, td { border-bottom: 1px solid #ccc; }
+      body * { visibility: visible; }
+      #printArea { position: absolute; left: 0; top: 0; width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🏠 Steuer-Manager & Nebenkosten</h1>
+
+  <!-- STEUERJAHR AUSWAHL -->
+  <div class="year-select-box" id="yearBox">
+    <span style="font-size: 18px; font-weight: bold;" id="yearBoxText">📅 Aktives Steuerjahr:</span>
+    <select id="selectedYear" onchange="switchYear()">
+    </select>
+  </div>
+
+  <!-- 1. FAHRT ERFASSEN -->
+  <div class="card">
+    <h2>🚗 Fahrt fürs Fahrtenbuch erfassen</h2>
+    
+    <div style="margin-bottom: 15px;">
+      <label>Schnell-Eingabe (Vorlagen für Kontrollfahrten):</label>
+      <div class="flex-row">
+        <button type="button" class="btn-orange" onclick="fillQuickDrive('Wohnung EG')">⚡ Kontrollfahrt Wohnung EG</button>
+        <button type="button" class="btn-orange" onclick="fillQuickDrive('Wohnung OG')">⚡ Kontrollfahrt Wohnung OG</button>
+      </div>
+    </div>
+
+    <form id="fahrtForm">
+      <div class="flex-row">
+        <div>
+          <label>Datum</label>
+          <input type="date" id="fDatum" required>
+        </div>
+        <div>
+          <label>Uhrzeit</label>
+          <input type="time" id="fZeit" required>
+        </div>
+      </div>
+
+      <label>Startadresse</label>
+      <input type="text" id="fStart" value="Langenfelde 1, 21614 Buxtehude" required>
+
+      <label>Zieladresse (Tippen für Vorschläge)</label>
+      <div class="autocomplete-wrapper">
+        <input type="text" id="fZiel" placeholder="z. B. An den Geestbergen 12, Buxtehude" autocomplete="off" required>
+        <div id="suggestions" class="suggestions" style="display: none;"></div>
+      </div>
+
+      <label>Anlass / Grund der Fahrt</label>
+      <input type="text" id="fGrund" placeholder="z. B. Müllentsorgung Renovierung" required>
+
+      <div class="info-box" id="kmInfo">
+        📏 Einfache Strecke: 0.0 km (Gesamt Hin & Zurück: 0.0 km)<br>
+        💰 Absetzbarer Betrag: 0.00 €
+      </div>
+
+      <button type="submit">💾 Fahrt speichern</button>
+    </form>
+  </div>
+
+  <!-- 2. EINZELBELEG ERFASSEN -->
+  <div class="card">
+    <h2>🧾 Einzelnen Beleg / Reparatur erfassen</h2>
+    <form id="belegForm">
+      <div class="flex-row">
+        <div>
+          <label>Datum</label>
+          <input type="date" id="bDatum" required>
+        </div>
+        <div>
+          <label>Zuordnung</label>
+          <select id="bZuordnung">
+            <option>Wohnung EG (70 m²)</option>
+            <option>Wohnung OG (100 m²)</option>
+            <option>Gesamtobjekt / Allgemein (170 m²)</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="flex-row">
+        <div>
+          <label>Kategorie</label>
+          <select id="bKategorie">
+            <option>Instandhaltung / Reparatur</option>
+            <option>Material / Baumarkt</option>
+            <option>Handwerkerleistungen</option>
+            <option>Verwaltung / Büro</option>
+            <option>Telekommunikation / Handy</option>
+            <option>Finanzierung</option>
+            <option>Sonstiges</option>
+          </select>
+        </div>
+        <div>
+          <label>Geschäft / Rechnungssteller</label>
+          <input type="text" id="bGeschaeft" placeholder="z. B. Telekom / Bauhaus" required>
+        </div>
+      </div>
+
+      <div class="flex-row">
+        <div>
+          <label>Bruttobetrag (€)</label>
+          <input type="number" step="0.01" id="bBetrag" placeholder="0.00" required>
+        </div>
+        <div>
+          <label>Grund / Beschreibung</label>
+          <input type="text" id="bGrund" placeholder="z. B. Ersatz-Wasserhahn Bad">
+        </div>
+      </div>
+
+      <button type="submit">➕ Beleg speichern</button>
+    </form>
+  </div>
+
+  <!-- 3. STEUER-CHECKLISTE & PAUSCHALEN -->
+  <div class="card">
+    <h2>📋 Steuer-Checkliste & Pauschalen (Anlage V)</h2>
+    <p style="font-size:14px; color:#666;">Wähle absetzbare Posten aus. Entscheide zwischen der Richtwert-Pauschale oder trage deine tatsächlichen Kosten ein.</p>
+
+    <!-- Handytarif -->
+    <div class="checklist-item">
+      <div class="checklist-header">1. Handytarif (Monatliche Rechnung)</div>
+      <div class="checklist-sub">Anteilige Absetzung der monatlichen Grundgebühr (empfohlen: 20 % bis 50 %).</div>
+      <div class="flex-row">
+        <div>
+          <label>Monatliche Rechnung (€)</label>
+          <input type="number" id="ck_handy_monat" value="30.00" oninput="calcHandy()">
+        </div>
+        <div>
+          <label>Beruflicher Anteil (%)</label>
+          <input type="number" id="ck_handy_prozent" value="30" oninput="calcHandy()">
+        </div>
+        <div>
+          <label>Jahres-Abzug (€)</label>
+          <input type="number" step="0.01" id="ck_handy_val" value="108.00" readonly>
+        </div>
+      </div>
+      <button type="button" onclick="addChecklistItem('Handytarif Anteil', 'ck_handy_val', 'ck_handy_obj', 'Telekommunikation / Handy')">➕ In Steuerbericht übernehmen</button>
+      <input type="hidden" id="ck_handy_obj" value="Gesamtobjekt / Allgemein (170 m²)">
+    </div>
+
+    <!-- Smartphone Kauf -->
+    <div class="checklist-item">
+      <div class="checklist-header">2. Smartphone-Neukauf (Anschaffung)</div>
+      <div class="checklist-sub">Sofortabschreibung im Kaufjahr mit anteiligem Nutzungsprozentsatz.</div>
+      <div class="flex-row">
+        <div>
+          <label>Kaufpreis brutto (€)</label>
+          <input type="number" id="ck_kauf_preis" placeholder="z. B. 800.00" oninput="calcKauf()">
+        </div>
+        <div>
+          <label>Beruflicher Anteil (%)</label>
+          <input type="number" id="ck_kauf_prozent" value="30" oninput="calcKauf()">
+        </div>
+        <div>
+          <label>Absetzbarer Betrag (€)</label>
+          <input type="number" step="0.01" id="ck_kauf_val" placeholder="0.00" readonly>
+        </div>
+      </div>
+      <button type="button" onclick="addChecklistItem('Smartphone Anschaffung Anteil', 'ck_kauf_val', 'ck_kauf_obj', 'Telekommunikation / Handy')">➕ In Steuerbericht übernehmen</button>
+      <input type="hidden" id="ck_kauf_obj" value="Gesamtobjekt / Allgemein (170 m²)">
+    </div>
+
+    <!-- Kontoführung -->
+    <div class="checklist-item">
+      <div class="checklist-header">3. Kontoführungsgebühren (Mietkonto)</div>
+      <div class="checklist-sub">Anerkannter Richtwert der Finanzämter: ca. 16,00 € pro Jahr.</div>
+      <div class="flex-row">
+        <div>
+          <label>Abrechnungsart</label>
+          <select id="ck_konto_typ" onchange="toggleKontoInput()">
+            <option value="pauschale">Pauschale nutzen (16,00 €)</option>
+            <option value="custom">Tatsächliche Kosten eintragen</option>
+          </select>
+        </div>
+        <div>
+          <label>Betrag (€)</label>
+          <input type="number" step="0.01" id="ck_konto_val" value="16.00" disabled>
+        </div>
+        <div>
+          <label>Zuordnung</label>
+          <select id="ck_konto_obj">
+            <option>Gesamtobjekt / Allgemein (170 m²)</option>
+            <option>Wohnung EG (70 m²)</option>
+            <option>Wohnung OG (100 m²)</option>
+          </select>
+        </div>
+      </div>
+      <button type="button" onclick="addChecklistItem('Kontoführungsgebühren', 'ck_konto_val', 'ck_konto_obj', 'Verwaltung / Büro')">➕ In Steuerbericht übernehmen</button>
+    </div>
+
+    <!-- Büromaterial -->
+    <div class="checklist-item">
+      <div class="checklist-header">4. Büromaterial & Porto</div>
+      <div class="checklist-sub">Porto, Briefumschläge, Schreibwaren, Ordner.</div>
+      <div class="flex-row">
+        <div>
+          <label>Abrechnungsart</label>
+          <select id="ck_buero_typ" onchange="toggleBueroInput()">
+            <option value="pauschale">Pauschale nutzen (20,00 €)</option>
+            <option value="custom">Tatsächliche Kosten eintragen</option>
+          </select>
+        </div>
+        <div>
+          <label>Betrag (€)</label>
+          <input type="number" step="0.01" id="ck_buero_val" value="20.00" disabled>
+        </div>
+        <div>
+          <label>Zuordnung</label>
+          <select id="ck_buero_obj">
+            <option>Gesamtobjekt / Allgemein (170 m²)</option>
+            <option>Wohnung EG (70 m²)</option>
+            <option>Wohnung OG (100 m²)</option>
+          </select>
+        </div>
+      </div>
+      <button type="button" onclick="addChecklistItem('Büromaterial & Porto', 'ck_buero_val', 'ck_buero_obj', 'Verwaltung / Büro')">➕ In Steuerbericht übernehmen</button>
+    </div>
+
+    <!-- Homeoffice -->
+    <div class="checklist-item">
+      <div class="checklist-header">5. Arbeitszimmer / Verwaltung zu Hause (Tagespauschale)</div>
+      <div class="checklist-sub">6,00 € pro Tag für Verwaltungsarbeiten (deckt auch Strom & Heim-Internet ab).</div>
+      <div class="flex-row">
+        <div>
+          <label>Anzahl Verwaltungstage im Jahr</label>
+          <input type="number" id="ck_ho_tage" value="10" oninput="calcHomeoffice()">
+        </div>
+        <div>
+          <label>Berechneter Betrag (6,00 € / Tag)</label>
+          <input type="number" step="0.01" id="ck_ho_val" value="60.00" readonly>
+        </div>
+        <div>
+          <label>Zuordnung</label>
+          <select id="ck_ho_obj">
+            <option>Gesamtobjekt / Allgemein (170 m²)</option>
+            <option>Wohnung EG (70 m²)</option>
+            <option>Wohnung OG (100 m²)</option>
+          </select>
+        </div>
+      </div>
+      <button type="button" onclick="addChecklistItem('Homeoffice Verwaltungspauschale', 'ck_ho_val', 'ck_ho_obj', 'Verwaltung / Büro')">➕ In Steuerbericht übernehmen</button>
+    </div>
+
+    <!-- AfA -->
+    <div class="checklist-item">
+      <div class="checklist-header">6. Gebäude-Abschreibung (AfA)</div>
+      <div class="checklist-sub">Jährlicher AfA-Betrag lt. Kaufvertrag/Steuerbescheid.</div>
+      <div class="flex-row">
+        <div>
+          <label>Jahres-AfA (€)</label>
+          <input type="number" step="0.01" id="ck_afa_val" placeholder="z. B. 4500.00">
+        </div>
+        <div>
+          <label>Zuordnung</label>
+          <select id="ck_afa_obj">
+            <option>Gesamtobjekt / Allgemein (170 m²)</option>
+            <option>Wohnung EG (70 m²)</option>
+            <option>Wohnung OG (100 m²)</option>
+          </select>
+        </div>
+      </div>
+      <button type="button" onclick="addChecklistItem('Gebäude-AfA', 'ck_afa_val', 'ck_afa_obj', 'AfA / Abschreibung')">➕ In Steuerbericht übernehmen</button>
+    </div>
+  </div>
+
+  <!-- 4. NEBENKOSTEN-MANAGER & ABRECHNUNG -->
+  <div class="card">
+    <h2>🏢 Nebenkosten-Manager & Betriebskostenabrechnung</h2>
+    <div style="background:#e5f1ff; border-left:4px solid #007aff; padding:10px; margin-bottom:15px; border-radius:4px; font-size:13px;">
+      ℹ️ <strong>Verteilungs-Schlüssel:</strong> Gesamtwohnfläche: <strong>170 m²</strong> (EG: 70 m² / 41,18% | OG: 100 m² / 58,82%).<br>
+      • <strong>BRUNATA (Heizung & Wasser):</strong> Werden direkt lt. BRUNATA-Abrechnung übernommen.<br>
+      • <strong>Strom:</strong> Allgemeinstrom nach m², Wohnungsstrom direkt lt. Zwischenzähler.
+    </div>
+    
+    <h3>1. Monatliche Nebenkostenvorauszahlungen der Mieter</h3>
+    <div class="flex-row">
+      <div>
+        <label>Wohnung EG (€ / Monat)</label>
+        <input type="number" id="nk_abs_eg" placeholder="z. B. 150.00" oninput="saveNKSettings()">
+      </div>
+      <div>
+        <label>Wohnung OG (€ / Monat)</label>
+        <input type="number" id="nk_abs_og" placeholder="z. B. 180.00" oninput="saveNKSettings()">
+      </div>
+    </div>
+
+    <h3 style="margin-top:25px;">2. Betriebskosten/Nebenkostenposition erfassen</h3>
+    <form id="nkForm">
+      <div class="flex-row">
+        <div>
+          <label>Datum / Jahr</label>
+          <input type="date" id="nkDatum" required>
+        </div>
+        <div>
+          <label>Zuordnung / Verteilschlüssel</label>
+          <select id="nkZuordnung">
+            <option value="Gesamtobjekt / Allgemein (170 m²)">Gesamtobjekt (Aufteilung 70m² zu 100m²)</option>
+            <option value="Wohnung EG (70 m²)">Wohnung EG direkt (z.B. Zwischenzähler EG)</option>
+            <option value="Wohnung OG (100 m²)">Wohnung OG direkt (z.B. Zwischenzähler OG)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="flex-row">
+        <div>
+          <label>Kategorie / Art der Kosten</label>
+          <select id="nkKategorie" onchange="autoFillDienstleister()">
+            <option>Heizkosten / BRUNATA</option>
+            <option>Wasser & Abwasser / BRUNATA</option>
+            <option>Strom Hauptzähler / Zwischenzähler</option>
+            <option>Allgemeinstrom / Beleuchtung</option>
+            <option>Gebäudeversicherung</option>
+            <option>Grundsteuer</option>
+            <option>Müllabfuhr & Straßenreinigung</option>
+            <option>Schornsteinfeger</option>
+            <option>Gartenpflege / Winterdienst</option>
+            <option>Sonstige Betriebskosten</option>
+          </select>
+        </div>
+        <div>
+          <label>Rechnungssteller / Dienstleister</label>
+          <input type="text" id="nkGeschaeft" placeholder="z. B. BRUNATA Wärmemesser / Stadtwerke" required>
+        </div>
+      </div>
+
+      <div class="flex-row">
+        <div>
+          <label>Rechnungsbetrag brutto (€)</label>
+          <input type="number" step="0.01" id="nkBetrag" placeholder="0.00" required>
+        </div>
+        <div>
+          <label>Beschreibung / Hinweis</label>
+          <input type="text" id="nkGrund" placeholder="z. B. Jahresabrechnung BRUNATA 2026">
+        </div>
+      </div>
+
+      <button type="submit">➕ Nebenkostenposten speichern</button>
+    </form>
+
+    <div class="summary-box" id="nkSummary">
+    </div>
+
+    <h3 style="margin-top:20px;">📄 Rechtssichere Nebenkostenabrechnung generieren</h3>
+    <div class="flex-row">
+      <button type="button" onclick="generateAbrechnung('Wohnung EG (70 m²)')" class="btn-purple">📑 Abrechnung EG (70 m²) erstellen</button>
+      <button type="button" onclick="generateAbrechnung('Wohnung OG (100 m²)')" class="btn-purple">📑 Abrechnung OG (100 m²) erstellen</button>
+    </div>
+
+    <h3>Erfasste Betriebskosten für das Steuerjahr</h3>
+    <table id="nkTabelle">
+      <thead><tr><th>Datum</th><th>Zuordnung</th><th>Kategorie</th><th>Bezeichnung</th><th>Betrag (€)</th><th>Aktion</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <!-- 5. ÜBERSICHT & EXPORT -->
+  <div class="card" id="exportCard">
+    <h2>📊 Gesamte Steuer-Jahresübersicht & Export</h2>
+    <button type="button" id="pdfBtn" onclick="exportPDF()" class="btn-green">📄 Steuerbericht als PDF speichern / drucken</button>
+
+    <h3>Erfasste Einzelbelege & Pauschalen</h3>
+    <table id="belegTabelle">
+      <thead><tr><th>Datum</th><th>Zuordnung</th><th>Kategorie</th><th>Geschäft / Bezeichnung</th><th>Betrag (€)</th><th>Aktion</th></tr></thead>
+      <tbody></tbody>
+    </table>
+
+    <h3>Erfasste Fahrten</h3>
+    <table id="fahrtTabelle">
+      <thead><tr><th>Datum</th><th>Start</th><th>Ziel</th><th>Grund</th><th>Gesamt-KM</th><th>Erstattung (€)</th><th>Aktion</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <!-- 6. MIETVERTRÄGE UPLOAD -->
+  <div class="card">
+    <h2>📄 Mietverträge verwalten</h2>
+    <form id="vertragForm">
+      <div class="flex-row">
+        <div>
+          <label>Zuordnung</label>
+          <select id="vZuordnung">
+            <option>Wohnung EG (70 m²)</option>
+            <option>Wohnung OG (100 m²)</option>
+          </select>
+        </div>
+        <div>
+          <label>Mieter Name / Bezeichnung</label>
+          <input type="text" id="vName" placeholder="z. B. Max Mustermann" required>
+        </div>
+      </div>
+
+      <label>Mietvertrag hochladen (PDF oder Bild)</label>
+      <input type="file" id="vDatei" accept="application/pdf,image/*" required>
+
+      <button type="submit">📤 Mietvertrag speichern</button>
+    </form>
+
+    <h3>Gespeicherte Mietverträge</h3>
+    <table id="vertragTabelle">
+      <thead><tr><th>Wohnung</th><th>Mieter</th><th>Dateiname</th><th>Aktion</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <!-- DRUCK-AREAL FÜR RECHTSSICHERE NEBENKOSTENABRECHNUNG -->
+  <div id="printArea" style="display:none; padding:30px; background:white; font-family:Arial, sans-serif;">
+    <div style="text-align:right; margin-bottom:20px; font-size:12px; color:#555;">
+      Datum: <span id="pAbrechnungsDatum"></span>
+    </div>
+    
+    <h2>Betriebskostenabrechnung für das Kalenderjahr <span id="pJahr"></span></h2>
+    
+    <div style="margin-bottom:20px; font-size:14px; line-height:1.5;">
+      <strong>Vermieter:</strong> Daniel Prang<br>
+      <strong>Mietobjekt / Einheit:</strong> <span id="pEinheit"></span> (Wohnfläche: <span id="pFlaeche"></span> m² / Gesamt: 170 m²)<br>
+      <strong>Abrechnungszeitraum:</strong> 01.01.<span id="pJahrPeriod1"></span> bis 31.12.<span id="pJahrPeriod2"></span><br>
+      <strong>Mieter:</strong> <span id="pMieterName"></span>
+    </div>
+
+    <hr style="border:0; border-top:1px solid #ccc; margin:20px 0;">
+
+    <h3>1. Aufstellung der Gesamtkosten & Verteilerschlüssel</h3>
+    <table style="width:100%; border-collapse:collapse; margin-top:10px; font-size:12px;">
+      <thead>
+        <tr style="background:#f0f0f0;">
+          <th style="border:1px solid #ddd; padding:8px;">Kategorie / Dienstleister</th>
+          <th style="border:1px solid #ddd; padding:8px;">Gesamtkosten (€)</th>
+          <th style="border:1px solid #ddd; padding:8px;">Verteilerschlüssel</th>
+          <th style="border:1px solid #ddd; padding:8px;">Anteil Mieter (€)</th>
+        </tr>
+      </thead>
+      <tbody id="pPostenTable"></tbody>
+    </table>
+
+    <div style="margin-top:20px; font-size:14px; line-height:1.8; background:#f9f9f9; padding:15px; border-radius:5px;">
+      <h3>2. Abrechnungsergebnis</h3>
+      Gesamtkosten Anteil Mieter: <strong><span id="pGesamtAnteil"></span> €</strong><br>
+      Abzüglich geleistete Vorauszahlungen (12 × <span id="pMonatsAbschlag"></span> €): <strong><span id="pGeleistet"></span> €</strong><br>
+      <hr style="border:0; border-top:1px solid #ccc; margin:10px 0;">
+      <span style="font-size:16px;" id="pFinalResult"></span>
+    </div>
+
+    <div style="margin-top:20px; font-size:12px; border:1px dashed #aaa; padding:10px; background:#fff8e7;">
+      <strong>Hinweis nach § 35a EStG (Haushaltsnahe Dienstleistungen & Handwerkerleistungen):</strong><br>
+      In den oben genannten Betriebskosten sind folgende absetzbare Lohnkosten/Dienstleistungen enthalten:<br>
+      • Arbeitskosten Haushaltsnahe Dienstleistungen / Schornsteinfeger / Gartenpflege / BRUNATA Messdienst: <strong><span id="p35aBetrag"></span> €</strong>
+    </div>
+
+    <div style="margin-top:30px; font-size:12px; line-height:1.5;">
+      Bitte überweisen Sie den Nachforderungsbetrag bis zum <strong><span id="pZahlungsziel"></span></strong> auf das bekannte Mietkonto. Im Falle eines Guthabens wird dieses zeitnah auf Ihr Konto überwiesen.<br><br>
+      Mit freundlichen Grüßen,<br><br><br>
+      ____________________________________<br>
+      Daniel Prang (Vermieter)
+    </div>
+
+    <div style="margin-top:30px;" class="no-print">
+      <button type="button" onclick="window.print()" class="btn-green">🖨️ Abrechnung drucken</button>
+      <button type="button" onclick="closeAbrechnung()" style="background:#8e8e93; margin-top:10px;">❌ Schließen</button>
+    </div>
+  </div>
+
+  <script>
+    let isTestMode = false;
+    let belege = [];
+    let fahrten = [];
+    let vertraege = [];
+    let nebenkosten = [];
+    let nkSettings = { eg: 0, og: 0 };
+    
+    let calculatedEinfachKm = 0.0;
+    let calculatedGesamtKm = 0.0;
+    let calculatedKosten = 0.0;
+
+    const yearSelect = document.getElementById('selectedYear');
+    const currentYear = new Date().getFullYear();
+
+    for (let i = 0; i < 4; i++) {
+      const year = currentYear - i;
+      const option = document.createElement('option');
+      option.value = year;
+      option.innerText = year;
+      yearSelect.appendChild(option);
+    }
+
+    const testOption = document.createElement('option');
+    testOption.value = 'TESTMODE';
+    testOption.innerText = '🧪 Testmodus / Übungsmodus';
+    yearSelect.appendChild(testOption);
+
+    function loadData() {
+      const selectedValue = yearSelect.value;
+      isTestMode = (selectedValue === 'TESTMODE');
+
+      const prefix = isTestMode ? 'test_' : '';
+
+      belege = JSON.parse(localStorage.getItem(prefix + 'belege')) || [];
+      fahrten = JSON.parse(localStorage.getItem(prefix + 'fahrten')) || [];
+      vertraege = JSON.parse(localStorage.getItem(prefix + 'vertraege')) || [];
+      nebenkosten = JSON.parse(localStorage.getItem(prefix + 'nebenkosten')) || [];
+      nkSettings = JSON.parse(localStorage.getItem(prefix + 'nkSettings')) || { eg: 0, og: 0 };
+
+      const yearBox = document.getElementById('yearBox');
+      const yearBoxText = document.getElementById('yearBoxText');
+      if (isTestMode) {
+        yearBox.classList.add('testmode');
+        yearBoxText.innerText = '🧪 ÜBUNGSMODUS (Testdaten aktiv):';
+      } else {
+        yearBox.classList.remove('testmode');
+        yearBoxText.innerText = '📅 Aktives Steuerjahr:';
+      }
+
+      document.getElementById('nk_abs_eg').value = nkSettings.eg || '';
+      document.getElementById('nk_abs_og').value = nkSettings.og || '';
+
+      updateTabellen();
+    }
+
+    function switchYear() {
+      loadData();
+    }
+
+    function saveData() {
+      const prefix = isTestMode ? 'test_' : '';
+      localStorage.setItem(prefix + 'belege', JSON.stringify(belege));
+      localStorage.setItem(prefix + 'fahrten', JSON.stringify(fahrten));
+      localStorage.setItem(prefix + 'vertraege', JSON.stringify(vertraege));
+      localStorage.setItem(prefix + 'nebenkosten', JSON.stringify(nebenkosten));
+      localStorage.setItem(prefix + 'nkSettings', JSON.stringify(nkSettings));
+    }
+
+    document.getElementById('bDatum').valueAsDate = new Date();
+    document.getElementById('fDatum').valueAsDate = new Date();
+    document.getElementById('nkDatum').valueAsDate = new Date();
+    document.getElementById('fZeit').value = new Date().toTimeString().substring(0,5);
+
+    function autoFillDienstleister() {
+      const kat = document.getElementById('nkKategorie').value;
+      const gInput = document.getElementById('nkGeschaeft');
+      if (kat.includes('BRUNATA')) {
+        gInput.value = "BRUNATA Wärmemesser Hagen GmbH & Co. KG";
+      }
+    }
+
+    function saveNKSettings() {
+      nkSettings.eg = parseFloat(document.getElementById('nk_abs_eg').value) || 0;
+      nkSettings.og = parseFloat(document.getElementById('nk_abs_og').value) || 0;
+      saveData();
+      updateTabellen();
+    }
+
+    document.getElementById('nkForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      nebenkosten.push({
+        datum: document.getElementById('nkDatum').value,
+        zuordnung: document.getElementById('nkZuordnung').value,
+        kategorie: document.getElementById('nkKategorie').value,
+        geschaeft: document.getElementById('nkGeschaeft').value,
+        betrag: parseFloat(document.getElementById('nkBetrag').value).toFixed(2),
+        grund: document.getElementById('nkGrund').value
+      });
+      saveData();
+      updateTabellen();
+      e.target.reset();
+      document.getElementById('nkDatum').valueAsDate = new Date();
+    });
+
+    function deleteNK(realIndex) {
+      nebenkosten.splice(realIndex, 1);
+      saveData();
+      updateTabellen();
+    }
+
+    function generateAbrechnung(wohnung) {
+      const selectedYearVal = document.getElementById('selectedYear').value;
+      const displayYear = isTestMode ? `${currentYear} (Übung)` : selectedYearVal;
+
+      const mieterObj = vertraege.find(v => v.zuordnung === wohnung);
+      const mieterName = mieterObj ? mieterObj.name : "________________________";
+
+      const isEG = wohnung.includes('EG');
+      const qm = isEG ? 70 : 100;
+      const monatsAbschlag = isEG ? (nkSettings.eg || 0) : (nkSettings.og || 0);
+      const vorauszahlungGesamt = monatsAbschlag * 12;
+
+      let tableBodyHtml = '';
+      let mieterGesamtAnteil = 0.0;
+      let paragraph35aGesamt = 0.0;
+
+      nebenkosten.forEach(nk => {
+        if (isTestMode || nk.datum.startsWith(selectedYearVal)) {
+          let verteiler = "";
+          let anteil = 0.0;
+          const betrag = parseFloat(nk.betrag);
+
+          if (nk.zuordnung === wohnung) {
+            verteiler = "100% Direktzuordnung (Zwischenzähler/BRUNATA)";
+            anteil = betrag;
+          } else if (nk.zuordnung.includes('Gesamtobjekt')) {
+            if (isEG) {
+              anteil = betrag * (70.0 / 170.0);
+              verteiler = "Fläche (70 m² / 170 m² = 41,18%)";
+            } else {
+              anteil = betrag * (100.0 / 170.0);
+              verteiler = "Fläche (100 m² / 170 m² = 58,82%)";
+            }
+          } else {
+            return;
+          }
+
+          mieterGesamtAnteil += anteil;
+
+          if (['Schornsteinfeger', 'Gartenpflege / Winterdienst'].includes(nk.kategorie) || nk.geschaeft.includes('BRUNATA')) {
+            paragraph35aGesamt += anteil;
+          }
+
+          tableBodyHtml += `
+            <tr>
+              <td style="border:1px solid #ddd; padding:8px;">${nk.kategorie} (${nk.geschaeft})</td>
+              <td style="border:1px solid #ddd; padding:8px;">${betrag.toFixed(2)} €</td>
+              <td style="border:1px solid #ddd; padding:8px;">${verteiler}</td>
+              <td style="border:1px solid #ddd; padding:8px; font-weight:bold;">${anteil.toFixed(2)} €</td>
+            </tr>
+          `;
+        }
+      });
+
+      if (!tableBodyHtml) {
+        alert(`Keine Nebenkostenpositionen für ${wohnung} im ausgewählten Modus/Jahr erfasst!`);
+        return;
+      }
+
+      const differenz = mieterGesamtAnteil - vorauszahlungGesamt;
+
+      document.getElementById('pAbrechnungsDatum').innerText = new Date().toLocaleDateString('de-DE');
+      document.getElementById('pJahr').innerText = displayYear;
+      document.getElementById('pJahrPeriod1').innerText = selectedYearVal === 'TESTMODE' ? currentYear : selectedYearVal;
+      document.getElementById('pJahrPeriod2').innerText = selectedYearVal === 'TESTMODE' ? currentYear : selectedYearVal;
+      document.getElementById('pEinheit').innerText = wohnung;
+      document.getElementById('pFlaeche').innerText = qm;
+      document.getElementById('pMieterName').innerText = mieterName;
+
+      document.getElementById('pPostenTable').innerHTML = tableBodyHtml;
+      document.getElementById('pGesamtAnteil').innerText = mieterGesamtAnteil.toFixed(2);
+      document.getElementById('pMonatsAbschlag').innerText = monatsAbschlag.toFixed(2);
+      document.getElementById('pGeleistet').innerText = vorauszahlungGesamt.toFixed(2);
+
+      let targetDate = new Date();
+      targetDate.setDate(targetDate.getDate() + 30);
+      document.getElementById('pZahlungsziel').innerText = targetDate.toLocaleDateString('de-DE');
+
+      if (differenz > 0) {
+        document.getElementById('pFinalResult').innerHTML = `<strong>Nachforderung zu Gunsten des Vermieters: <span style="color:#d9534f;">+ ${differenz.toFixed(2)} €</span></strong>`;
+      } else if (differenz < 0) {
+        document.getElementById('pFinalResult').innerHTML = `<strong>Guthaben zu Gunsten des Mieters: <span style="color:#5cb85c;">${differenz.toFixed(2)} €</span></strong>`;
+      } else {
+        document.getElementById('pFinalResult').innerHTML = `<strong>Abrechnung schließt ausgeglichen ab: 0.00 €</strong>`;
+      }
+
+      document.getElementById('p35aBetrag').innerText = paragraph35aGesamt.toFixed(2);
+
+      document.querySelectorAll('.card, .year-select-box, h1').forEach(el => el.classList.add('no-print'));
+      document.getElementById('printArea').style.display = 'block';
+      window.scrollTo(0, 0);
+    }
+
+    function closeAbrechnung() {
+      document.querySelectorAll('.card, .year-select-box, h1').forEach(el => el.classList.remove('no-print'));
+      document.getElementById('printArea').style.display = 'none';
+    }
+
+    function fillQuickDrive(wohnung) {
+      document.getElementById('fDatum').valueAsDate = new Date();
+      document.getElementById('fZeit').value = new Date().toTimeString().substring(0,5);
+      document.getElementById('fStart').value = "Langenfelde 1, 21614 Buxtehude";
+      document.getElementById('fZiel').value = "An den Geestbergen 12, 21614 Buxtehude";
+      document.getElementById('fGrund').value = `Objektkontrolle & Sichtprüfung (${wohnung})`;
+
+      fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(document.getElementById('fZiel').value)}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.length > 0) {
+            berechneRoute(data[0].lat, data[0].lon);
+          }
+        });
+    }
+
+    function calcHandy() {
+      const monat = parseFloat(document.getElementById('ck_handy_monat').value) || 0;
+      const prozent = parseFloat(document.getElementById('ck_handy_prozent').value) || 0;
+      document.getElementById('ck_handy_val').value = ((monat * 12) * (prozent / 100)).toFixed(2);
+    }
+
+    function calcKauf() {
+      const kaufpreis = parseFloat(document.getElementById('ck_kauf_preis').value) || 0;
+      const prozent = parseFloat(document.getElementById('ck_kauf_prozent').value) || 0;
+      document.getElementById('ck_kauf_val').value = (kaufpreis * (prozent / 100)).toFixed(2);
+    }
+
+    function toggleKontoInput() {
+      const typ = document.getElementById('ck_konto_typ').value;
+      const inp = document.getElementById('ck_konto_val');
+      if (typ === 'pauschale') { inp.value = "16.00"; inp.disabled = true; }
+      else { inp.disabled = false; inp.value = ""; }
+    }
+
+    function toggleBueroInput() {
+      const typ = document.getElementById('ck_buero_typ').value;
+      const inp = document.getElementById('ck_buero_val');
+      if (typ === 'pauschale') { inp.value = "20.00"; inp.disabled = true; }
+      else { inp.disabled = false; inp.value = ""; }
+    }
+
+    function calcHomeoffice() {
+      const tage = parseFloat(document.getElementById('ck_ho_tage').value) || 0;
+      document.getElementById('ck_ho_val').value = (tage * 6.00).toFixed(2);
+    }
+
+    function addChecklistItem(title, valInputId, objSelectId, kategorie) {
+      const betrag = parseFloat(document.getElementById(valInputId).value);
+      const zuordnung = document.getElementById(objSelectId).value;
+      const selectedYearVal = document.getElementById('selectedYear').value;
+      const yearForRecord = isTestMode ? `${currentYear}` : selectedYearVal;
+
+      if (!betrag || betrag <= 0) {
+        alert("Bitte gib einen gültigen Betrag ein.");
+        return;
+      }
+
+      belege.push({
+        datum: `${yearForRecord}-12-31`,
+        zuordnung: zuordnung,
+        kategorie: kategorie,
+        geschaeft: "Pauschale / Jahresbetrag",
+        betrag: betrag.toFixed(2),
+        grund: title
+      });
+
+      saveData();
+      updateTabellen();
+      alert(`✅ "${title}" (${betrag.toFixed(2)} €) wurde übernommen!`);
+    }
+
+    document.getElementById('vertragForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const fileInput = document.getElementById('vDatei');
+      const file = fileInput.files[0];
+
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          vertraege.push({
+            zuordnung: document.getElementById('vZuordnung').value,
+            name: document.getElementById('vName').value,
+            filename: file.name,
+            dataUrl: evt.target.result
+          });
+          saveData();
+          updateTabellen();
+          e.target.reset();
+          alert("✅ Mietvertrag gespeichert!");
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    function deleteVertrag(index) {
+      vertraege.splice(index, 1);
+      saveData();
+      updateTabellen();
+    }
+
+    const zielInput = document.getElementById('fZiel');
+    const suggestionsBox = document.getElementById('suggestions');
+    let timeoutId;
+
+    zielInput.addEventListener('input', () => {
+      clearTimeout(timeoutId);
+      const query = zielInput.value;
+      if (query.length < 3) {
+        suggestionsBox.style.display = 'none';
+        return;
+      }
+
+      timeoutId = setTimeout(() => {
+        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=de&limit=5`)
+          .then(res => res.json())
+          .then(data => {
+            suggestionsBox.innerHTML = '';
+            if (data.length > 0) {
+              suggestionsBox.style.display = 'block';
+              data.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'suggestion-item';
+                div.innerText = item.display_name;
+                div.addEventListener('click', () => {
+                  zielInput.value = item.display_name;
+                  suggestionsBox.style.display = 'none';
+                  berechneRoute(item.lat, item.lon);
+                });
+                suggestionsBox.appendChild(div);
+              });
+            } else {
+              suggestionsBox.style.display = 'none';
+            }
+          });
+      }, 400);
+    });
+
+    function berechneRoute(zielLat, zielLon) {
+      const startAddr = document.getElementById('fStart').value;
+      fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(startAddr)}`)
+        .then(res => res.json())
+        .then(startData => {
+          if (startData.length > 0) {
+            const startLat = startData[0].lat;
+            const startLon = startData[0].lon;
+
+            fetch(`https://router.project-osrm.org/route/v1/driving/${startLon},${startLat};${zielLon},${zielLat}?overview=false`)
+              .then(res => res.json())
+              .then(routeData => {
+                if (routeData.routes && routeData.routes.length > 0) {
+                  calculatedEinfachKm = routeData.routes[0].distance / 1000.0;
+                  calculatedGesamtKm = (calculatedEinfachKm * 2).toFixed(1);
+
+                  let betragEinfach = 0;
+                  if (calculatedEinfachKm <= 20) {
+                    betragEinfach = calculatedEinfachKm * 0.30;
+                  } else {
+                    betragEinfach = (20 * 0.30) + ((calculatedEinfachKm - 20) * 0.38);
+                  }
+
+                  calculatedKosten = (betragEinfach * 2).toFixed(2);
+
+                  document.getElementById('kmInfo').innerHTML = `
+                    📏 **Einfache Strecke:** ${calculatedEinfachKm.toFixed(1)} km (Gesamt Hin & Zurück: ${calculatedGesamtKm} km)<br>
+                    💰 **Absetzbarer Betrag:** ${calculatedKosten} €
+                  `;
+                }
+              });
+          }
+        });
+    }
+
+    function deleteBeleg(realIndex) {
+      belege.splice(realIndex, 1);
+      saveData();
+      updateTabellen();
+    }
+
+    function deleteFahrt(realIndex) {
+      fahrten.splice(realIndex, 1);
+      saveData();
+      updateTabellen();
+    }
+
+    function updateTabellen() {
+      const selectedYearVal = document.getElementById('selectedYear').value;
+
+      const nkBody = document.querySelector('#nkTabelle tbody');
+      let nkHtml = '';
+      let summeNK = 0;
+
+      nebenkosten.forEach((nk, i) => {
+        if (isTestMode || nk.datum.startsWith(selectedYearVal)) {
+          summeNK += parseFloat(nk.betrag);
+          nkHtml += `
+            <tr>
+              <td>${nk.datum}</td>
+              <td>${nk.zuordnung}</td>
+              <td>${nk.kategorie}</td>
+              <td>${nk.geschaeft} (${nk.grund})</td>
+              <td>${parseFloat(nk.betrag).toFixed(2)} €</td>
+              <td><button type="button" onclick="deleteNK(${i})" style="margin:0; padding:5px; background:#ff3b30;">❌</button></td>
+            </tr>
+          `;
+        }
+      });
+      nkBody.innerHTML = nkHtml || `<tr><td colspan="6" style="text-align:center; color:#8e8e93;">Keine Nebenkosten für diesen Modus/Jahr erfasst</td></tr>`;
+
+      const jahresAbschlagEG = (nkSettings.eg || 0) * 12;
+      const jahresAbschlagOG = (nkSettings.og || 0) * 12;
+      const gesamtEinnahmenNK = jahresAbschlagEG + jahresAbschlagOG;
+      const differenz = gesamtEinnahmenNK - summeNK;
+
+      const labelText = isTestMode ? 'Übungsmodus' : selectedYearVal;
+      document.getElementById('nkSummary').innerHTML = `
+        <strong>📊 Nebenkosten-Bilanz (${labelText}):</strong><br>
+        • Erhaltene Abschläge EG (70m²): ${jahresAbschlagEG.toFixed(2)} € (${nkSettings.eg || 0} €/Monat)<br>
+        • Erhaltene Abschläge OG (100m²): ${jahresAbschlagOG.toFixed(2)} € (${nkSettings.og || 0} €/Monat)<br>
+        • <strong>Gesamte Nebenkosten-Einnahmen: ${gesamtEinnahmenNK.toFixed(2)} €</strong><br>
+        • <strong>Tatsächliche Betriebskosten Ausgaben: ${summeNK.toFixed(2)} €</strong><br>
+        <hr style="border:0; border-top:1px solid #ccc; margin:8px 0;">
+        <span style="color:${differenz >= 0 ? '#34c759' : '#ff3b30'}; font-weight:bold;">
+          ${differenz >= 0 ? '🟢 Überschuss Vermieter' : '🔴 Nachforderung erforderlich'}: ${Math.abs(differenz).toFixed(2)} €
+        </span>
+      `;
+
+      const bBody = document.querySelector('#belegTabelle tbody');
+      let bHtml = '';
+      belege.forEach((b, i) => {
+        if (isTestMode || b.datum.startsWith(selectedYearVal)) {
+          bHtml += `
+            <tr>
+              <td>${b.datum}</td>
+              <td>${b.zuordnung}</td>
+              <td>${b.kategorie}</td>
+              <td>${b.geschaeft} (${b.grund})</td>
+              <td>${parseFloat(b.betrag).toFixed(2)} €</td>
+              <td><button type="button" onclick="deleteBeleg(${i})" style="margin:0; padding:5px; background:#ff3b30;">❌</button></td>
+            </tr>
+          `;
+        }
+      });
+      bBody.innerHTML = bHtml || `<tr><td colspan="6" style="text-align:center; color:#8e8e93;">Keine Belege vorhanden</td></tr>`;
+
+      const fBody = document.querySelector('#fahrtTabelle tbody');
+      let fHtml = '';
+      fahrten.forEach((f, i) => {
+        if (isTestMode || f.datum.startsWith(selectedYearVal)) {
+          fHtml += `
+            <tr>
+              <td>${f.datum} ${f.zeit}</td>
+              <td>${f.start}</td>
+              <td>${f.ziel}</td>
+              <td>${f.grund}</td>
+              <td>${f.kmGesamt} km</td>
+              <td>${f.kosten} €</td>
+              <td><button type="button" onclick="deleteFahrt(${i})" style="margin:0; padding:5px; background:#ff3b30;">❌</button></td>
+            </tr>
+          `;
+        }
+      });
+      fBody.innerHTML = fHtml || `<tr><td colspan="7" style="text-align:center; color:#8e8e93;">Keine Fahrten vorhanden</td></tr>`;
+
+      const vBody = document.querySelector('#vertragTabelle tbody');
+      vBody.innerHTML = vertraege.map((v, i) => `
+        <tr>
+          <td>${v.zuordnung}</td>
+          <td>${v.name}</td>
+          <td><a href="${v.dataUrl}" target="_blank" style="color:#007aff;">${v.filename}</a></td>
+          <td><button type="button" onclick="deleteVertrag(${i})" style="margin:0; padding:5px; background:#ff3b30;">❌</button></td>
+        </tr>
+      `).join('');
+    }
+
+    document.getElementById('belegForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      belege.push({
+        datum: document.getElementById('bDatum').value,
+        zuordnung: document.getElementById('bZuordnung').value,
+        kategorie: document.getElementById('bKategorie').value,
+        geschaeft: document.getElementById('bGeschaeft').value,
+        betrag: parseFloat(document.getElementById('bBetrag').value).toFixed(2),
+        grund: document.getElementById('bGrund').value
+      });
+      saveData();
+      updateTabellen();
+      e.target.reset();
+      document.getElementById('bDatum').valueAsDate = new Date();
+    });
+
+    document.getElementById('fahrtForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      fahrten.push({
+        datum: document.getElementById('fDatum').value,
+        zeit: document.getElementById('fZeit').value,
+        start: document.getElementById('fStart').value,
+        ziel: document.getElementById('fZiel').value,
+        grund: document.getElementById('fGrund').value,
+        kmGesamt: calculatedGesamtKm,
+        kosten: calculatedKosten
+      });
+      saveData();
+      updateTabellen();
+      e.target.reset();
+      document.getElementById('fStart').value = "Langenfelde 1, 21614 Buxtehude";
+      document.getElementById('fDatum').valueAsDate = new Date();
+      document.getElementById('kmInfo').innerHTML = "📏 Einfache Strecke: 0.0 km (Gesamt Hin & Zurück: 0.0 km)<br>💰 Absetzbarer Betrag: 0.00 €";
+      calculatedEinfachKm = 0.0;
+      calculatedGesamtKm = 0.0;
+      calculatedKosten = 0.0;
+    });
+
+    function exportPDF() {
+      window.print();
+    }
+
+    loadData();
+  </script>
+</body>
+</html>

@@ -55,6 +55,8 @@
 
     .summary-box { background: #f8f9fa; border: 1px solid #e5e5ea; padding: 15px; border-radius: 8px; margin-top: 15px; }
 
+    .file-link { color: #007aff; text-decoration: underline; font-weight: bold; cursor: pointer; }
+
     @media print {
       body { background: white; padding: 0; color: black; }
       button, .no-print, form, .checklist-item, .autocomplete-wrapper, #yearBox { display: none !important; }
@@ -169,6 +171,10 @@
           <input type="text" id="bGrund" placeholder="z. B. Ersatz-Wasserhahn Bad">
         </div>
       </div>
+
+      <!-- Kamera & Datei Upload für Belege -->
+      <label>📷 Beleg / Kassenbon einscannen oder hochladen (Foto / PDF)</label>
+      <input type="file" id="bDatei" accept="image/*,application/pdf" capture="environment">
 
       <button type="submit">➕ Beleg speichern</button>
     </form>
@@ -397,6 +403,10 @@
         </div>
       </div>
 
+      <!-- Kamera & Datei Upload für Nebenkosten -->
+      <label>📷 Rechnung / Beleg einscannen oder hochladen (Foto / PDF)</label>
+      <input type="file" id="nkDatei" accept="image/*,application/pdf" capture="environment">
+
       <button type="submit">➕ Nebenkostenposten speichern</button>
     </form>
 
@@ -411,7 +421,7 @@
 
     <h3>Erfasste Betriebskosten für das Steuerjahr</h3>
     <table id="nkTabelle">
-      <thead><tr><th>Datum</th><th>Zuordnung</th><th>Kategorie</th><th>Bezeichnung</th><th>Betrag (€)</th><th>Aktion</th></tr></thead>
+      <thead><tr><th>Datum</th><th>Zuordnung</th><th>Kategorie</th><th>Bezeichnung</th><th>Betrag (€)</th><th>Beleg / Bon</th><th>Aktion</th></tr></thead>
       <tbody></tbody>
     </table>
   </div>
@@ -423,7 +433,7 @@
 
     <h3>Erfasste Einzelbelege & Pauschalen</h3>
     <table id="belegTabelle">
-      <thead><tr><th>Datum</th><th>Zuordnung</th><th>Kategorie</th><th>Geschäft / Bezeichnung</th><th>Betrag (€)</th><th>Aktion</th></tr></thead>
+      <thead><tr><th>Datum</th><th>Zuordnung</th><th>Kategorie</th><th>Geschäft / Bezeichnung</th><th>Betrag (€)</th><th>Beleg / Bon</th><th>Aktion</th></tr></thead>
       <tbody></tbody>
     </table>
 
@@ -613,18 +623,35 @@
 
     document.getElementById('nkForm').addEventListener('submit', (e) => {
       e.preventDefault();
-      nebenkosten.push({
-        datum: document.getElementById('nkDatum').value,
-        zuordnung: document.getElementById('nkZuordnung').value,
-        kategorie: document.getElementById('nkKategorie').value,
-        geschaeft: document.getElementById('nkGeschaeft').value,
-        betrag: parseFloat(document.getElementById('nkBetrag').value).toFixed(2),
-        grund: document.getElementById('nkGrund').value
-      });
-      saveData();
-      updateTabellen();
-      e.target.reset();
-      document.getElementById('nkDatum').valueAsDate = new Date();
+      const fileInput = document.getElementById('nkDatei');
+      const file = fileInput.files[0];
+
+      const saveEntry = (fileDataUrl = null, fileName = null) => {
+        nebenkosten.push({
+          datum: document.getElementById('nkDatum').value,
+          zuordnung: document.getElementById('nkZuordnung').value,
+          kategorie: document.getElementById('nkKategorie').value,
+          geschaeft: document.getElementById('nkGeschaeft').value,
+          betrag: parseFloat(document.getElementById('nkBetrag').value).toFixed(2),
+          grund: document.getElementById('nkGrund').value,
+          fileDataUrl: fileDataUrl,
+          fileName: fileName
+        });
+        saveData();
+        updateTabellen();
+        e.target.reset();
+        document.getElementById('nkDatum').valueAsDate = new Date();
+      };
+
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          saveEntry(evt.target.result, file.name);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        saveEntry();
+      }
     });
 
     function deleteNK(realIndex) {
@@ -916,7 +943,6 @@
       updateTabellen();
     }
 
-    /* Prüft, welche Checklisten-Elemente bereits in den Belegen des aktiven Jahres vorhanden sind */
     function updateChecklistStatus() {
       const selectedYearVal = document.getElementById('selectedYear').value;
       const items = document.querySelectorAll('.checklist-item');
@@ -948,6 +974,7 @@
       nebenkosten.forEach((nk, i) => {
         if (isTestMode || nk.datum.startsWith(selectedYearVal)) {
           summeNK += parseFloat(nk.betrag);
+          const fileLink = nk.fileDataUrl ? `<a href="${nk.fileDataUrl}" target="_blank" class="file-link">📷 Beleg anzeigen</a>` : '-';
           nkHtml += `
             <tr>
               <td>${nk.datum}</td>
@@ -955,12 +982,13 @@
               <td>${nk.kategorie}</td>
               <td>${nk.geschaeft} (${nk.grund})</td>
               <td>${parseFloat(nk.betrag).toFixed(2)} €</td>
+              <td>${fileLink}</td>
               <td><button type="button" onclick="deleteNK(${i})" style="margin:0; padding:5px; background:#ff3b30;">❌</button></td>
             </tr>
           `;
         }
       });
-      nkBody.innerHTML = nkHtml || `<tr><td colspan="6" style="text-align:center; color:#8e8e93;">Keine Nebenkosten für diesen Modus/Jahr erfasst</td></tr>`;
+      nkBody.innerHTML = nkHtml || `<tr><td colspan="7" style="text-align:center; color:#8e8e93;">Keine Nebenkosten für diesen Modus/Jahr erfasst</td></tr>`;
 
       const jahresAbschlagEG = (nkSettings.eg || 0) * 12;
       const jahresAbschlagOG = (nkSettings.og || 0) * 12;
@@ -984,6 +1012,7 @@
       let bHtml = '';
       belege.forEach((b, i) => {
         if (isTestMode || b.datum.startsWith(selectedYearVal)) {
+          const fileLink = b.fileDataUrl ? `<a href="${b.fileDataUrl}" target="_blank" class="file-link">📷 Beleg anzeigen</a>` : '-';
           bHtml += `
             <tr>
               <td>${b.datum}</td>
@@ -991,12 +1020,13 @@
               <td>${b.kategorie}</td>
               <td>${b.geschaeft} (${b.grund})</td>
               <td>${parseFloat(b.betrag).toFixed(2)} €</td>
+              <td>${fileLink}</td>
               <td><button type="button" onclick="deleteBeleg(${i})" style="margin:0; padding:5px; background:#ff3b30;">❌</button></td>
             </tr>
           `;
         }
       });
-      bBody.innerHTML = bHtml || `<tr><td colspan="6" style="text-align:center; color:#8e8e93;">Keine Belege vorhanden</td></tr>`;
+      bBody.innerHTML = bHtml || `<tr><td colspan="7" style="text-align:center; color:#8e8e93;">Keine Belege vorhanden</td></tr>`;
 
       const fBody = document.querySelector('#fahrtTabelle tbody');
       let fHtml = '';
@@ -1027,24 +1057,40 @@
         </tr>
       `).join('');
 
-      /* Ausgegraute Checklisten-Status-Aktualisierung ausführen */
       updateChecklistStatus();
     }
 
     document.getElementById('belegForm').addEventListener('submit', (e) => {
       e.preventDefault();
-      belege.push({
-        datum: document.getElementById('bDatum').value,
-        zuordnung: document.getElementById('bZuordnung').value,
-        kategorie: document.getElementById('bKategorie').value,
-        geschaeft: document.getElementById('bGeschaeft').value,
-        betrag: parseFloat(document.getElementById('bBetrag').value).toFixed(2),
-        grund: document.getElementById('bGrund').value
-      });
-      saveData();
-      updateTabellen();
-      e.target.reset();
-      document.getElementById('bDatum').valueAsDate = new Date();
+      const fileInput = document.getElementById('bDatei');
+      const file = fileInput.files[0];
+
+      const saveEntry = (fileDataUrl = null, fileName = null) => {
+        belege.push({
+          datum: document.getElementById('bDatum').value,
+          zuordnung: document.getElementById('bZuordnung').value,
+          kategorie: document.getElementById('bKategorie').value,
+          geschaeft: document.getElementById('bGeschaeft').value,
+          betrag: parseFloat(document.getElementById('bBetrag').value).toFixed(2),
+          grund: document.getElementById('bGrund').value,
+          fileDataUrl: fileDataUrl,
+          fileName: fileName
+        });
+        saveData();
+        updateTabellen();
+        e.target.reset();
+        document.getElementById('bDatum').valueAsDate = new Date();
+      };
+
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          saveEntry(evt.target.result, file.name);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        saveEntry();
+      }
     });
 
     document.getElementById('fahrtForm').addEventListener('submit', (e) => {

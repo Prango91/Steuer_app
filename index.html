@@ -498,8 +498,8 @@
           <label>Zuordnung / Verteilschlüssel</label>
           <select id="nkZuordnung">
             <option value="Gesamtobjekt / Allgemein (170 m²)">Gesamtobjekt (Aufteilung 70m² zu 100m²)</option>
-            <option value="Wohnung EG (70 m²)">Wohnung EG direkt (z.B. Zwischenzähler EG)</option>
-            <option value="Wohnung OG (100 m²)">Wohnung OG direkt (z.B. Zwischenzähler OG)</option>
+            <option value="Wohnung EG (70 m²)">Wohnung EG direkt (z.B. Zwischenzähler / BRUNATA EG)</option>
+            <option value="Wohnung OG (100 m²)">Wohnung OG direkt (z.B. Zwischenzähler / BRUNATA OG)</option>
           </select>
         </div>
       </div>
@@ -508,8 +508,8 @@
         <div>
           <label>Kategorie / Art der Kosten</label>
           <select id="nkKategorie" onchange="autoFillDienstleister()">
-            <option>Heizkosten / BRUNATA</option>
-            <option>Wasser & Abwasser / BRUNATA</option>
+            <option>Heiz- & Warmwasserkosten (BRUNATA / Gas / Heizöl)</option>
+            <option>Kaltwasser & Abwasser (BRUNATA / Stadtwerke)</option>
             <option>Strom Hauptzähler / Zwischenzähler</option>
             <option>Allgemeinstrom / Beleuchtung</option>
             <option>Gebäudeversicherung</option>
@@ -522,7 +522,7 @@
         </div>
         <div>
           <label>Rechnungssteller / Dienstleister</label>
-          <input type="text" id="nkGeschaeft" placeholder="z. B. BRUNATA Wärmemesser / Stadtwerke" required>
+          <input type="text" id="nkGeschaeft" placeholder="z. B. BRUNATA / Stadtwerke / Buxtehude" required>
         </div>
       </div>
 
@@ -624,7 +624,7 @@
     <h2>Betriebskostenabrechnung für das Kalenderjahr <span id="pJahr"></span></h2>
     
     <div style="margin-bottom:20px; font-size:14px; line-height:1.5;">
-      <strong>Vermisster:</strong> Daniel Prang<br>
+      <strong>Vermieter:</strong> Daniel Prang<br>
       <strong>Mietobjekt / Einheit:</strong> <span id="pEinheit"></span> (Wohnfläche: <span id="pFlaeche"></span> m² / Gesamt: 170 m²)<br>
       <strong>Abrechnungszeitraum:</strong> 01.01.<span id="pJahrPeriod1"></span> bis 31.12.<span id="pJahrPeriod2"></span><br>
       <strong>Mieter:</strong> <span id="pMieterName"></span>

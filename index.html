@@ -498,8 +498,8 @@
           <label>Zuordnung / Verteilschlüssel</label>
           <select id="nkZuordnung">
             <option value="Gesamtobjekt / Allgemein (170 m²)">Gesamtobjekt (Aufteilung 70m² zu 100m²)</option>
-            <option value="Wohnung EG (70 m²)">Wohnung EG direkt (z.B. Zwischenzähler / BRUNATA EG)</option>
-            <option value="Wohnung OG (100 m²)">Wohnung OG direkt (z.B. Zwischenzähler / BRUNATA OG)</option>
+            <option value="Wohnung EG (70 m²)">Wohnung EG direkt (z.B. Zwischenzähler / Brunata EG)</option>
+            <option value="Wohnung OG (100 m²)">Wohnung OG direkt (z.B. Zwischenzähler / Brunata OG)</option>
           </select>
         </div>
       </div>
@@ -508,24 +508,24 @@
         <div>
           <label>Kategorie / Art der Kosten</label>
           <select id="nkKategorie" onchange="autoFillDienstleister()">
-            <option>Brunata</option>
-            <option>Heißwasser</option>
-            <option>Kaltwasser</option>
-            <option>Abwasser</option>
-            <option>Heizkosten</option>
-            <option>Stromkosten</option>
-            <option>Müll</option>
-            <option>Straßenreinigung</option>
-            <option>Grundsteuer</option>
-            <option>Schornsteinfeger</option>
-            <option>Versicherung</option>
-            <option>Rauchmelder-Wartung</option>
-            <option>Heizung-Wartung</option>
+            <option value="Brunata">Brunata</option>
+            <option value="Heißwasser">Heißwasser</option>
+            <option value="Kaltwasser">Kaltwasser</option>
+            <option value="Abwasser">Abwasser</option>
+            <option value="Heizkosten">Heizkosten</option>
+            <option value="Stromkosten">Stromkosten</option>
+            <option value="Müll">Müll</option>
+            <option value="Straßenreinigung">Straßenreinigung</option>
+            <option value="Grundersteuer">Grundersteuer</option>
+            <option value="Schornsteinfeger">Schornsteinfeger</option>
+            <option value="Versicherung">Versicherung</option>
+            <option value="Rauchmelder-Wartung">Rauchmelder-Wartung</option>
+            <option value="Heizung-Wartung">Heizung-Wartung</option>
           </select>
         </div>
         <div>
           <label>Rechnungssteller / Dienstleister</label>
-          <input type="text" id="nkGeschaeft" placeholder="z. B. BRUNATA / Stadtwerke / Buxtehude" required>
+          <input type="text" id="nkGeschaeft" placeholder="z. B. Brunata / Stadtwerke / Buxtehude" required>
         </div>
       </div>
 
@@ -659,7 +659,7 @@
     <div style="margin-top:20px; font-size:12px; border:1px dashed #aaa; padding:10px; background:#fff8e7;">
       <strong>Hinweis nach § 35a EStG (Haushaltsnahe Dienstleistungen & Handwerkerleistungen):</strong><br>
       In den oben genannten Betriebskosten sind folgende absetzbare Lohnkosten/Dienstleistungen enthalten:<br>
-      • Arbeitskosten Haushaltsnahe Dienstleistungen / Schornsteinfeger / Wartungsarbeiten / BRUNATA Messdienst: <strong><span id="p35aBetrag"></span> €</strong>
+      • Arbeitskosten Haushaltsnahe Dienstleistungen / Schornsteinfeger / Wartungsarbeiten / Brunata Messdienst: <strong><span id="p35aBetrag"></span> €</strong>
     </div>
 
     <div style="margin-top:30px; font-size:12px; line-height:1.5;">
@@ -765,9 +765,13 @@
       if (kat === 'Brunata') {
         gInput.value = "BRUNATA Wärmemesser Hagen GmbH & Co. KG";
       } else if (kat === 'Rauchmelder-Wartung') {
-        gInput.value = "BRUNATA / Wartungsdienst";
+        gInput.value = "Brunata / Wartungsdienst";
       } else if (kat === 'Heizung-Wartung') {
         gInput.value = "Heizungsfachbetrieb";
+      } else if (kat === 'Schornsteinfeger') {
+        gInput.value = "Schornsteinfegermeister";
+      } else if (kat === 'Grundersteuer' || kat === 'Abwasser' || kat === 'Kaltwasser' || kat === 'Straßenreinigung' || kat === 'Müll') {
+        gInput.value = "Stadt Buxtehude / Stadtwerke";
       }
     }
 
@@ -896,7 +900,7 @@
           const betrag = parseFloat(nk.betrag);
 
           if (nk.zuordnung === wohnung) {
-            verteiler = "100% Direktzuordnung (Zwischenzähler/BRUNATA)";
+            verteiler = "100% Direktzuordnung (Zwischenzähler/Brunata)";
             anteil = betrag;
           } else if (nk.zuordnung.includes('Gesamtobjekt')) {
             if (isEG) {
@@ -912,7 +916,7 @@
 
           mieterGesamtAnteil += anteil;
 
-          if (['Schornsteinfeger', 'Rauchmelder-Wartung', 'Heizung-Wartung', 'Brunata'].includes(nk.kategorie) || (nk.geschaeft && nk.geschaeft.includes('BRUNATA'))) {
+          if (['Schornsteinfeger', 'Rauchmelder-Wartung', 'Heizung-Wartung', 'Brunata'].includes(nk.kategorie) || (nk.geschaeft && nk.geschaeft.toLowerCase().includes('brunata'))) {
             paragraph35aGesamt += anteil;
           }
 

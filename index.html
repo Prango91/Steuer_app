@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Steuer-App">
   <title>Steuer-Manager & Nebenkostenabrechnung</title>
 
   <style>
@@ -31,9 +34,20 @@
     .suggestion-item:hover { background-color: #e5f1ff; }
     .info-box { background: #e5f1ff; border-left: 4px solid #007aff; padding: 10px; margin-top: 10px; border-radius: 4px; font-weight: 600; }
     
-    .checklist-item { border: 1px solid #e5e5ea; padding: 15px; border-radius: 8px; margin-bottom: 12px; background: #fafafa; }
+    /* Checklisten-Styling & Ausgegrauter Zustand */
+    .checklist-item { border: 1px solid #e5e5ea; padding: 15px; border-radius: 8px; margin-bottom: 12px; background: #fafafa; transition: all 0.3s ease; }
     .checklist-header { font-weight: bold; font-size: 16px; color: #1c1c1e; margin-bottom: 5px; }
     .checklist-sub { font-size: 13px; color: #8e8e93; margin-bottom: 10px; }
+
+    .checklist-item.posten-uebernommen {
+      opacity: 0.55;
+      background: #eef2f5;
+      border-color: #d1d1d6;
+    }
+    .checklist-item.posten-uebernommen:focus-within,
+    .checklist-item.posten-uebernommen:hover {
+      opacity: 0.95;
+    }
     
     .year-select-box { background: #007aff; color: white; border-radius: 12px; padding: 15px 20px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; transition: background 0.3s ease; }
     .year-select-box.testmode { background: #ff9500; }
@@ -166,7 +180,7 @@
     <p style="font-size:14px; color:#666;">Wähle absetzbare Posten aus. Entscheide zwischen der Richtwert-Pauschale oder trage deine tatsächlichen Kosten ein.</p>
 
     <!-- Handytarif -->
-    <div class="checklist-item">
+    <div class="checklist-item" data-title="Handytarif Anteil">
       <div class="checklist-header">1. Handytarif (Monatliche Rechnung)</div>
       <div class="checklist-sub">Anteilige Absetzung der monatlichen Grundgebühr (empfohlen: 20 % bis 50 %).</div>
       <div class="flex-row">
@@ -188,7 +202,7 @@
     </div>
 
     <!-- Smartphone Kauf -->
-    <div class="checklist-item">
+    <div class="checklist-item" data-title="Smartphone Anschaffung Anteil">
       <div class="checklist-header">2. Smartphone-Neukauf (Anschaffung)</div>
       <div class="checklist-sub">Sofortabschreibung im Kaufjahr mit anteiligem Nutzungsprozentsatz.</div>
       <div class="flex-row">
@@ -210,7 +224,7 @@
     </div>
 
     <!-- Kontoführung -->
-    <div class="checklist-item">
+    <div class="checklist-item" data-title="Kontoführungsgebühren">
       <div class="checklist-header">3. Kontoführungsgebühren (Mietkonto)</div>
       <div class="checklist-sub">Anerkannter Richtwert der Finanzämter: ca. 16,00 € pro Jahr.</div>
       <div class="flex-row">
@@ -238,7 +252,7 @@
     </div>
 
     <!-- Büromaterial -->
-    <div class="checklist-item">
+    <div class="checklist-item" data-title="Büromaterial & Porto">
       <div class="checklist-header">4. Büromaterial & Porto</div>
       <div class="checklist-sub">Porto, Briefumschläge, Schreibwaren, Ordner.</div>
       <div class="flex-row">
@@ -266,7 +280,7 @@
     </div>
 
     <!-- Homeoffice -->
-    <div class="checklist-item">
+    <div class="checklist-item" data-title="Homeoffice Verwaltungspauschale">
       <div class="checklist-header">5. Arbeitszimmer / Verwaltung zu Hause (Tagespauschale)</div>
       <div class="checklist-sub">6,00 € pro Tag für Verwaltungsarbeiten (deckt auch Strom & Heim-Internet ab).</div>
       <div class="flex-row">
@@ -291,7 +305,7 @@
     </div>
 
     <!-- AfA -->
-    <div class="checklist-item">
+    <div class="checklist-item" data-title="Gebäude-AfA">
       <div class="checklist-header">6. Gebäude-Abschreibung (AfA)</div>
       <div class="checklist-sub">Jährlicher AfA-Betrag lt. Kaufvertrag/Steuerbescheid.</div>
       <div class="flex-row">
@@ -902,6 +916,28 @@
       updateTabellen();
     }
 
+    /* Prüft, welche Checklisten-Elemente bereits in den Belegen des aktiven Jahres vorhanden sind */
+    function updateChecklistStatus() {
+      const selectedYearVal = document.getElementById('selectedYear').value;
+      const items = document.querySelectorAll('.checklist-item');
+
+      items.forEach(item => {
+        const title = item.getAttribute('data-title');
+        if (!title) return;
+
+        const isVorhanden = belege.some(b => {
+          const jahrPasst = isTestMode || b.datum.startsWith(selectedYearVal);
+          return jahrPasst && b.grund === title;
+        });
+
+        if (isVorhanden) {
+          item.classList.add('posten-uebernommen');
+        } else {
+          item.classList.remove('posten-uebernommen');
+        }
+      });
+    }
+
     function updateTabellen() {
       const selectedYearVal = document.getElementById('selectedYear').value;
 
@@ -990,6 +1026,9 @@
           <td><button type="button" onclick="deleteVertrag(${i})" style="margin:0; padding:5px; background:#ff3b30;">❌</button></td>
         </tr>
       `).join('');
+
+      /* Ausgegraute Checklisten-Status-Aktualisierung ausführen */
+      updateChecklistStatus();
     }
 
     document.getElementById('belegForm').addEventListener('submit', (e) => {

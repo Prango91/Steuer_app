@@ -471,8 +471,8 @@
     <h2>🏢 Nebenkosten-Manager & Betriebskostenabrechnung</h2>
     <div style="background:#e5f1ff; border-left:4px solid #007aff; padding:10px; margin-bottom:15px; border-radius:4px; font-size:13px;">
       ℹ️ <strong>Verteilungs-Schlüssel:</strong> Gesamtwohnfläche: <strong>170 m²</strong> (EG: 70 m² / 41,18% | OG: 100 m² / 58,82%).<br>
-      • <strong>BRUNATA (Heizung & Wasser):</strong> Werden direkt lt. BRUNATA-Abrechnung übernommen.<br>
-      • <strong>Strom:</strong> Allgemeinstrom nach m², Wohnungsstrom direkt lt. Zwischenzähler.
+      • <strong>Direktzuordnung:</strong> Posten mit Wohnung EG/OG werden zu 100% der jeweiligen Wohnung zugerechnet.<br>
+      • <strong>Gesamtobjekt:</strong> Wird automatisch im Verhältnis 70/170 zu 100/170 verteilt.
     </div>
     
     <h3>1. Monatliche Nebenkostenvorauszahlungen der Mieter</h3>
@@ -508,16 +508,19 @@
         <div>
           <label>Kategorie / Art der Kosten</label>
           <select id="nkKategorie" onchange="autoFillDienstleister()">
-            <option>Heiz- & Warmwasserkosten (BRUNATA / Gas / Heizöl)</option>
-            <option>Kaltwasser & Abwasser (BRUNATA / Stadtwerke)</option>
-            <option>Strom Hauptzähler / Zwischenzähler</option>
-            <option>Allgemeinstrom / Beleuchtung</option>
-            <option>Gebäudeversicherung</option>
+            <option>Brunata</option>
+            <option>Heißwasser</option>
+            <option>Kaltwasser</option>
+            <option>Abwasser</option>
+            <option>Heizkosten</option>
+            <option>Stromkosten</option>
+            <option>Müll</option>
+            <option>Straßenreinigung</option>
             <option>Grundsteuer</option>
-            <option>Müllabfuhr & Straßenreinigung</option>
             <option>Schornsteinfeger</option>
-            <option>Gartenpflege / Winterdienst</option>
-            <option>Sonstige Betriebskosten</option>
+            <option>Versicherung</option>
+            <option>Rauchmelder-Wartung</option>
+            <option>Heizung-Wartung</option>
           </select>
         </div>
         <div>
@@ -533,7 +536,7 @@
         </div>
         <div>
           <label>Beschreibung / Hinweis</label>
-          <input type="text" id="nkGrund" placeholder="z. B. Jahresabrechnung BRUNATA 2026">
+          <input type="text" id="nkGrund" placeholder="z. B. Jahresabrechnung 2026">
         </div>
       </div>
 
@@ -656,7 +659,7 @@
     <div style="margin-top:20px; font-size:12px; border:1px dashed #aaa; padding:10px; background:#fff8e7;">
       <strong>Hinweis nach § 35a EStG (Haushaltsnahe Dienstleistungen & Handwerkerleistungen):</strong><br>
       In den oben genannten Betriebskosten sind folgende absetzbare Lohnkosten/Dienstleistungen enthalten:<br>
-      • Arbeitskosten Haushaltsnahe Dienstleistungen / Schornsteinfeger / Gartenpflege / BRUNATA Messdienst: <strong><span id="p35aBetrag"></span> €</strong>
+      • Arbeitskosten Haushaltsnahe Dienstleistungen / Schornsteinfeger / Wartungsarbeiten / BRUNATA Messdienst: <strong><span id="p35aBetrag"></span> €</strong>
     </div>
 
     <div style="margin-top:30px; font-size:12px; line-height:1.5;">
@@ -759,8 +762,12 @@
     function autoFillDienstleister() {
       const kat = document.getElementById('nkKategorie').value;
       const gInput = document.getElementById('nkGeschaeft');
-      if (kat.includes('BRUNATA')) {
+      if (kat === 'Brunata') {
         gInput.value = "BRUNATA Wärmemesser Hagen GmbH & Co. KG";
+      } else if (kat === 'Rauchmelder-Wartung') {
+        gInput.value = "BRUNATA / Wartungsdienst";
+      } else if (kat === 'Heizung-Wartung') {
+        gInput.value = "Heizungsfachbetrieb";
       }
     }
 
@@ -905,7 +912,7 @@
 
           mieterGesamtAnteil += anteil;
 
-          if (['Schornsteinfeger', 'Gartenpflege / Winterdienst'].includes(nk.kategorie) || (nk.geschaeft && nk.geschaeft.includes('BRUNATA'))) {
+          if (['Schornsteinfeger', 'Rauchmelder-Wartung', 'Heizung-Wartung', 'Brunata'].includes(nk.kategorie) || (nk.geschaeft && nk.geschaeft.includes('BRUNATA'))) {
             paragraph35aGesamt += anteil;
           }
 

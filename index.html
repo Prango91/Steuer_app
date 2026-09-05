@@ -657,6 +657,10 @@
             <input type="number" id="nkZaehlerNeu" placeholder="1500" oninput="calcStromVerbrauch()">
           </div>
           <div>
+            <label for="nkStromPreis">Strompreis (€ / kWh)</label>
+            <input type="number" step="0.0001" id="nkStromPreis" placeholder="0.35" oninput="calcStromVerbrauch()">
+          </div>
+          <div>
             <label for="nkZaehlerVerbrauch">Verbrauch (kWh)</label>
             <input type="number" id="nkZaehlerVerbrauch" placeholder="500" readonly>
           </div>
@@ -993,8 +997,16 @@
     function calcStromVerbrauch() {
       const alt = parseFloat(document.getElementById('nkZaehlerAlt').value) || 0;
       const neu = parseFloat(document.getElementById('nkZaehlerNeu').value) || 0;
+      const preis = parseFloat(document.getElementById('nkStromPreis').value) || 0;
+      
       if (neu >= alt) {
-        document.getElementById('nkZaehlerVerbrauch').value = (neu - alt).toFixed(1);
+        const verbrauch = neu - alt;
+        document.getElementById('nkZaehlerVerbrauch').value = verbrauch.toFixed(1);
+        
+        if (preis > 0) {
+          const gesamtKosten = verbrauch * preis;
+          document.getElementById('nkBetrag').value = gesamtKosten.toFixed(2);
+        }
       } else {
         document.getElementById('nkZaehlerVerbrauch').value = '';
       }
@@ -1074,6 +1086,7 @@
       let zaehlerNr = document.getElementById('nkZaehlerNr').value;
       let zaehlerAlt = document.getElementById('nkZaehlerAlt').value;
       let zaehlerNeu = document.getElementById('nkZaehlerNeu').value;
+      let stromPreis = document.getElementById('nkStromPreis').value;
       let verbrauch = document.getElementById('nkZaehlerVerbrauch').value;
 
       const saveEntry = (fileDataUrl = null, fileName = null) => {
@@ -1087,6 +1100,7 @@
           zaehlerNr: kat === 'Stromkosten' ? zaehlerNr : null,
           zaehlerAlt: kat === 'Stromkosten' ? zaehlerAlt : null,
           zaehlerNeu: kat === 'Stromkosten' ? zaehlerNeu : null,
+          stromPreis: kat === 'Stromkosten' ? stromPreis : null,
           verbrauch: kat === 'Stromkosten' ? verbrauch : null,
           fileDataUrl: fileDataUrl,
           fileName: fileName
@@ -1162,7 +1176,7 @@
 
           if (nk.zuordnung === wohnung) {
             if (nk.kategorie === 'Stromkosten') {
-              let details = nk.verbrauch ? ` (${nk.verbrauch} kWh)` : '';
+              let details = nk.verbrauch ? ` (${nk.verbrauch} kWh${nk.stromPreis ? ' @ ' + nk.stromPreis + ' €/kWh' : ''})` : '';
               verteiler = `Direktzuordnung nach geeichtem Zwischenzähler${details}`;
             } else if (nk.kategorie === 'Brunata') {
               verteiler = "Direktübernahme laut Brunata-Einzelabrechnung (Anlage)";
@@ -1513,7 +1527,7 @@
             ? `<span class="file-link" onclick="openDataUrlInNewTab(nebenkosten[${i}].fileDataUrl, '${escapeHtml(nk.fileName || 'Beleg')}')">📷 Beleg anzeigen</span>` 
             : '-';
           
-          let verbrauchInfo = nk.verbrauch ? ` [${nk.verbrauch} kWh]` : '';
+          let verbrauchInfo = nk.verbrauch ? ` [${nk.verbrauch} kWh${nk.stromPreis ? ' @ ' + nk.stromPreis + ' €/kWh' : ''}]` : '';
 
           nkHtml += `
             <tr>

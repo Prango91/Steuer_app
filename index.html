@@ -701,6 +701,42 @@
     testOption.innerText = '🧪 Testmodus / Übungsmodus';
     yearSelect.appendChild(testOption);
 
+    /* Hilfsfunktion: Wandelt Base64 Data-URL in Blob um und öffnet/lädt sie zuverlässig herunter */
+    function openDataUrlInNewTab(dataUrl, fileName = 'Dokument') {
+      try {
+        const arr = dataUrl.split(',');
+        const mime = arr[0].match(/:(.*?);/)[1];
+        const bstr = atob(arr[1]);
+        let n = bstr.length;
+        const u8arr = new Uint8Array(n);
+        while (n--) {
+          u8arr[n] = bstr.charCodeAt(n);
+        }
+        const blob = new Blob([u8arr], { type: mime });
+        const blobUrl = URL.createObjectURL(blob);
+
+        const link = document.createElement('a');
+        link.href = blobUrl;
+
+        if (mime === 'application/pdf') {
+          link.download = fileName.endsWith('.pdf') ? fileName : fileName + '.pdf';
+        } else {
+          link.target = '_blank';
+          link.download = fileName;
+        }
+
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+
+      } catch (e) {
+        console.error("Fehler beim Öffnen der Datei:", e);
+        alert("Die Datei konnte nicht geöffnet werden.");
+      }
+    }
+
     function escapeHtml(text) {
       if (!text) return '';
       return String(text)
@@ -1064,7 +1100,6 @@
       alert(`✅ "${title}" (${betrag.toFixed(2)} €) wurde übernommen!`);
     }
 
-    /* KORRIGIERTER MIETVERTRAGS-UPLOAD */
     document.getElementById('vertragForm').addEventListener('submit', (e) => {
       e.preventDefault();
       
@@ -1079,7 +1114,6 @@
       }
 
       const addVertragEntry = (dataUrl = null, filename = "Kein Anhang") => {
-        // Bestehenden Vertrag für diese Wohnung ersetzen
         const existingIdx = vertraege.findIndex(v => v.zuordnung === zuordnungVal);
         const newEntry = {
           zuordnung: zuordnungVal,
@@ -1101,7 +1135,6 @@
       };
 
       if (file) {
-        // Datei vorhanden -> per FileReader einlesen
         const reader = new FileReader();
         reader.onload = function(evt) {
           addVertragEntry(evt.target.result, file.name);
@@ -1111,7 +1144,6 @@
         };
         reader.readAsDataURL(file);
       } else {
-        // Keine Datei hochgeladen -> Daten (Name/Wohnung) trotzdem speichern
         addVertragEntry();
       }
     });
@@ -1237,7 +1269,9 @@
       nebenkosten.forEach((nk, i) => {
         if (isTestMode || nk.datum.startsWith(selectedYearVal)) {
           summeNK += parseFloat(nk.betrag);
-          const fileLink = nk.fileDataUrl ? `<a href="${nk.fileDataUrl}" target="_blank" class="file-link">📷 Beleg anzeigen</a>` : '-';
+          const fileLink = nk.fileDataUrl 
+            ? `<span class="file-link" onclick="openDataUrlInNewTab(nebenkosten[${i}].fileDataUrl, '${escapeHtml(nk.fileName || 'Beleg')}')">📷 Beleg anzeigen</span>` 
+            : '-';
           nkHtml += `
             <tr>
               <td>${escapeHtml(nk.datum)}</td>
@@ -1275,7 +1309,9 @@
       let bHtml = '';
       belege.forEach((b, i) => {
         if (isTestMode || b.datum.startsWith(selectedYearVal)) {
-          const fileLink = b.fileDataUrl ? `<a href="${b.fileDataUrl}" target="_blank" class="file-link">📷 Beleg anzeigen</a>` : '-';
+          const fileLink = b.fileDataUrl 
+            ? `<span class="file-link" onclick="openDataUrlInNewTab(belege[${i}].fileDataUrl, '${escapeHtml(b.fileName || 'Beleg')}')">📷 Beleg anzeigen</span>` 
+            : '-';
           bHtml += `
             <tr>
               <td>${escapeHtml(b.datum)}</td>
@@ -1313,7 +1349,7 @@
       const vBody = document.querySelector('#vertragTabelle tbody');
       vBody.innerHTML = vertraege.map((v, i) => {
         const fileDisplay = v.dataUrl 
-          ? `<a href="${v.dataUrl}" target="_blank" style="color:#007aff;">📄 ${escapeHtml(v.filename)}</a>` 
+          ? `<span class="file-link" onclick="openDataUrlInNewTab(vertraege[${i}].dataUrl, '${escapeHtml(v.filename)}')">📄 ${escapeHtml(v.filename)}</span>` 
           : `<span style="color:#8e8e93;">Kein Dokument</span>`;
 
         return `

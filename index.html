@@ -860,7 +860,7 @@
     <div style="margin-top:20px; font-size:12px; border:1px dashed #aaa; padding:10px; background:#fff8e7; line-height:1.5;">
       <strong>Hinweis nach § 35a EStG (Haushaltsnahe Dienstleistungen &amp; Handwerkerleistungen):</strong><br>
       In den oben genannten Betriebskosten sind folgende absetzbare Lohn- und Arbeitskosten enthalten:<br>
-      • Arbeitskosten Haushaltsnahe Dienstleistungen / Schornsteinfeger / Wartungsarbeiten / Brunata Messdienst: <strong><span id="p35aBetrag"></span> €</strong><br>
+      • Arbeitskosten Haushaltsnahe Dienstleistungen / Schornsteinfeger / Wartungsarbeiten: <strong><span id="p35aBetrag"></span> €</strong><br>
       <em>Sämtliche Beträge wurden unbar beglichen. Die Originalbelege liegen beim Vermieter vor und können bei Bedarf eingesehen werden.</em>
     </div>
 
@@ -1034,6 +1034,8 @@
         gInput.value = "Schornsteinfegermeister";
       } else if (kat === 'Grundsteuer' || kat === 'Straßenreinigung' || kat === 'Müll') {
         gInput.value = "Stadt Buxtehude";
+      } else if (kat === 'Versicherung') {
+        gInput.value = "";
       }
     }
 
@@ -1198,7 +1200,8 @@
 
           mieterGesamtAnteil += anteil;
 
-          if (['Schornsteinfeger', 'Rauchmelder-Wartung', 'Heizung-Wartung', 'Brunata'].includes(nk.kategorie) || (nk.geschaeft && nk.geschaeft.toLowerCase().includes('brunata'))) {
+          // BRUNATA AUS § 35a ENTFERNT:
+          if (['Schornsteinfeger', 'Rauchmelder-Wartung', 'Heizung-Wartung'].includes(nk.kategorie)) {
             paragraph35aGesamt += anteil;
           }
 
@@ -1247,7 +1250,7 @@
           Gegen diese Abrechnung kann innerhalb von 12 Monaten nach Zugang schriftlich Einwand erhoben werden (§ 556 Abs. 3 BGB).<br><br>
           Mit freundlichen Grüßen,<br><br><br>
           ____________________________________<br>
-          Daniel Prang (Vermieter)
+          Daniel Prang (Vermisster)
         `;
       } else if (differenz < 0) {
         const guthabenBetrag = Math.abs(differenz).toFixed(2);
@@ -1257,7 +1260,7 @@
           Gegen diese Abrechnung kann innerhalb von 12 Monaten nach Zugang schriftlich Einwand erhoben werden (§ 556 Abs. 3 BGB).<br><br>
           Mit freundlichen Grüßen,<br><br><br>
           ____________________________________<br>
-          Daniel Prang (Vermieter)
+          Daniel Prang (Vermisster)
         `;
       } else {
         document.getElementById('pFinalResult').innerHTML = `<strong>Abrechnung schließt ausgeglichen ab: 0.00 €</strong>`;
@@ -1265,7 +1268,7 @@
           Die Abrechnung schließt ausgeglichen ab. Es besteht weder eine Nachforderung noch ein Guthaben.<br><br>
           Mit freundlichen Grüßen,<br><br><br>
           ____________________________________<br>
-          Daniel Prang (Vermieter)
+          Daniel Prang (Vermisster)
         `;
       }
 

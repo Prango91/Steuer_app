@@ -627,7 +627,7 @@
     <h2>Betriebskostenabrechnung für das Kalenderjahr <span id="pJahr"></span></h2>
     
     <div style="margin-bottom:20px; font-size:14px; line-height:1.5;">
-      <strong>Vermisster / Vermieter:</strong> Daniel Prang<br>
+      <strong>Vermieter:</strong> Daniel Prang<br>
       <strong>Mietobjekt / Einheit:</strong> <span id="pEinheit"></span> (Wohnfläche: <span id="pFlaeche"></span> m² / Gesamt: 170 m²)<br>
       <strong>Abrechnungszeitraum:</strong> 01.01.<span id="pJahrPeriod1"></span> bis 31.12.<span id="pJahrPeriod2"></span><br>
       <strong>Mieter:</strong> <span id="pMieterName"></span>
@@ -658,15 +658,13 @@
 
     <div style="margin-top:20px; font-size:12px; border:1px dashed #aaa; padding:10px; background:#fff8e7;">
       <strong>Hinweis nach § 35a EStG (Haushaltsnahe Dienstleistungen &amp; Handwerkerleistungen):</strong><br>
-      In den oben genannten Betriebskosten sind folgende absetzbare Lohnkosten/Dienstleistungen enthalten:<br>
-      • Arbeitskosten Haushaltsnahe Dienstleistungen / Schornsteinfeger / Wartungsarbeiten / Brunata Messdienst: <strong><span id="p35aBetrag"></span> €</strong>
+      In den oben genannten Betriebskosten sind folgende absetzbare Lohn- und Arbeitskosten enthalten:<br>
+      • Arbeitskosten Haushaltsnahe Dienstleistungen / Schornsteinfeger / Wartungsarbeiten / Brunata Messdienst: <strong><span id="p35aBetrag"></span> €</strong><br>
+      <em>Sämtliche Beträge wurden unbar beglichen. Die Originalbelege liegen beim Vermieter vor und können bei Bedarf eingesehen werden.</em>
     </div>
 
-    <div style="margin-top:30px; font-size:12px; line-height:1.5;">
-      Bitte überweisen Sie den Nachforderungsbetrag bis zum <strong><span id="pZahlungsziel"></span></strong> auf das bekannte Mietkonto. Im Falle eines Guthabens wird dieses zeitnah auf Ihr Konto überwiesen.<br><br>
-      Mit freundlichen Grüßen,<br><br><br>
-      ____________________________________<br>
-      Daniel Prang (Vermisster / Vermieter)
+    <div style="margin-top:30px; font-size:12px; line-height:1.5;" id="pZahlungshinweis">
+      <!-- Dynamischer Text für Nachforderung oder Guthaben -->
     </div>
 
     <div style="margin-top:30px;" class="no-print">
@@ -882,7 +880,7 @@
       const displayYear = isTestMode ? `${currentYear} (Übung)` : selectedYearVal;
 
       const mieterObj = vertraege.find(v => v.zuordnung === wohnung);
-      const mieterName = mieterObj ? mieterObj.name : "________________________";
+      const mieterName = mieterObj ? mieterObj.name : "Max Mustermann (Platzhalter)";
 
       const isEG = wohnung.includes('EG');
       const qm = isEG ? 70 : 100;
@@ -953,14 +951,33 @@
 
       let targetDate = new Date();
       targetDate.setDate(targetDate.getDate() + 30);
-      document.getElementById('pZahlungsziel').innerText = targetDate.toLocaleDateString('de-DE');
+      const zahlungszielStr = targetDate.toLocaleDateString('de-DE');
 
       if (differenz > 0) {
         document.getElementById('pFinalResult').innerHTML = `<strong>Nachforderung zu Gunsten des Vermieters: <span style="color:#d9534f;">+ ${differenz.toFixed(2)} €</span></strong>`;
+        document.getElementById('pZahlungshinweis').innerHTML = `
+          Bitte überweisen Sie den Nachforderungsbetrag in Höhe von <strong>${differenz.toFixed(2)} €</strong> bis zum <strong>${zahlungszielStr}</strong> auf das bekannte Mietkonto.<br><br>
+          Mit freundlichen Grüßen,<br><br><br>
+          ____________________________________<br>
+          Daniel Prang (Vermieter)
+        `;
       } else if (differenz < 0) {
-        document.getElementById('pFinalResult').innerHTML = `<strong>Guthaben zu Gunsten des Mieters: <span style="color:#5cb85c;">${differenz.toFixed(2)} €</span></strong>`;
+        const guthabenBetrag = Math.abs(differenz).toFixed(2);
+        document.getElementById('pFinalResult').innerHTML = `<strong>Guthaben zu Gunsten des Mieters: <span style="color:#34c759;">${guthabenBetrag} €</span></strong>`;
+        document.getElementById('pZahlungshinweis').innerHTML = `
+          Das Guthaben in Höhe von <strong>${guthabenBetrag} €</strong> wird zeitnah auf Ihr bekanntes Bankkonto überweisen.<br><br>
+          Mit freundlichen Grüßen,<br><br><br>
+          ____________________________________<br>
+          Daniel Prang (Vermieter)
+        `;
       } else {
         document.getElementById('pFinalResult').innerHTML = `<strong>Abrechnung schließt ausgeglichen ab: 0.00 €</strong>`;
+        document.getElementById('pZahlungshinweis').innerHTML = `
+          Die Abrechnung schließt ausgeglichen ab. Es besteht weder eine Nachforderung noch ein Guthaben.<br><br>
+          Mit freundlichen Grüßen,<br><br><br>
+          ____________________________________<br>
+          Daniel Prang (Vermieter)
+        `;
       }
 
       document.getElementById('p35aBetrag').innerText = paragraph35aGesamt.toFixed(2);

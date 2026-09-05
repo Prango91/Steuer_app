@@ -1298,7 +1298,7 @@
           Gegen diese Abrechnung kann innerhalb von 12 Monaten nach Zugang schriftlich Einwand erhoben werden (§ 556 Abs. 3 BGB).<br><br>
           Mit freundlichen Grüßen,<br><br><br>
           ____________________________________<br>
-          Daniel Prang (Vermieter)
+          Daniel Prang (Vermisster)
         `;
       } else if (differenz < 0) {
         const guthabenBetrag = Math.abs(differenz).toFixed(2);
@@ -1637,51 +1637,52 @@
           `;
         }
       });
-      bBody.innerHTML = bHtml || `<tr><td colspan="7" style="text-align:center; color:#8e8e93;">Keine Belege vorhanden</td></tr>`;
+      bBody.innerHTML = bHtml || `<tr><td colspan="7" style="text-align:center; color:#8e8e93;">Keine Belege für diesen Modus/Jahr erfasst</td></tr>`;
       document.getElementById('belegTabelleSumme').innerText = `${summeBelege.toFixed(2)} €`;
 
-      // 3. Fahrt-Tabelle & Summe
+      // 3. Fahrt-Tabelle & Summen
       const fBody = document.querySelector('#fahrtTabelle tbody');
       let fHtml = '';
       let summeKM = 0;
       let summeKosten = 0;
       fahrten.forEach((f, i) => {
         if (isTestMode || f.datum.startsWith(selectedYearVal)) {
-          summeKM += parseFloat(f.kmGesamt) || 0;
-          summeKosten += parseFloat(f.kosten) || 0;
+          summeKM += parseFloat(f.kmGesamt || 0);
+          summeKosten += parseFloat(f.kosten || 0);
           fHtml += `
             <tr>
               <td>${escapeHtml(f.datum)} ${escapeHtml(f.zeit)}</td>
               <td>${escapeHtml(f.start)}</td>
               <td>${escapeHtml(f.ziel)}</td>
               <td>${escapeHtml(f.grund)}</td>
-              <td>${escapeHtml(f.kmGesamt)} km</td>
-              <td>${escapeHtml(f.kosten)} €</td>
+              <td>${parseFloat(f.kmGesamt || 0).toFixed(1)} km</td>
+              <td>${parseFloat(f.kosten || 0).toFixed(2)} €</td>
               <td><button type="button" class="btn-danger" onclick="deleteFahrt(${i})">❌</button></td>
             </tr>
           `;
         }
       });
-      fBody.innerHTML = fHtml || `<tr><td colspan="7" style="text-align:center; color:#8e8e93;">Keine Fahrten vorhanden</td></tr>`;
+      fBody.innerHTML = fHtml || `<tr><td colspan="7" style="text-align:center; color:#8e8e93;">Keine Fahrten für diesen Modus/Jahr erfasst</td></tr>`;
       document.getElementById('fahrtTabelleSummeKM').innerText = `${summeKM.toFixed(1)} km`;
       document.getElementById('fahrtTabelleSummeEuro').innerText = `${summeKosten.toFixed(2)} €`;
 
-      // 4. Mietverträge
+      // 4. Mietverträge-Tabelle
       const vBody = document.querySelector('#vertragTabelle tbody');
-      vBody.innerHTML = vertraege.map((v, i) => {
-        const fileDisplay = v.dataUrl 
+      let vHtml = '';
+      vertraege.forEach((v, i) => {
+        const fileLink = v.dataUrl 
           ? `<span class="file-link" onclick="openDataUrlInNewTab(vertraege[${i}].dataUrl, '${escapeHtml(v.filename)}')">📄 ${escapeHtml(v.filename)}</span>` 
-          : `<span style="color:#8e8e93;">Kein Dokument</span>`;
-
-        return `
+          : 'Kein Anhang';
+        vHtml += `
           <tr>
             <td>${escapeHtml(v.zuordnung)}</td>
             <td>${escapeHtml(v.name)}</td>
-            <td>${fileDisplay}</td>
+            <td>${fileLink}</td>
             <td><button type="button" class="btn-danger" onclick="deleteVertrag(${i})">❌</button></td>
           </tr>
         `;
-      }).join('') || `<tr><td colspan="4" style="text-align:center; color:#8e8e93;">Keine Mietverträge erfasst</td></tr>`;
+      });
+      vBody.innerHTML = vHtml || `<tr><td colspan="4" style="text-align:center; color:#8e8e93;">Keine Mietverträge hinterlegt</td></tr>`;
 
       updateChecklistStatus();
     }
@@ -1690,6 +1691,7 @@
       window.print();
     }
 
+    // Initialisierung beim Seitenstart
     loadData();
     autoFillDienstleister();
 </script>

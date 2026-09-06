@@ -3,26 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Vermieter-Tool Pro">
-
-  <title>Vermieter-Tool Pro – Steuer-Manager & Nebenkostenabrechnung</title>
-
-  <!-- =========================================================
-       LEAFLET
-       ========================================================= -->
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    crossorigin=""
-  />
-
-  <script
-    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    crossorigin="">
-  </script>
+  <meta name="apple-mobile-web-app-title" content="Steuer-App">
+  <title>Vermieter-Tool Pro - Steuer-Manager & Nebenkostenabrechnung</title>
 
   <style>
     :root {
@@ -30,63 +14,37 @@
       --primary-hover: #005bb5;
       --primary-active: #004494;
       --primary-light: #e8f2fc;
-
       --success: #34c759;
       --success-hover: #28a745;
-
       --warning: #ff9500;
       --warning-hover: #d97e00;
-
       --danger: #ff3b30;
-
       --purple: #5856d6;
       --purple-hover: #4442b1;
-
       --bg-color: #f5f5f7;
       --card-bg: #ffffff;
       --text-color: #1d1d1f;
       --text-muted: #86868b;
       --border-color: #e5e5ea;
-
       --border-radius: 16px;
       --focus-ring: rgba(0, 113, 227, 0.25);
-
       --box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
       --hover-bg: #f2f2f7;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "SF Pro Display",
-        "SF Pro Text",
-        "Segoe UI",
-        Roboto,
-        Helvetica,
-        Arial,
-        sans-serif;
-
-      background: var(--bg-color);
-      margin: 0;
-      padding: 40px 20px;
-      color: var(--text-color);
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+      background: var(--bg-color); 
+      margin: 0; 
+      padding: 40px 20px; 
+      color: var(--text-color); 
       line-height: 1.5;
       -webkit-font-smoothing: antialiased;
     }
 
-    .container {
-      max-width: 1120px;
-      margin: 0 auto;
-    }
+    .container { max-width: 1120px; margin: 0 auto; }
 
     header {
       display: flex;
@@ -111,10 +69,10 @@
       letter-spacing: -0.5px;
     }
 
-    h2 {
+    h2 { 
       font-size: 20px;
       font-weight: 600;
-      color: var(--text-color);
+      color: var(--text-color); 
       margin-top: 0;
       margin-bottom: 20px;
       display: flex;
@@ -131,60 +89,51 @@
       color: var(--text-color);
     }
 
-    .card {
-      background: var(--card-bg);
-      border-radius: var(--border-radius);
-      padding: 28px;
-      margin-bottom: 28px;
-      box-shadow: var(--box-shadow);
+    .card { 
+      background: var(--card-bg); 
+      border-radius: var(--border-radius); 
+      padding: 28px; 
+      margin-bottom: 28px; 
+      box-shadow: var(--box-shadow); 
       border: 1px solid rgba(0, 0, 0, 0.04);
     }
 
-    label {
-      display: block;
-      font-weight: 600;
-      margin-top: 14px;
-      margin-bottom: 6px;
+    label { 
+      display: block; 
+      font-weight: 600; 
+      margin-top: 14px; 
+      margin-bottom: 6px; 
       font-size: 13px;
       color: #424245;
       letter-spacing: -0.1px;
     }
 
-    input,
-    select,
-    button,
-    textarea {
-      width: 100%;
-      padding: 12px 14px;
-      border-radius: 10px;
-      border: 1px solid var(--border-color);
-      font-size: 14px;
+    input, select, button, textarea { 
+      width: 100%; 
+      padding: 12px 14px; 
+      border-radius: 10px; 
+      border: 1px solid var(--border-color); 
+      font-size: 14px; 
       transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
       font-family: inherit;
       background-color: #fafafa;
     }
 
-    input:focus,
-    select:focus,
-    textarea:focus {
+    input:focus, select:focus, textarea:focus {
       outline: none;
       border-color: var(--primary);
       background-color: #fff;
       box-shadow: 0 0 0 4px var(--focus-ring);
     }
 
-    button {
-      cursor: pointer;
-    }
-
-    .btn {
-      background: var(--primary);
-      color: white;
-      border: none;
-      font-weight: 600;
-      margin-top: 20px;
-      cursor: pointer;
-      border-radius: 10px;
+    .btn { 
+      background: var(--primary); 
+      color: white; 
+      border: none; 
+      font-weight: 600; 
+      margin-top: 20px; 
+      cursor: pointer; 
+      border-radius: 10px; 
       padding: 12px 20px;
       display: inline-flex;
       align-items: center;
@@ -195,42 +144,32 @@
       width: auto;
     }
 
-    .btn:hover {
-      background: var(--primary-hover);
+    .btn:hover { 
+      background: var(--primary-hover); 
       transform: translateY(-1px);
       box-shadow: 0 4px 12px rgba(0, 113, 227, 0.25);
     }
-
-    .btn-green {
-      background: var(--success);
+    
+    .btn-green { 
+      background: var(--success); 
       box-shadow: 0 2px 6px rgba(52, 199, 89, 0.15);
     }
+    .btn-green:hover { background: var(--success-hover); }
 
-    .btn-green:hover {
-      background: var(--success-hover);
-    }
-
-    .btn-orange {
-      background: #fff5e6;
+    .btn-orange { 
+      background: #fff5e6; 
       color: var(--warning-hover);
       border: 1px solid rgba(255, 149, 0, 0.3);
-      margin-top: 0;
+      margin-top: 0; 
       box-shadow: none;
     }
+    .btn-orange:hover { background: var(--warning); color: white; }
 
-    .btn-orange:hover {
-      background: var(--warning);
-      color: white;
-    }
-
-    .btn-purple {
-      background: var(--purple);
+    .btn-purple { 
+      background: var(--purple); 
       box-shadow: 0 2px 6px rgba(88, 86, 214, 0.15);
     }
-
-    .btn-purple:hover {
-      background: var(--purple-hover);
-    }
+    .btn-purple:hover { background: var(--purple-hover); }
 
     .btn-secondary {
       background: #e5e5ea;
@@ -238,53 +177,23 @@
       box-shadow: none;
       margin-top: 0;
     }
+    .btn-secondary:hover { background: #d1d1d6; }
 
-    .btn-secondary:hover {
-      background: #d1d1d6;
-    }
-
-    .btn-danger {
-      background: #fff0f0;
+    .btn-danger { 
+      background: #fff0f0; 
       color: var(--danger);
       border: 1px solid rgba(255, 59, 48, 0.2);
-      margin: 0;
-      padding: 6px 12px;
-      width: auto;
+      margin: 0; 
+      padding: 6px 12px; 
+      width: auto; 
       font-size: 13px;
       border-radius: 8px;
       box-shadow: none;
+      cursor: pointer;
     }
+    .btn-danger:hover { background: var(--danger); color: white; }
 
-    .btn-danger:hover {
-      background: var(--danger);
-      color: white;
-    }
-
-    .btn-navigation {
-      background: #1d1d1f;
-      color: white;
-    }
-
-    .btn-navigation:hover {
-      background: #000;
-    }
-
-    .btn-map {
-      background: #eef5ff;
-      color: var(--primary);
-      border: 1px solid rgba(0, 113, 227, 0.2);
-      box-shadow: none;
-    }
-
-    .btn-map:hover {
-      background: var(--primary);
-      color: white;
-    }
-
-    /* =========================================================
-       AUTOCOMPLETE
-       ========================================================= */
-
+    /* AUTOCOMPLETE & ROUTEN STYLES */
     .autocomplete-wrapper {
       position: relative;
     }
@@ -294,12 +203,12 @@
       top: 100%;
       left: 0;
       right: 0;
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
+      background: var(--card-bg, #ffffff);
+      border: 1px solid var(--border-color, #e5e5ea);
       border-radius: 8px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      z-index: 2000;
-      max-height: 220px;
+      z-index: 1000;
+      max-height: 200px;
       overflow-y: auto;
     }
 
@@ -307,7 +216,7 @@
       padding: 10px 12px;
       cursor: pointer;
       font-size: 13px;
-      border-bottom: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color, #f2f2f7);
     }
 
     .suggestion-item:last-child {
@@ -315,88 +224,8 @@
     }
 
     .suggestion-item:hover {
-      background-color: var(--hover-bg);
+      background-color: var(--hover-bg, #f2f2f7);
     }
-
-    /* =========================================================
-       KARTE
-       ========================================================= */
-
-    .map-wrapper {
-      margin-top: 20px;
-      margin-bottom: 18px;
-      border-radius: 14px;
-      overflow: hidden;
-      border: 1px solid var(--border-color);
-      box-shadow: 0 3px 12px rgba(0,0,0,0.05);
-      background: #e9ecef;
-    }
-
-    #routeMap {
-      width: 100%;
-      height: 390px;
-      z-index: 1;
-    }
-
-    .map-info {
-      background: #f8f9fa;
-      border-top: 1px solid var(--border-color);
-      padding: 14px 16px;
-      font-size: 13px;
-    }
-
-    .map-info strong {
-      color: var(--text-color);
-    }
-
-    .route-summary {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-top: 14px;
-    }
-
-    .route-stat {
-      background: #f8f9fa;
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 14px;
-      text-align: center;
-    }
-
-    .route-stat-label {
-      display: block;
-      color: var(--text-muted);
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: .5px;
-      margin-bottom: 4px;
-    }
-
-    .route-stat-value {
-      font-size: 18px;
-      font-weight: 700;
-    }
-
-    .navigation-buttons {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 14px;
-    }
-
-    .navigation-buttons .btn {
-      margin-top: 0;
-    }
-
-    .leaflet-popup-content {
-      font-size: 13px;
-      line-height: 1.5;
-    }
-
-    /* =========================================================
-       TABLES
-       ========================================================= */
 
     .table-responsive {
       width: 100%;
@@ -407,39 +236,32 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.02);
     }
 
-    table {
-      width: 100%;
-      border-collapse: separate;
+    table { 
+      width: 100%; 
+      border-collapse: separate; 
       border-spacing: 0;
       min-width: 600px;
       background: white;
     }
 
-    th,
-    td {
-      border-bottom: 1px solid var(--border-color);
-      padding: 14px 16px;
-      text-align: left;
-      font-size: 13.5px;
-      vertical-align: top;
+    th, td { 
+      border-bottom: 1px solid var(--border-color); 
+      padding: 14px 16px; 
+      text-align: left; 
+      font-size: 13.5px; 
     }
 
-    th {
-      background: #f9f9fb;
-      font-weight: 600;
+    th { 
+      background: #f9f9fb; 
+      font-weight: 600; 
       color: #6e6e73;
       text-transform: uppercase;
       font-size: 11px;
       letter-spacing: 0.5px;
     }
 
-    tr:last-child td {
-      border-bottom: none;
-    }
-
-    tr:nth-child(even) td {
-      background-color: #fcfcfd;
-    }
+    tr:last-child td { border-bottom: none; }
+    tr:nth-child(even) td { background-color: #fcfcfd; }
 
     tfoot td {
       background-color: #f4f4f7 !important;
@@ -448,24 +270,16 @@
       color: var(--text-color);
     }
 
-    .flex-row {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-
-    .flex-row > div {
-      flex: 1;
-      min-width: 220px;
-    }
-
-    .info-box {
-      background: var(--primary-light);
-      border-left: 4px solid var(--primary);
-      padding: 14px 18px;
-      margin-top: 18px;
-      border-radius: 8px;
-      font-weight: 500;
+    .flex-row { display: flex; gap: 16px; flex-wrap: wrap; }
+    .flex-row > div { flex: 1; min-width: 220px; }
+    
+    .info-box { 
+      background: var(--primary-light); 
+      border-left: 4px solid var(--primary); 
+      padding: 14px 18px; 
+      margin-top: 18px; 
+      border-radius: 8px; 
+      font-weight: 500; 
       font-size: 13.5px;
       color: #004085;
       line-height: 1.6;
@@ -494,53 +308,40 @@
       margin-top: 10px;
       display: none;
     }
-
-    .checklist-item {
-      border: 1px solid var(--border-color);
-      padding: 20px;
-      border-radius: 12px;
-      margin-bottom: 16px;
-      background: #fafafa;
-      transition: all 0.2s ease;
+    
+    .checklist-item { 
+      border: 1px solid var(--border-color); 
+      padding: 20px; 
+      border-radius: 12px; 
+      margin-bottom: 16px; 
+      background: #fafafa; 
+      transition: all 0.2s ease; 
     }
-
-    .checklist-header {
-      font-weight: 600;
-      font-size: 15px;
-      color: var(--text-color);
-      margin-bottom: 4px;
-    }
-
-    .checklist-sub {
-      font-size: 12.5px;
-      color: var(--text-muted);
-      margin-bottom: 14px;
-    }
-
-    .year-select-box {
-      background: linear-gradient(135deg, var(--primary), #005bb5);
-      color: white;
-      border-radius: var(--border-radius);
-      padding: 20px 24px;
-      margin-bottom: 28px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+    .checklist-header { font-weight: 600; font-size: 15px; color: var(--text-color); margin-bottom: 4px; }
+    .checklist-sub { font-size: 12.5px; color: var(--text-muted); margin-bottom: 14px; }
+    
+    .year-select-box { 
+      background: linear-gradient(135deg, var(--primary), #005bb5); 
+      color: white; 
+      border-radius: var(--border-radius); 
+      padding: 20px 24px; 
+      margin-bottom: 28px; 
+      display: flex; 
+      align-items: center; 
+      justify-content: space-between; 
       box-shadow: 0 8px 20px rgba(0, 113, 227, 0.25);
     }
-
-    .year-select-box.testmode {
-      background: linear-gradient(135deg, var(--warning), #d97e00);
+    .year-select-box.testmode { 
+      background: linear-gradient(135deg, var(--warning), #d97e00); 
       box-shadow: 0 8px 20px rgba(255, 149, 0, 0.25);
     }
-
-    .year-select-box select {
-      width: auto;
-      font-size: 15px;
-      font-weight: 600;
-      background: white;
-      color: var(--text-color);
-      border: none;
+    .year-select-box select { 
+      width: auto; 
+      font-size: 15px; 
+      font-weight: 600; 
+      background: white; 
+      color: var(--text-color); 
+      border: none; 
       padding: 10px 16px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
@@ -555,1465 +356,1739 @@
       color: var(--text-color);
     }
 
-    .empty-state {
-      padding: 28px;
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 13px;
-    }
-
-    /* =========================================================
-       PRINT
-       ========================================================= */
-
+    /* DRUCK-MODUS */
     @media print {
-      body {
-        background: white;
-        padding: 0;
-        color: black;
-      }
+      body { background: white; padding: 0; color: black; }
+      .container { max-width: 100%; margin: 0; padding: 0; }
+      button, .no-print, form, .checklist-item, #yearBox, header, .year-select-box, input, select, textarea { display: none !important; }
+      
+      body.print-nk-mode .card, body.print-nk-mode #exportCard { display: none !important; }
+      body.print-nk-mode #printArea { display: block !important; border: none !important; box-shadow: none !important; padding: 0 !important; }
 
-      .container {
-        max-width: 100%;
-        margin: 0;
-        padding: 0;
-      }
+      body.print-tax-mode #printArea { display: none !important; }
+      body.print-tax-mode .card { display: none !important; }
+      body.print-tax-mode #exportCard { display: block !important; border: none !important; box-shadow: none !important; padding: 0 !important; }
 
-      button,
-      .no-print,
-      form,
-      .checklist-item,
-      #yearBox,
-      header,
-      .year-select-box,
-      input,
-      select,
-      textarea,
-      .map-wrapper {
-        display: none !important;
-      }
-
-      body.print-nk-mode .card,
-      body.print-nk-mode #exportCard {
-        display: none !important;
-      }
-
-      body.print-nk-mode #printArea {
-        display: block !important;
-        border: none !important;
-        box-shadow: none !important;
-        padding: 0 !important;
-      }
-
-      body.print-tax-mode #printArea {
-        display: none !important;
-      }
-
-      body.print-tax-mode .card {
-        display: none !important;
-      }
-
-      body.print-tax-mode #exportCard {
-        display: block !important;
-        border: none !important;
-        box-shadow: none !important;
-        padding: 0 !important;
-      }
-
-      th,
-      td {
-        border-bottom: 1px solid #ccc !important;
-      }
-
-      tr {
-        page-break-inside: avoid;
-      }
-    }
-
-    /* =========================================================
-       MOBILE
-       ========================================================= */
-
-    @media (max-width: 700px) {
-      body {
-        padding: 20px 12px;
-      }
-
-      .card {
-        padding: 18px;
-        margin-bottom: 18px;
-      }
-
-      h1 {
-        font-size: 25px;
-      }
-
-      h2 {
-        font-size: 18px;
-      }
-
-      .header-buttons {
-        width: 100%;
-      }
-
-      .header-buttons .btn {
-        flex: 1;
-      }
-
-      .year-select-box {
-        padding: 16px;
-        align-items: flex-start;
-        gap: 12px;
-        flex-direction: column;
-      }
-
-      .year-select-box select {
-        width: 100%;
-      }
-
-      #routeMap {
-        height: 320px;
-      }
-
-      .route-summary {
-        grid-template-columns: 1fr;
-      }
-
-      .navigation-buttons {
-        flex-direction: column;
-      }
-
-      .navigation-buttons .btn {
-        width: 100%;
-      }
-
-      .btn {
-        width: 100%;
-      }
-
-      .btn-danger {
-        width: auto;
-      }
+      th, td { border-bottom: 1px solid #ccc !important; }
+      tr { page-break-inside: avoid; }
     }
   </style>
 </head>
-
 <body>
 
 <div class="container">
-
-  <!-- =========================================================
-       HEADER
-       ========================================================= -->
-
   <header>
     <h1>🏠 Vermieter-Tool Pro</h1>
-
     <div class="header-buttons">
-
-      <button
-        class="btn btn-secondary"
-        onclick="exportBackupJSON()">
-        📤 Backup erstellen
-      </button>
-
-      <button
-        class="btn btn-secondary"
-        onclick="triggerImportJSON()">
-        📥 Backup einspielen
-      </button>
-
-      <input
-        type="file"
-        id="jsonImportInput"
-        accept="application/json"
-        style="display:none;"
-        onchange="importBackupJSON(event)">
-
-      <button
-        class="btn btn-secondary"
-        onclick="exportAnlageVCSV()">
-        📊 CSV Export
-      </button>
-
+      <button class="btn btn-secondary" onclick="exportBackupJSON()">📤 Backup erstellen</button>
+      <button class="btn btn-secondary" onclick="triggerImportJSON()">📥 Backup einspielen</button>
+      <input type="file" id="jsonImportInput" accept="application/json" style="display:none;" onchange="importBackupJSON(event)">
+      <button class="btn btn-secondary" onclick="exportAnlageVCSV()">📊 CSV Export (Anlage V)</button>
     </div>
   </header>
 
-
-  <!-- =========================================================
-       STEUERJAHR
-       ========================================================= -->
-
+  <!-- STEUERJAHR AUSWAHL -->
   <div class="year-select-box" id="yearBox">
-
-    <label
-      for="selectedYear"
-      id="yearBoxText"
-      style="font-size:16px;font-weight:bold;color:white;margin:0;">
-      📅 Aktives Steuerjahr:
-    </label>
-
-    <select
-      id="selectedYear"
-      onchange="switchYear()">
-    </select>
-
+    <label for="selectedYear" style="font-size: 16px; font-weight: bold; color: white; margin: 0;" id="yearBoxText">📅 Aktives Steuerjahr:</label>
+    <select id="selectedYear" onchange="switchYear()"></select>
   </div>
 
   <div id="alertBox" class="alert"></div>
 
-
-  <!-- =========================================================
-       1. FAHRTENBUCH / ROUTENPLANUNG
-       ========================================================= -->
-
+  <!-- 1. FAHRTENBUCH MIT ROUTENBERECHNER & AUTOCOMPLETE -->
   <div class="card">
-
-    <h2>
-      🚗 Fahrt fürs Fahrtenbuch erfassen
-    </h2>
-
-    <div
-      class="info-box"
-      style="margin-top:0;margin-bottom:18px;">
-
-      <strong>Kontrollfahrten / Vermietungsobjekt</strong><br>
-
-      Mit der integrierten Karte kannst du die Route kontrollieren,
-      die Straßenentfernung berechnen und die Fahrt anschließend
-      direkt ins Fahrtenbuch übernehmen.
-
-    </div>
-
-
-    <!-- SCHNELL-EINGABE -->
-
-    <div style="margin-bottom:16px;">
-
-      <label>
-        Schnell-Eingabe für Kontrollfahrten
-      </label>
-
+    <h2>🚗 Fahrt fürs Fahrtenbuch erfassen (§ 9 EStG Auswärtstätigkeit)</h2>
+    
+    <div style="margin-bottom: 16px;">
+      <label>Schnell-Eingabe (Vorlagen für Kontrollfahrten):</label>
       <div class="flex-row">
-
-        <button
-          type="button"
-          class="btn btn-orange"
-          onclick="fillQuickDrive(
-            'An den Geestbergen 12, 21614 Buxtehude',
-            'Wohnung EG'
-          )">
-
-          ⚡ Kontrollfahrt Wohnung EG
-
-        </button>
-
-        <button
-          type="button"
-          class="btn btn-orange"
-          onclick="fillQuickDrive(
-            'An den Geestbergen 12, 21614 Buxtehude',
-            'Wohnung OG'
-          )">
-
-          ⚡ Kontrollfahrt Wohnung OG
-
-        </button>
-
+        <button type="button" class="btn btn-orange" onclick="fillQuickDrive('An den Geestbergen 12, 21614 Buxtehude', 'EG')">⚡ Kontrollfahrt Wohnung EG</button>
+        <button type="button" class="btn btn-orange" onclick="fillQuickDrive('An den Geestbergen 12, 21614 Buxtehude', 'OG')">⚡ Kontrollfahrt Wohnung OG</button>
       </div>
-
     </div>
-
-
-    <!-- FORMULAR -->
 
     <form id="fahrtForm">
-
       <div class="flex-row">
-
         <div>
-
-          <label for="fDatum">
-            Datum
-          </label>
-
-          <input
-            type="date"
-            id="fDatum"
-            required>
-
+          <label for="fDatum">Datum</label>
+          <input type="date" id="fDatum" required>
         </div>
-
-
         <div>
-
-          <label for="fZeit">
-            Uhrzeit
-          </label>
-
-          <input
-            type="time"
-            id="fZeit"
-            required>
-
+          <label for="fZeit">Uhrzeit</label>
+          <input type="time" id="fZeit" required>
         </div>
-
       </div>
 
-
       <div class="flex-row">
-
         <div>
-
-          <label for="fStart">
-            Startadresse
-          </label>
-
+          <label for="fStart">Startadresse (z. B. Heimatadresse)</label>
           <div class="autocomplete-wrapper">
-
-            <input
-              type="text"
-              id="fStart"
-              placeholder="Straße, Hausnummer, PLZ Ort"
-              oninput="searchAddress('start', this.value)"
-              autocomplete="off"
-              required>
-
-            <div
-              id="startSuggestions"
-              class="suggestions-box">
-            </div>
-
+            <input type="text" id="fStart" placeholder="Straße, Hausnummer, PLZ Ort" oninput="searchAddress('start', this.value)" autocomplete="off" required>
+            <div id="startSuggestions" class="suggestions-box"></div>
           </div>
-
         </div>
-
-
         <div>
-
-          <label for="fZiel">
-            Zieladresse
-          </label>
-
+          <label for="fZiel">Zieladresse (Objekt / Werkstatt / Baumarkt)</label>
           <div class="autocomplete-wrapper">
-
-            <input
-              type="text"
-              id="fZiel"
-              placeholder="Straße, Hausnummer, PLZ Ort"
-              oninput="searchAddress('ziel', this.value)"
-              autocomplete="off"
-              required>
-
-            <div
-              id="zielSuggestions"
-              class="suggestions-box">
-            </div>
-
+            <input type="text" id="fZiel" placeholder="Straße, Hausnummer, PLZ Ort" oninput="searchAddress('ziel', this.value)" autocomplete="off" required>
+            <div id="zielSuggestions" class="suggestions-box"></div>
           </div>
-
         </div>
-
       </div>
 
-
-      <!-- =====================================================
-           KARTE
-           ===================================================== -->
-
-      <div class="map-wrapper">
-
-        <div id="routeMap"></div>
-
-        <div class="map-info">
-
-          <strong>🗺️ Routenkarte</strong><br>
-
-          Die Karte zeigt Start, Ziel und – sofern berechnet –
-          die tatsächliche Straßenroute.
-
-          <div
-            id="routeStatus"
-            style="margin-top:6px;color:#666;">
-            Route noch nicht berechnet.
-          </div>
-
-        </div>
-
-      </div>
-
-
-      <!-- ROUTENWERTE -->
-
-      <div
-        id="routeSummary"
-        class="route-summary"
-        style="display:none;">
-
-        <div class="route-stat">
-
-          <span class="route-stat-label">
-            Einfache Strecke
-          </span>
-
-          <span
-            class="route-stat-value"
-            id="routeKmOneWay">
-            –
-          </span>
-
-        </div>
-
-
-        <div class="route-stat">
-
-          <span class="route-stat-label">
-            Hin & Rück
-          </span>
-
-          <span
-            class="route-stat-value"
-            id="routeKmRoundTrip">
-            –
-          </span>
-
-        </div>
-
-
-        <div class="route-stat">
-
-          <span class="route-stat-label">
-            Fahrtkosten
-          </span>
-
-          <span
-            class="route-stat-value"
-            id="routeCost">
-            –
-          </span>
-
-        </div>
-
-      </div>
-
-
-      <!-- NAVIGATION -->
-
-      <div class="navigation-buttons">
-
-        <button
-          type="button"
-          class="btn btn-map"
-          onclick="calculateRouteDistance()">
-
-          📏 Strecke berechnen
-
+      <div style="margin-top: 10px; margin-bottom: 10px;">
+        <button type="button" class="btn btn-secondary" style="width: 100%;" onclick="calculateRouteDistance()">
+          🗺️ Strecke & km automatisch berechnen (OSRM)
         </button>
-
-        <button
-          type="button"
-          class="btn btn-navigation"
-          onclick="openOSMNavigation()">
-
-          🧭 Navigation in OpenStreetMap
-
-        </button>
-
       </div>
 
-
-      <label for="fGrund">
-        Anlass / Grund der Fahrt
-      </label>
-
-      <input
-        type="text"
-        id="fGrund"
-        placeholder="z. B. Kontrollfahrt / Wohnungsübergabe"
-        required>
-
+      <label for="fGrund">Anlass / Grund der Fahrt</label>
+      <input type="text" id="fGrund" placeholder="z. B. Müllentsorgung / Wohnungsübergabe Top 1" required>
 
       <div class="flex-row">
-
         <div>
-
-          <label for="fKm">
-            Gefahrene km (Hin & Rück)
-          </label>
-
-          <input
-            type="number"
-            id="fKm"
-            step="0.1"
-            placeholder="0.0"
-            oninput="updateFahrtCalc()"
-            required>
-
+          <label for="fKm">Gefahrene km (Hin & Rück)</label>
+          <input type="number" id="fKm" step="0.1" placeholder="0.0" oninput="updateFahrtCalc()" required>
         </div>
-
-
         <div>
-
-          <label for="fStunden">
-            Dauer der Abwesenheit (Stunden)
-          </label>
-
-          <input
-            type="number"
-            id="fStunden"
-            placeholder="z. B. 2.0"
-            step="0.5"
-            min="0"
-            oninput="updateFahrtCalc()">
-
+          <label for="fStunden">Dauer der Abwesenheit (Stunden)</label>
+          <input type="number" id="fStunden" placeholder="z. B. 2.0" step="0.5" oninput="updateFahrtCalc()">
         </div>
-
       </div>
-
 
       <div class="info-box" id="kmInfo">
-
-        📏 Fahrtkosten (0,30 €/km):
-        0.00 € |
-
-        🍱 Verpflegungspauschale:
-        0.00 €
-
-        <br>
-
-        💰 Gesamt absetzbarer Betrag:
-        0.00 €
-
+        📏 Fahrtkosten (0,30 €/km): 0.00 € | 🍱 Verpflegungspauschale: 0.00 €<br>
+        💰 Gesamt absetzbarer Betrag: 0.00 €
       </div>
 
+      <!-- Versteckte Speicherfelder für Koordinaten -->
+      <input type="hidden" id="startLat"><input type="hidden" id="startLon">
+      <input type="hidden" id="zielLat"><input type="hidden" id="zielLon">
 
-      <!-- KOORDINATEN -->
-
-      <input type="hidden" id="startLat">
-      <input type="hidden" id="startLon">
-
-      <input type="hidden" id="zielLat">
-      <input type="hidden" id="zielLon">
-
-
-      <button
-        type="submit"
-        class="btn">
-
-        💾 Fahrt speichern
-
-      </button>
-
+      <button type="submit" class="btn">💾 Fahrt speichern</button>
     </form>
-
   </div>
 
-
-  <!-- =========================================================
-       2. BELEGE
-       ========================================================= -->
-
+  <!-- 2. BELEGE & INDEXEDDB -->
   <div class="card">
-
-    <h2>
-      🧾 Einzelnen Beleg / Instandhaltung erfassen
-    </h2>
-
+    <h2>🧾 Einzelnen Beleg / Instandhaltung erfassen (IndexedDB Speicherung)</h2>
     <form id="belegForm">
-
       <div class="flex-row">
-
         <div>
-
-          <label for="bDatum">
-            Datum
-          </label>
-
-          <input
-            type="date"
-            id="bDatum"
-            required>
-
+          <label for="bDatum">Datum</label>
+          <input type="date" id="bDatum" required>
         </div>
-
-
         <div>
-
-          <label for="bZuordnung">
-            Zuordnung
-          </label>
-
+          <label for="bZuordnung">Zuordnung</label>
           <select id="bZuordnung">
-
-            <option>
-              Wohnung EG (70 m²)
-            </option>
-
-            <option>
-              Wohnung OG (100 m²)
-            </option>
-
-            <option>
-              Gesamtobjekt / Allgemein (170 m²)
-            </option>
-
+            <option>Wohnung EG (70 m²)</option>
+            <option>Wohnung OG (100 m²)</option>
+            <option>Gesamtobjekt / Allgemein (170 m²)</option>
           </select>
-
         </div>
-
       </div>
-
-
+      
       <div class="flex-row">
-
         <div>
-
-          <label for="bKategorie">
-            Kategorie (Anlage V)
-          </label>
-
+          <label for="bKategorie">Kategorie (Anlage V)</label>
           <select id="bKategorie">
-
-            <option value="Erhaltungsaufwand">
-              Erhaltungsaufwand / Instandhaltung
-            </option>
-
-            <option value="Material">
-              Material / Baumarkt
-            </option>
-
-            <option value="Handwerkerleistungen">
-              Handwerkerleistungen
-            </option>
-
-            <option value="Verwaltungskosten">
-              Verwaltungskosten / Büro
-            </option>
-
-            <option value="Telekommunikation">
-              Telekommunikation / Handy
-            </option>
-
-            <option value="Zinsen">
-              Schuldzinsen / Finanzierung
-            </option>
-
-            <option value="Grundsteuer">
-              Grundsteuer
-            </option>
-
-            <option value="Sonstiges">
-              Sonstige Werbungskosten
-            </option>
-
+            <option value="Erhaltungsaufwand">Erhaltungsaufwand / Instandhaltung</option>
+            <option value="Material">Material / Baumarkt</option>
+            <option value="Handwerkerleistungen">Handwerkerleistungen</option>
+            <option value="Verwaltungskosten">Verwaltungskosten / Büro</option>
+            <option value="Telekommunikation">Telekommunikation / Handy</option>
+            <option value="Zinsen">Schuldzinsen / Finanzierung</option>
+            <option value="Grundsteuer">Grundsteuer</option>
+            <option value="Sonstiges">Sonstige Werbungskosten</option>
           </select>
-
         </div>
-
-
         <div>
-
-          <label for="bGeschaeft">
-            Geschäft / Rechnungssteller
-          </label>
-
-          <input
-            type="text"
-            id="bGeschaeft"
-            placeholder="z. B. Telekom / Baumarkt"
-            required>
-
+          <label for="bGeschaeft">Geschäft / Rechnungssteller</label>
+          <input type="text" id="bGeschaeft" placeholder="z. B. Telekom / Baumarkt" required>
         </div>
-
       </div>
-
 
       <div class="flex-row">
-
         <div>
-
-          <label for="bBetrag">
-            Bruttobetrag (€)
-          </label>
-
-          <input
-            type="number"
-            step="0.01"
-            id="bBetrag"
-            placeholder="0.00"
-            oninput="checkHerstellungskosten()"
-            required>
-
+          <label for="bBetrag">Bruttobetrag (€)</label>
+          <input type="number" step="0.01" id="bBetrag" placeholder="0.00" oninput="checkHerstellungskosten()" required>
         </div>
-
-
         <div>
-
-          <label for="bGrund">
-            Grund / Beschreibung
-          </label>
-
-          <input
-            type="text"
-            id="bGrund"
-            placeholder="z. B. Ersatz-Wasserhahn Bad">
-
+          <label for="bGrund">Grund / Beschreibung</label>
+          <input type="text" id="bGrund" placeholder="z. B. Ersatz-Wasserhahn Bad">
         </div>
-
       </div>
 
-
-      <div
-        id="herstellungskostenWarning"
-        class="warning-box">
-
-        ⚠️ <strong>Hinweis:</strong>
-        Bei größeren Instandhaltungsaufwendungen innerhalb
-        der ersten drei Jahre nach Anschaffung können
-        anschaffungsnahe Herstellungskosten relevant werden.
-
+      <div id="herstellungskostenWarning" class="warning-box">
+        ⚠️ <strong>Hinweis § 6b / § 15 EStG (Anschaffungsnahe Herstellungskosten):</strong> Beträge über 4.000 € innerh. der ersten 3 Jahre nach Kauf müssen ggf. aktiviert und über die Gebäude-AfA abgeschrieben werden.
       </div>
 
+      <label for="bDatei">📷 Beleg / Kassenbon hochladen (PDF / Bild)</label>
+      <input type="file" id="bDatei" accept="image/*,application/pdf">
 
-      <label for="bDatei">
-        📷 Beleg / Kassenbon hochladen
-      </label>
+      <button type="submit" class="btn">➕ Beleg speichern</button>
+    </form>
+  </div>
 
-      <input
-        type="file"
-        id="bDatei"
-        accept="image/*,application/pdf">
+  <!-- 3. STEUER-CHECKLISTE & PAUSCHALEN -->
+  <div class="card">
+    <h2>📋 Steuer-Checkliste &amp; Pauschalen (Anlage V)</h2>
+    <p style="font-size:13px; color:#666; margin-bottom:16px;">Wähle absetzbare Posten aus. Entscheide zwischen Richtwert-Pauschalen oder trage deine tatsächlichen Kosten ein.</p>
 
+    <!-- Handytarif -->
+    <div class="checklist-item">
+      <div class="checklist-header">1. Handytarif (Monatliche Rechnung)</div>
+      <div class="checklist-sub">Anteilige Absetzung der monatlichen Grundgebühr (empfohlen: 20 % bis 50 %).</div>
+      <div class="flex-row">
+        <div>
+          <label for="ck_handy_monat">Monatliche Rechnung (€)</label>
+          <input type="number" id="ck_handy_monat" value="30.00" oninput="calcHandy()">
+        </div>
+        <div>
+          <label for="ck_handy_prozent">Beruflicher Anteil (%)</label>
+          <input type="number" id="ck_handy_prozent" value="30" oninput="calcHandy()">
+        </div>
+        <div>
+          <label for="ck_handy_val">Jahres-Abzug (€)</label>
+          <input type="number" step="0.01" id="ck_handy_val" value="108.00" readonly>
+        </div>
+        <div>
+          <label for="ck_handy_obj">Zuordnung</label>
+          <select id="ck_handy_obj">
+            <option>Gesamtobjekt / Allgemein (170 m²)</option>
+            <option>Wohnung EG (70 m²)</option>
+            <option>Wohnung OG (100 m²)</option>
+          </select>
+        </div>
+      </div>
+      <button type="button" class="btn" onclick="addChecklistItem('Handytarif Anteil', 'ck_handy_val', 'ck_handy_obj', 'Telekommunikation')">➕ In Steuerbericht übernehmen</button>
+    </div>
 
-      <button
-        type="submit"
-        class="btn">
+    <!-- Smartphone Kauf -->
+    <div class="checklist-item">
+      <div class="checklist-header">2. Smartphone-Neukauf (Anschaffung)</div>
+      <div class="checklist-sub">Sofortabschreibung im Kaufjahr mit anteiligem Nutzungsprozentsatz.</div>
+      <div class="flex-row">
+        <div>
+          <label for="ck_kauf_preis">Kaufpreis brutto (€)</label>
+          <input type="number" id="ck_kauf_preis" placeholder="z. B. 800.00" oninput="calcKauf()">
+        </div>
+        <div>
+          <label for="ck_kauf_prozent">Beruflicher Anteil (%)</label>
+          <input type="number" id="ck_kauf_prozent" value="30" oninput="calcKauf()">
+        </div>
+        <div>
+          <label for="ck_kauf_val">Absetzbarer Betrag (€)</label>
+          <input type="number" step="0.01" id="ck_kauf_val" placeholder="0.00" readonly>
+        </div>
+        <div>
+          <label for="ck_kauf_obj">Zuordnung</label>
+          <select id="ck_kauf_obj">
+            <option>Gesamtobjekt / Allgemein (170 m²)</option>
+            <option>Wohnung EG (70 m²)</option>
+            <option>Wohnung OG (100 m²)</option>
+          </select>
+        </div>
+      </div>
+      <button type="button" class="btn" onclick="addChecklistItem('Smartphone Anschaffung Anteil', 'ck_kauf_val', 'ck_kauf_obj', 'Telekommunikation')">➕ In Steuerbericht übernehmen</button>
+    </div>
 
-        ➕ Beleg speichern
+    <!-- Kontoführung -->
+    <div class="checklist-item">
+      <div class="checklist-header">3. Kontoführungsgebühren (Mietkonto)</div>
+      <div class="checklist-sub">Anerkannter Richtwert der Finanzämter: ca. 16,00 € pro Jahr.</div>
+      <div class="flex-row">
+        <div>
+          <label for="ck_konto_typ">Abrechnungsart</label>
+          <select id="ck_konto_typ" onchange="toggleKontoInput()">
+            <option value="pauschale">Pauschale nutzen (16,00 €)</option>
+            <option value="custom">Tatsächliche Kosten eintragen</option>
+          </select>
+        </div>
+        <div>
+          <label for="ck_konto_val">Betrag (€)</label>
+          <input type="number" step="0.01" id="ck_konto_val" value="16.00" disabled>
+        </div>
+        <div>
+          <label for="ck_konto_obj">Zuordnung</label>
+          <select id="ck_konto_obj">
+            <option>Gesamtobjekt / Allgemein (170 m²)</option>
+            <option>Wohnung EG (70 m²)</option>
+            <option>Wohnung OG (100 m²)</option>
+          </select>
+        </div>
+      </div>
+      <button type="button" class="btn" onclick="addChecklistItem('Kontoführungsgebühren', 'ck_konto_val', 'ck_konto_obj', 'Verwaltungskosten')">➕ In Steuerbericht übernehmen</button>
+    </div>
 
-      </button>
+    <!-- Büromaterial -->
+    <div class="checklist-item">
+      <div class="checklist-header">4. Büromaterial &amp; Porto</div>
+      <div class="checklist-sub">Porto, Briefumschläge, Schreibwaren, Ordner.</div>
+      <div class="flex-row">
+        <div>
+          <label for="ck_buero_typ">Abrechnungsart</label>
+          <select id="ck_buero_typ" onchange="toggleBueroInput()">
+            <option value="pauschale">Pauschale nutzen (20,00 €)</option>
+            <option value="custom">Tatsächliche Kosten eintragen</option>
+          </select>
+        </div>
+        <div>
+          <label for="ck_buero_val">Betrag (€)</label>
+          <input type="number" step="0.01" id="ck_buero_val" value="20.00" disabled>
+        </div>
+        <div>
+          <label for="ck_buero_obj">Zuordnung</label>
+          <select id="ck_buero_obj">
+            <option>Gesamtobjekt / Allgemein (170 m²)</option>
+            <option>Wohnung EG (70 m²)</option>
+            <option>Wohnung OG (100 m²)</option>
+          </select>
+        </div>
+      </div>
+      <button type="button" class="btn" onclick="addChecklistItem('Büromaterial &amp; Porto', 'ck_buero_val', 'ck_buero_obj', 'Verwaltungskosten')">➕ In Steuerbericht übernehmen</button>
+    </div>
 
+    <!-- Homeoffice -->
+    <div class="checklist-item">
+      <div class="checklist-header">5. Arbeitszimmer / Verwaltung zu Hause (Tagespauschale)</div>
+      <div class="checklist-sub">6,00 € pro Tag für Verwaltungsarbeiten (deckt auch Strom &amp; Heim-Internet ab).</div>
+      <div class="flex-row">
+        <div>
+          <label for="ck_ho_tage">Anzahl Verwaltungstage im Jahr</label>
+          <input type="number" id="ck_ho_tage" value="10" oninput="calcHomeoffice()">
+        </div>
+        <div>
+          <label for="ck_ho_val">Berechneter Betrag (6,00 € / Tag)</label>
+          <input type="number" step="0.01" id="ck_ho_val" value="60.00" readonly>
+        </div>
+        <div>
+          <label for="ck_ho_obj">Zuordnung</label>
+          <select id="ck_ho_obj">
+            <option>Gesamtobjekt / Allgemein (170 m²)</option>
+            <option>Wohnung EG (70 m²)</option>
+            <option>Wohnung OG (100 m²)</option>
+          </select>
+        </div>
+      </div>
+      <button type="button" class="btn" onclick="addChecklistItem('Homeoffice Verwaltungspauschale', 'ck_ho_val', 'ck_ho_obj', 'Verwaltungskosten')">➕ In Steuerbericht übernehmen</button>
+    </div>
+
+    <!-- AfA -->
+    <div class="checklist-item">
+      <div class="checklist-header">6. Gebäude-Abschreibung (AfA) &amp; Inventar</div>
+      <div class="checklist-sub">Jährlicher AfA-Betrag lt. Kaufvertrag/Steuerbescheid oder Inventar (Einbauküche etc.).</div>
+      <div class="flex-row">
+        <div>
+          <label for="ck_afa_val">Jahres-AfA (€)</label>
+          <input type="number" step="0.01" id="ck_afa_val" placeholder="z. B. 4500.00">
+        </div>
+        <div>
+          <label for="ck_afa_obj">Zuordnung</label>
+          <select id="ck_afa_obj">
+            <option>Gesamtobjekt / Allgemein (170 m²)</option>
+            <option>Wohnung EG (70 m²)</option>
+            <option>Wohnung OG (100 m²)</option>
+          </select>
+        </div>
+      </div>
+      <button type="button" class="btn" onclick="addChecklistItem('Gebäude-AfA', 'ck_afa_val', 'ck_afa_obj', 'AfA / Abschreibung')">➕ In Steuerbericht übernehmen</button>
+    </div>
+
+    <!-- Grundsteuer Pauschale/Erfassung -->
+    <div class="checklist-item">
+      <div class="checklist-header">7. Grundsteuer (Gezahlte Jahres-Grundsteuer)</div>
+      <div class="checklist-sub">Steuerlich als Werbungskosten ansetzbar (auch wenn sie an Mieter umgelegt wird).</div>
+      <div class="flex-row">
+        <div>
+          <label for="ck_gst_val">Jahresbetrag (€)</label>
+          <input type="number" step="0.01" id="ck_gst_val" placeholder="z. B. 350.00">
+        </div>
+        <div>
+          <label for="ck_gst_obj">Zuordnung</label>
+          <select id="ck_gst_obj">
+            <option>Gesamtobjekt / Allgemein (170 m²)</option>
+            <option>Wohnung EG (70 m²)</option>
+            <option>Wohnung OG (100 m²)</option>
+          </select>
+        </div>
+      </div>
+      <button type="button" class="btn" onclick="addChecklistItem('Grundsteuer Vorauszahlung', 'ck_gst_val', 'ck_gst_obj', 'Grundsteuer')">➕ In Steuerbericht übernehmen</button>
+    </div>
+  </div>
+
+  <!-- 4. NEBENKOSTEN-MANAGER & ABRECHNUNG -->
+  <div class="card">
+    <h2>🏢 Nebenkosten-Manager &amp; Betriebskostenabrechnung (§ 556 BGB)</h2>
+    
+    <div style="background:#fafafa; padding:16px; border-radius:12px; border:1px solid var(--border-color); margin-bottom:20px;">
+      <h3>Abrechnungszeitraum Prüfen</h3>
+      <div class="flex-row">
+        <div>
+          <label for="nkStart">Startdatum</label>
+          <input type="date" id="nkStart" value="2026-01-01" onchange="checkFristen()">
+        </div>
+        <div>
+          <label for="nkEnde">Enddatum</label>
+          <input type="date" id="nkEnde" value="2026-12-31" onchange="checkFristen()">
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box" style="margin-bottom: 16px; margin-top: 0;">
+      ℹ️ <strong>Verteilungs-Schlüssel:</strong> Gesamtwohnfläche: <strong>170 m²</strong> (EG: 70 m² / 41,18% | OG: 100 m² / 58,82%).<br>
+      • <strong>Direktzuordnung:</strong> Posten mit Wohnung EG/OG werden zu 100% der jeweiligen Wohnung zugerechnet.<br>
+      • <strong>Gesamtobjekt:</strong> Wird automatisch im Verhältnis 70/170 zu 100/170 verteilt.<br>
+      • <strong>Heizung &amp; Wasser:</strong> Werden direkt über Brunata abgerechnet (Bogen wird als Anlage beigefügt).
+    </div>
+    
+    <h3>1. Monatliche Nebenkostenvorauszahlungen der Mieter</h3>
+    <div class="flex-row">
+      <div>
+        <label for="nk_abs_eg">Wohnung EG (€ / Monat)</label>
+        <input type="number" id="nk_abs_eg" placeholder="z. B. 150.00" oninput="saveNKSettings()">
+      </div>
+      <div>
+        <label for="nk_abs_og">Wohnung OG (€ / Monat)</label>
+        <input type="number" id="nk_abs_og" placeholder="z. B. 180.00" oninput="saveNKSettings()">
+      </div>
+    </div>
+
+    <h3 style="margin-top:24px;">2. Betriebskosten/Nebenkostenposition erfassen (§ 2 BetrKV)</h3>
+    <form id="nkForm">
+      <div class="flex-row">
+        <div>
+          <label for="nkDatum">Datum / Jahr</label>
+          <input type="date" id="nkDatum" required>
+        </div>
+        <div>
+          <label for="nkZuordnung">Zuordnung / Verteilschlüssel</label>
+          <select id="nkZuordnung">
+            <option value="Gesamtobjekt / Allgemein (170 m²)">Gesamtobjekt (Aufteilung 70m² zu 100m²)</option>
+            <option value="Wohnung EG (70 m²)">Wohnung EG direkt (z.B. Zwischenzähler Strom EG)</option>
+            <option value="Wohnung OG (100 m²)">Wohnung OG direkt (z.B. Zwischenzähler Strom OG)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="flex-row">
+        <div>
+          <label for="nkKategorie">BetrKV Kategorie</label>
+          <select id="nkKategorie" onchange="autoFillDienstleister()">
+            <option value="Grundsteuer">Grundsteuer</option>
+            <option value="Versicherung">Versicherung</option>
+            <option value="Abfallgebühren">Abfallgebühren</option>
+            <option value="Stromkosten">Stromkosten (Zwischenzähler)</option>
+            <option value="Brunata">Brunata Abrechnung (Einzelbogen Anlage)</option>
+            <option value="Straßenreinigung">Straßenreinigung</option>
+            <option value="Schornsteinfeger">Schornsteinfeger (§ 35a relevante Lohnkosten)</option>
+            <option value="Rauchmelder-Wartung">Sonstige (Rauchmelder-Wartung § 35a)</option>
+            <option value="Heizung-Wartung">Sonstige (Heizung-Wartung § 35a)</option>
+          </select>
+        </div>
+        <div>
+          <label for="nkGeschaeft">Rechnungssteller / Dienstleister</label>
+          <input type="text" id="nkGeschaeft" placeholder="z. B. Stadtwerke Buxtehude / Stadt Buxtehude" required>
+        </div>
+      </div>
+
+      <!-- Details Strom-Zwischenzähler -->
+      <div id="stromDetails" style="display:none; background:#f8f9fa; border:1px solid #e5e5ea; padding:16px; border-radius:12px; margin-top:14px; margin-bottom:14px;">
+        <label style="margin-top:0; color:var(--primary);">⚡ Details Strom-Zwischenzähler (Bitte Eichfrist beachten)</label>
+        <div class="flex-row">
+          <div>
+            <label for="nkZaehlerNr">Zählernummer</label>
+            <input type="text" id="nkZaehlerNr" placeholder="z.B. Z-EG-01">
+          </div>
+          <div>
+            <label for="nkZaehlerAlt">Stand Alt (kWh)</label>
+            <input type="number" id="nkZaehlerAlt" placeholder="1000" oninput="calcStromVerbrauch()">
+          </div>
+          <div>
+            <label for="nkZaehlerNeu">Stand Neu (kWh)</label>
+            <input type="number" id="nkZaehlerNeu" placeholder="1500" oninput="calcStromVerbrauch()">
+          </div>
+          <div>
+            <label for="nkStromPreis">Strompreis (€ / kWh)</label>
+            <input type="number" step="0.0001" id="nkStromPreis" placeholder="0.35" oninput="calcStromVerbrauch()">
+          </div>
+          <div>
+            <label for="nkZaehlerVerbrauch">Verbrauch (kWh)</label>
+            <input type="number" id="nkZaehlerVerbrauch" placeholder="500" readonly>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex-row">
+        <div>
+          <label for="nkBetrag">Rechnungsbetrag brutto (€)</label>
+          <input type="number" step="0.01" id="nkBetrag" placeholder="0.00" required>
+        </div>
+        <div>
+          <label for="nkLohnanteil">Davon reine Lohnkosten § 35a (€)</label>
+          <input type="number" step="0.01" id="nkLohnanteil" placeholder="Falls Rechnungsbetrag nicht 100% Lohn ist">
+        </div>
+        <div>
+          <label for="nkGrund">Beschreibung / Hinweis</label>
+          <input type="text" id="nkGrund" placeholder="z. B. Abrechnung 2026">
+        </div>
+      </div>
+
+      <label for="nkDatei">📷 Rechnung / Beleg hochladen (Foto / PDF)</label>
+      <input type="file" id="nkDatei" accept="image/*,application/pdf">
+
+      <button type="submit" class="btn">➕ Nebenkostenposten speichern</button>
     </form>
 
+    <h3 style="margin-top:24px;">📄 Rechtssichere Nebenkostenabrechnung generieren</h3>
+    <div class="flex-row">
+      <button type="button" onclick="generateAbrechnung('Wohnung EG (70 m²)')" class="btn btn-purple">📑 Abrechnung EG (70 m²) erstellen</button>
+      <button type="button" onclick="generateAbrechnung('Wohnung OG (100 m²)')" class="btn btn-purple">📑 Abrechnung OG (100 m²) erstellen</button>
+    </div>
+
+    <h3>Erfasste Betriebskosten für das Steuerjahr</h3>
+    <div class="table-responsive">
+      <table id="nkTabelle">
+        <thead>
+          <tr>
+            <th>Datum</th>
+            <th>Zuordnung</th>
+            <th>Kategorie</th>
+            <th>Bezeichnung</th>
+            <th>Gesamt (€)</th>
+            <th>Lohn §35a (€)</th>
+            <th>Beleg</th>
+            <th>Aktion</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+        <tfoot>
+          <tr>
+            <td colspan="4" style="text-align: right;">Gesamtsummen:</td>
+            <td id="nkTabelleSumme">0.00 €</td>
+            <td id="nkTabelleLohnSumme">0.00 €</td>
+            <td colspan="2"></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
   </div>
 
+  <!-- 5. ÜBERSICHT & EXPORT -->
+  <div class="card" id="exportCard">
+    <h2>📊 Gesamte Steuer-Jahresübersicht &amp; Export</h2>
+    <button type="button" onclick="printTaxReport()" class="btn btn-green">📄 Steuerbericht drucken / Als PDF speichern</button>
 
-  <!-- =========================================================
-       3. STEUER-CHECKLISTE
-       ========================================================= -->
-
-  <div class="card">
-
-    <h2>
-      📋 Steuer-Checkliste & Pauschalen
-    </h2>
-
-    <p style="font-size:13px;color:#666;margin-bottom:16px;">
-
-      Wähle absetzbare Posten aus oder trage deine tatsächlichen
-      Kosten ein.
-
-    </p>
-
-
-    <!-- HANDY -->
-
-    <div class="checklist-item">
-
-      <div class="checklist-header">
-        1. Handytarif
-      </div>
-
-      <div class="checklist-sub">
-        Anteilige Absetzung der monatlichen Grundgebühr.
-      </div>
-
-      <div class="flex-row">
-
-        <div>
-
-          <label for="ck_handy_monat">
-            Monatliche Rechnung (€)
-          </label>
-
-          <input
-            type="number"
-            id="ck_handy_monat"
-            value="30.00"
-            oninput="calcHandy()">
-
-        </div>
-
-
-        <div>
-
-          <label for="ck_handy_prozent">
-            Beruflicher Anteil (%)
-          </label>
-
-          <input
-            type="number"
-            id="ck_handy_prozent"
-            value="30"
-            min="0"
-            max="100"
-            oninput="calcHandy()">
-
-        </div>
-
-
-        <div>
-
-          <label for="ck_handy_val">
-            Jahres-Abzug (€)
-          </label>
-
-          <input
-            type="number"
-            step="0.01"
-            id="ck_handy_val"
-            value="108.00"
-            readonly>
-
-        </div>
-
-
-        <div>
-
-          <label for="ck_handy_obj">
-            Zuordnung
-          </label>
-
-          <select id="ck_handy_obj">
-
-            <option>
-              Gesamtobjekt / Allgemein (170 m²)
-            </option>
-
-            <option>
-              Wohnung EG (70 m²)
-            </option>
-
-            <option>
-              Wohnung OG (100 m²)
-            </option>
-
-          </select>
-
-        </div>
-
-      </div>
-
-
-      <button
-        type="button"
-        class="btn"
-        onclick="addChecklistItem(
-          'Handytarif Anteil',
-          'ck_handy_val',
-          'ck_handy_obj',
-          'Telekommunikation'
-        )">
-
-        ➕ In Steuerbericht übernehmen
-
-      </button>
-
+    <h3>Erfasste Einzelbelege &amp; Pauschalen</h3>
+    <div class="table-responsive">
+      <table id="belegTabelle">
+        <thead>
+          <tr>
+            <th>Datum</th>
+            <th>Zuordnung</th>
+            <th>Kategorie</th>
+            <th>Geschäft / Bezeichnung</th>
+            <th>Betrag (€)</th>
+            <th>Beleg</th>
+            <th>Aktion</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+        <tfoot>
+          <tr>
+            <td colspan="4" style="text-align: right;">Gesamtsumme Belege &amp; Pauschalen:</td>
+            <td id="belegTabelleSumme">0.00 €</td>
+            <td colspan="2"></td>
+          </tr>
+        </tfoot>
+      </table>
     </div>
 
-
-    <!-- SMARTPHONE -->
-
-    <div class="checklist-item">
-
-      <div class="checklist-header">
-        2. Smartphone-Neukauf
-      </div>
-
-      <div class="checklist-sub">
-        Absetzbarer Anteil entsprechend der beruflichen Nutzung.
-      </div>
-
-      <div class="flex-row">
-
-        <div>
-
-          <label for="ck_kauf_preis">
-            Kaufpreis brutto (€)
-          </label>
-
-          <input
-            type="number"
-            id="ck_kauf_preis"
-            placeholder="z. B. 800.00"
-            oninput="calcKauf()">
-
-        </div>
-
-
-        <div>
-
-          <label for="ck_kauf_prozent">
-            Beruflicher Anteil (%)
-          </label>
-
-          <input
-            type="number"
-            id="ck_kauf_prozent"
-            value="30"
-            min="0"
-            max="100"
-            oninput="calcKauf()">
-
-        </div>
-
-
-        <div>
-
-          <label for="ck_kauf_val">
-            Absetzbarer Betrag (€)
-          </label>
-
-          <input
-            type="number"
-            step="0.01"
-            id="ck_kauf_val"
-            placeholder="0.00"
-            readonly>
-
-        </div>
-
-
-        <div>
-
-          <label for="ck_kauf_obj">
-            Zuordnung
-          </label>
-
-          <select id="ck_kauf_obj">
-
-            <option>
-              Gesamtobjekt / Allgemein (170 m²)
-            </option>
-
-            <option>
-              Wohnung EG (70 m²)
-            </option>
-
-            <option>
-              Wohnung OG (100 m²)
-            </option>
-
-          </select>
-
-        </div>
-
-      </div>
-
-
-      <button
-        type="button"
-        class="btn"
-        onclick="addChecklistItem(
-          'Smartphone Anschaffung Anteil',
-          'ck_kauf_val',
-          'ck_kauf_obj',
-          'Telekommunikation'
-        )">
-
-        ➕ In Steuerbericht übernehmen
-
-      </button>
-
+    <h3>Erfasste Fahrten</h3>
+    <div class="table-responsive">
+      <table id="fahrtTabelle">
+        <thead>
+          <tr>
+            <th>Datum</th>
+            <th>Start / Ziel</th>
+            <th>Anlass</th>
+            <th>km (Gesamt)</th>
+            <th>Fahrtkosten (€)</th>
+            <th>Verpflegung (€)</th>
+            <th>Aktion</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+        <tfoot>
+          <tr>
+            <td colspan="3" style="text-align: right;">Gesamtsumme Fahrterstattung:</td>
+            <td id="fahrtTabelleSummeKM">0.0 km</td>
+            <td id="fahrtTabelleSummeFahrt">0.00 €</td>
+            <td id="fahrtTabelleSummeVerpflegung">0.00 €</td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
     </div>
-
-
-    <!-- KONTO -->
-
-    <div class="checklist-item">
-
-      <div class="checklist-header">
-        3. Kontoführungsgebühren
-      </div>
-
-      <div class="checklist-sub">
-        Mietkonto / Verwaltung.
-      </div>
-
-      <div class="flex-row">
-
-        <div>
-
-          <label for="ck_konto_typ">
-            Abrechnungsart
-          </label>
-
-          <select
-            id="ck_konto_typ"
-            onchange="toggleKontoInput()">
-
-            <option value="pauschale">
-              Pauschale nutzen (16,00 €)
-            </option>
-
-            <option value="custom">
-              Tatsächliche Kosten eintragen
-            </option>
-
-          </select>
-
-        </div>
-
-
-        <div>
-
-          <label for="ck_konto_val">
-            Betrag (€)
-          </label>
-
-          <input
-            type="number"
-            step="0.01"
-            id="ck_konto_val"
-            value="16.00"
-            disabled>
-
-        </div>
-
-
-        <div>
-
-          <label for="ck_konto_obj">
-            Zuordnung
-          </label>
-
-          <select id="ck_konto_obj">
-
-            <option>
-              Gesamtobjekt / Allgemein (170 m²)
-            </option>
-
-            <option>
-              Wohnung EG (70 m²)
-            </option>
-
-            <option>
-              Wohnung OG (100 m²)
-            </option>
-
-          </select>
-
-        </div>
-
-      </div>
-
-
-      <button
-        type="button"
-        class="btn"
-        onclick="addChecklistItem(
-          'Kontoführungsgebühren',
-          'ck_konto_val',
-          'ck_konto_obj',
-          'Verwaltungskosten'
-        )">
-
-        ➕ In Steuerbericht übernehmen
-
-      </button>
-
-    </div>
-
-
-    <!-- BÜRO -->
-
-    <div class="checklist-item">
-
-      <div class="checklist-header">
-        4. Büromaterial & Porto
-      </div>
-
-      <div class="checklist-sub">
-        Porto, Briefumschläge, Schreibwaren, Ordner.
-      </div>
-
-      <div class="flex-row">
-
-        <div>
-
-          <label for="ck_buero_typ">
-            Abrechnungsart
-          </label>
-
-          <select
-            id="ck_buero_typ"
-            onchange="toggleBueroInput()">
-
-            <option value="pauschale">
-              Pauschale nutzen (20,00 €)
-            </option>
-
-            <option value="custom">
-              Tatsächliche Kosten eintragen
-            </option>
-
-          </select>
-
-        </div>
-
-
-        <div>
-
-          <label for="ck_buero_val">
-            Betrag (€)
-          </label>
-
-          <input
-            type="number"
-            step="0.01"
-            id="ck_buero_val"
-            value="20.00"
-            disabled>
-
-        </div>
-
-
-        <div>
-
-          <label for="ck_buero_obj">
-            Zuordnung
-          </label>
-
-          <select id="ck_buero_obj">
-
-            <option>
-              Gesamtobjekt / Allgemein (170 m²)
-            </option>
-
-            <option>
-              Wohnung EG (70 m²)
-            </option>
-
-            <option>
-              Wohnung OG (100 m²)
-            </option>
-
-          </select>
-
-        </div>
-
-      </div>
-
-
-      <button
-        type="button"
-        class="btn"
-        onclick="addChecklistItem(
-          'Büromaterial & Porto',
-          'ck_buero_val',
-          'ck_buero_obj',
-          'Verwaltungskosten'
-        )">
-
-        ➕ In Steuerbericht übernehmen
-
-      </button>
-
-    </div>
-
-
-    <!-- HOME OFFICE -->
-
-    <div class="checklist-item">
-
-      <div class="checklist-header">
-        5. Verwaltung zu Hause
-      </div>
-
-      <div class="checklist-sub">
-        Tagespauschale für entsprechende Verwaltungstage.
-      </div>
-
-      <div class="flex-row">
-
-        <div>
-
-          <label for="ck_ho_tage">
-            Verwaltungstage im Jahr
-          </label>
-
-          <input
-            type="number"
-            id="ck_ho_tage"
-            value="10"
-            oninput="calcHomeoffice()">
-
-        </div>
-
-
-        <div>
-
-          <label for="ck_ho_val">
-            Berechneter Betrag
-          </label>
-
-          <input
-            type="number"
-            step="0.01"
-            id="ck_ho_val"
-            value="60.00"
-            readonly>
-
-        </div>
-
-
-        <div>
-
-          <label for="ck_ho_obj">
-            Zuordnung
-          </label>
-
-          <select id="ck_ho_obj">
-
-            <option>
-              Gesamtobjekt / Allgemein (170 m²)
-            </option>
-
-            <option>
-              Wohnung EG (70 m²)
-            </option>
-
-            <option>
-              Wohnung OG (100 m²)
-            </option>
-
-          </select>
-
-        </div>
-
-      </div>
-
-
-      <button
-        type="button"
-        class="btn"
-        onclick="addChecklistItem(
-          'Homeoffice Verwaltungspauschale',
-          'ck_ho_val',
-          'ck_ho_obj',
-          'Verwaltungskosten'
-        )">
-
-        ➕ In Steuerbericht übernehmen
-
-      </button>
-
-    </div>
-
-
-    <!-- AFA -->
-
-    <div class="checklist-item">
-
-      <div class="checklist-header">
-        6. Gebäude-AfA & Inventar
-      </div>
-
-      <div class="checklist-sub">
-        Jährlicher AfA-Betrag gemäß Unterlagen.
-      </div>
-
-      <div class="flex-row">
-
-        <div>
-
-          <label for="ck_afa_val">
-            Jahres-AfA (€)
-          </label>
-
-          <input
-            type="number"
-            step="0.01"
-            id="ck_afa_val"
-            placeholder="z. B. 4500.00">
-
-        </div>
-
-
-        <div>
-
-          <label for="ck_afa_obj">
-            Zuordnung
-          </label>
-
-          <select id="ck_afa_obj">
-
-            <option>
-              Gesamtobjekt / Allgemein (170 m²)
-            </option>
-
-            <option>
-              Wohnung EG (70 m²)
-            </option>
-
-            <option>
-              Wohnung OG (100 m²)
-            </option>
-
-          </select>
-
-        </div>
-
-      </div>
-
-
-      <button
-        type="button"
-        class="btn"
-        onclick="addChecklistItem(
-          'Gebäude-AfA',
-          'ck_afa_val',
-          'ck_afa_obj',
-          'AfA / Abschreibung'
-        )">
-
-        ➕ In Steuerbericht übernehmen
-
-      </button>
-
-    </div>
-
-
-    <!-- GRUNDSTEUER -->
-
-    <div class="checklist-item">
-
-      <div class="checklist-header">
-        7. Grundsteuer
-      </div>
-
-      <div class="checklist-sub">
-        Gezahlte Jahres-Grundsteuer.
-      </div>
-
-      <div class="flex-row">
-
-        <div>
-
-          <label for="ck_gst_val">
-            Jahresbetrag (€)
-          </label>
-
-          <input
-            type="number"
-            step="0.01"
-            id="ck_gst_val"
-            placeholder="z. B. 350.00">
-
-        </div>
-
-
-        <div>
-
-          <label for="ck_gst_obj">
-            Zuordnung
-          </label>
-
-          <select id="ck_gst_obj">
-
-            <option>
-              Gesamtobjekt / Allgemein (170 m²)
-            </option>
-
-            <option>
-              Wohnung EG (70 m²)
-            </option>
-
-            <option>
-              Wohnung OG (100 m²)
-            </option>
-
-          </select>
-
-        </div>
-
-      </div>
-
-
-      <button
-        type="button"
-        class="btn"
-        onclick="addChecklistItem(
-          'Grundsteuer Vorauszahlung',
-          'ck_gst_val',
-          'ck_gst_obj',
-          'Grundsteuer'
-        )">
-
-        ➕ In Steuerbericht übernehmen
-
-      </button>
-
-    </div>
-
   </div>
 
-
-  <!-- =========================================================
-       4. NEBENKOSTEN
-       ========================================================= -->
-
+  <!-- 6. MIETVERTRÄGE & MIETERDATEN UPLOAD -->
   <div class="card">
-
-    <h2>
-      🏢 Nebenkosten-Manager & Betriebskostenabrechnung
-    </h2>
-
-
-    <div
-      style="
-        background:#fafafa;
-        padding:16px;
-        border-radius:12px;
-        border:1px solid var(--border-color);
-        margin-bottom:20px;
-      ">
-
-      <h3>
-        Abrechnungszeitraum prüfen
-      </h3>
-
+    <h2>📄 Mietverträge &amp; Mieterdaten verwalten</h2>
+    <form id="vertragForm">
       <div class="flex-row">
-
         <div>
-
-          <label for="nkStart">
-            Startdatum
-          </label>
-
-          <input
-            type="date"
-            id="nkStart"
-            value="2026-01-01"
-            onchange="checkFristen()">
-
+          <label for="vZuordnung">Wohnungs-Zuordnung</label>
+          <select id="vZuordnung">
+            <option value="Wohnung EG (70 m²)">Wohnung EG (70 m²)</option>
+            <option value="Wohnung OG (100 m²)">Wohnung OG (100 m²)</option>
+          </select>
         </div>
-
-
         <div>
-
-          <label for="nkEnde">
-            Enddatum
-          </label>
-
-          <input
-            type="date"
-            id="nkEnde"
-            value="2026-12-31"
-            onchange="checkFristen()">
-
+          <label for="vVorname">Vorname Mieter</label>
+          <input type="text" id="vVorname" placeholder="z. B. Max" required>
         </div>
-
+        <div>
+          <label for="vNachname">Nachname Mieter</label>
+          <input type="text" id="vNachname" placeholder="z. B. Mustermann" required>
+        </div>
       </div>
 
+      <div class="flex-row">
+        <div>
+          <label for="vGeburtsdatum">Geburtsdatum</label>
+          <input type="date" id="vGeburtsdatum">
+        </div>
+        <div>
+          <label for="vStrasse">Straße &amp; Hausnummer Mieter</label>
+          <input type="text" id="vStrasse" placeholder="z. B. An den Geestbergen 12">
+        </div>
+        <div>
+          <label for="vPlzOrt">PLZ &amp; Ort Mieter</label>
+          <input type="text" id="vPlzOrt" placeholder="z. B. 21614 Buxtehude">
+        </div>
+      </div>
+
+      <h3>Mietobjekt- &amp; Konditionen-Details</h3>
+      <div class="flex-row">
+        <div>
+          <label for="vObjektAdresse">Adresse Mietobjekt</label>
+          <input type="text" id="vObjektAdresse" placeholder="z. B. An den Geestbergen 12, 21614 Buxtehude">
+        </div>
+        <div>
+          <label for="vWohnungsnummer">Wohnungsnummer / Lage</label>
+          <input type="text" id="vWohnungsnummer" placeholder="z. B. WE 01 - EG Links">
+        </div>
+      </div>
+
+      <div class="flex-row">
+        <div>
+          <label for="vKaltmiete">Monatliche Kaltmiete (€)</label>
+          <input type="number" step="0.01" id="vKaltmiete" placeholder="0.00">
+        </div>
+        <div>
+          <label for="vNKMonat">Nebenkostenvorauszahlung (€)</label>
+          <input type="number" step="0.01" id="vNKMonat" placeholder="0.00">
+        </div>
+        <div>
+          <label for="vKaution">Kaution (€)</label>
+          <input type="number" step="0.01" id="vKaution" placeholder="0.00">
+        </div>
+      </div>
+
+      <label for="vDatei">Mietvertrag hochladen (PDF oder Bild)</label>
+      <input type="file" id="vDatei" accept="application/pdf,image/*">
+
+      <button type="submit" class="btn">📤 Mieter &amp; Mietvertrag speichern</button>
+    </form>
+
+    <h3>Gespeicherte Mietverträge &amp; Mieter</h3>
+    <div class="table-responsive">
+      <table id="vertragTabelle">
+        <thead>
+          <tr>
+            <th>Wohnung</th>
+            <th>Mieter</th>
+            <th>Adresse Mieter</th>
+            <th>Objekt &amp; Miete</th>
+            <th>Vertrag</th>
+            <th>Aktion</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
     </div>
+  </div>
+
+  <!-- DRUCK-AREAL FÜR RECHTSSICHERE NEBENKOSTENABRECHNUNG -->
+  <div id="printArea" style="display:none; padding:40px; background:white; font-family:Arial, sans-serif; border: 1px solid #e5e5ea; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; border-bottom: 2px solid #0071e3; padding-bottom: 20px;">
+      <div style="font-size:13px; line-height:1.6;">
+        <strong style="color:#0071e3; font-size: 15px;">Vermieter:</strong><br>
+        <span id="pVermieterName"></span><br>
+        <span id="pVermieterAdresse"></span>
+      </div>
+      <div style="text-align:right; font-size:13px; line-height:1.6;">
+        <strong>Datum:</strong> <span id="pAbrechnungsDatum"></span><br><br>
+        <strong style="color:#0071e3; font-size: 15px;">Mieter / Empfänger:</strong><br>
+        <span id="pMieterName" style="font-weight:bold;"></span><br>
+        <span id="pMieterStrasse"></span><br>
+        <span id="pMieterPlzOrt"></span>
+      </div>
+    </div>
+    
+    <h2 style="color:#1d1d1f; font-size: 22px; margin-bottom: 20px;">Betriebskostenabrechnung für das Kalenderjahr <span id="pJahr"></span></h2>
+    
+    <div style="margin-bottom:24px; font-size:14px; line-height:1.7; background: #f9f9fb; padding: 16px; border-radius: 8px;">
+      <strong>Abrechnungsobjekt:</strong> <span id="pObjektAdresse"></span><br>
+      <strong>Mieteinheit:</strong> <span id="pEinheit"></span> (<span id="pWohnungsnummer"></span> | Wohnfläche: <span id="pFlaeche"></span> m² / Gesamtfläche Objekt: 170 m²)<br>
+      <strong>Abrechnungszeitraum:</strong> 01.01.<span id="pJahrPeriod1"></span> bis 31.12.<span id="pJahrPeriod2"></span>
+    </div>
+
+    <h3>1. Aufstellung der Gesamtkosten &amp; Verteilerschlüssel</h3>
+    <table style="width:100%; border-collapse:collapse; margin-top:12px; font-size:12.5px;">
+      <thead>
+        <tr style="background:#f4f4f7; color: #424245;">
+          <th style="border:1px solid #e5e5ea; padding:10px;">Kategorie / Dienstleister</th>
+          <th style="border:1px solid #e5e5ea; padding:10px;">Gesamtkosten (€)</th>
+          <th style="border:1px solid #e5e5ea; padding:10px;">Verteilerschlüssel</th>
+          <th style="border:1px solid #e5e5ea; padding:10px;">Anteil Mieter (€)</th>
+        </tr>
+      </thead>
+      <tbody id="pPostenTable"></tbody>
+    </table>
+
+    <div style="margin-top:24px; font-size:14px; line-height:1.8; background:#f5f5f7; padding:20px; border-radius:10px; border: 1px solid #e5e5ea;">
+      <h3 style="margin-top:0; color:#0071e3;">2. Abrechnungsergebnis</h3>
+      Gesamtkosten Anteil Mieter: <strong><span id="pGesamtAnteil"></span> €</strong><br>
+      Abzüglich geleistete Vorauszahlungen (12 × <span id="pMonatsAbschlag"></span> €): <strong><span id="pGeleistet"></span> €</strong><br>
+      <hr style="border:0; border-top:1px solid #d1d1d6; margin:12px 0;">
+      <span style="font-size:16px;" id="pFinalResult"></span>
+    </div>
+
+    <div style="margin-top:20px; font-size:12px; border:1px solid #ffe3b3; padding:14px; background:#fffcf5; border-radius:8px; line-height:1.6;">
+      <strong style="color: #b36800;">Hinweis nach § 35a EStG (Haushaltsnahe Dienstleistungen &amp; Handwerkerleistungen):</strong><br>
+      In den oben genannten Betriebskosten sind folgende absetzbare Arbeits- und Lohnkosten (inkl. anteiliger MWSt.) enthalten:<br>
+      • Reiner Lohnkostenanteil haushaltsnahe Dienstleistungen / Wartungsarbeiten: <strong><span id="p35aBetrag"></span> €</strong><br>
+      <em>Sämtliche Beträge wurden unbar beglichen. Die Originalbelege liegen beim Vermieter vor und können bei Bedarf eingesehen werden.</em>
+    </div>
+
+    <div style="margin-top:25px; font-size:13px; line-height:1.6;" id="pZahlungshinweis"></div>
+
+    <div style="margin-top:30px;" class="no-print">
+      <button type="button" onclick="printNKReport()" class="btn btn-green">🖨️ Abrechnung drucken / Als PDF speichern</button>
+      <button type="button" onclick="closeAbrechnung()" class="btn btn-secondary" style="margin-top:10px;">❌ Schließen</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// --- ZENTRALES KONFIGURATIONSOBJEKT / STAMMDATEN ---
+const APP_CONFIG = {
+  "vermieter": {
+    "name": "Daniel Prang",
+    "adresse": "Langenfelde 1, 21614 Buxtehude",
+    "bankverbindung": {
+      "institut": "Haspa Buxtehude",
+      "iban": "DE04 2005 0550 1385 4394 17"
+    }
+  },
+  "mieter": {
+    "vorname": "",
+    "nachname": "",
+    "geburtsdatum": "",
+    "strasse_hausnummer": "",
+    "plz_ort": ""
+  },
+  "mietobjekt": {
+    "adresse": "",
+    "wohnungsnummer": "",
+    "kaltmiete": 0.00,
+    "nebenkosten_vorauszahlung": 0.00,
+    "kaution": 0.00
+  }
+};
+
+// --- INDEXEDDB MODUL ---
+const DB_NAME = 'VermissterToolDB_Pro';
+const DB_VERSION = 1;
+
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(DB_NAME, DB_VERSION);
+    request.onupgradeneeded = (e) => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains('files')) {
+        db.createObjectStore('files', { keyPath: 'id' });
+      }
+    };
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+function processAndCompressFile(file) {
+  return new Promise((resolve) => {
+    if (!file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.readAsDataURL(file);
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+        const MAX_DIM = 1920;
+
+        if (width > MAX_DIM || height > MAX_DIM) {
+          if (width > height) {
+            height = Math.round((height * MAX_DIM) / width);
+            width = MAX_DIM;
+          } else {
+            width = Math.round((width * MAX_DIM) / height);
+            height = MAX_DIM;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', 0.75));
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+async function saveFileToDB(id, file) {
+  if (!file) return null;
+  const compressedDataUrl = await processAndCompressFile(file);
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction('files', 'readwrite');
+    tx.objectStore('files').put({ id, fileData: compressedDataUrl, fileName: file.name, fileType: file.type });
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+async function getFileFromDB(id) {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction('files', 'readonly');
+    const req = tx.objectStore('files').get(id);
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function getAllFilesFromDB() {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction('files', 'readonly');
+    const req = tx.objectStore('files').getAll();
+    req.onsuccess = () => resolve(req.result || []);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function clearDB() {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction('files', 'readwrite');
+    tx.objectStore('files').clear();
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+async function deleteFileFromDB(id) {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction('files', 'readwrite');
+    tx.objectStore('files').delete(id);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+// --- GLOBAL STATE & VARS ---
+let isTestMode = false;
+let belege = [];
+let fahrten = [];
+let vertraege = [];
+let nebenkosten = [];
+let nkSettings = { eg: 0, og: 0 };
+
+const yearSelect = document.getElementById('selectedYear');
+const currentYear = new Date().getFullYear();
+
+for (let i = 0; i < 4; i++) {
+  const year = currentYear - i;
+  const option = document.createElement('option');
+  option.value = year;
+  option.innerText = year;
+  yearSelect.appendChild(option);
+}
+
+const testOption = document.createElement('option');
+testOption.value = 'TESTMODE';
+testOption.innerText = '🧪 Testmodus / Übungsmodus';
+yearSelect.appendChild(testOption);
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('bDatum').valueAsDate = new Date();
+  document.getElementById('fDatum').valueAsDate = new Date();
+  document.getElementById('nkDatum').valueAsDate = new Date();
+  document.getElementById('fZeit').value = new Date().toTimeString().substring(0,5);
+  document.getElementById('fStart').value = APP_CONFIG.vermieter.adresse;
+  loadData();
+  checkFristen();
+});
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/[&<>"']/g, match => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[match]));
+}
+
+function showAlert(msg) {
+  const box = document.getElementById('alertBox');
+  box.innerText = msg;
+  box.style.display = 'block';
+}
+
+function hideAlert() {
+  document.getElementById('alertBox').style.display = 'none';
+}
+
+function checkHerstellungskosten() {
+  const val = parseFloat(document.getElementById('bBetrag').value) || 0;
+  const kat = document.getElementById('bKategorie').value;
+  const warnBox = document.getElementById('herstellungskostenWarning');
+  if (val >= 4000 && kat === 'Erhaltungsaufwand') {
+    warnBox.style.display = 'block';
+  } else {
+    warnBox.style.display = 'none';
+  }
+}
+
+async function openFile(id) {
+  try {
+    const record = await getFileFromDB(id);
+    if (record && record.fileData) {
+      const fetchRes = await fetch(record.fileData);
+      const blob = await fetchRes.blob();
+      const fileUrl = URL.createObjectURL(blob);
+      const newWin = window.open(fileUrl, '_blank');
+      if (newWin) {
+        newWin.onload = () => URL.revokeObjectURL(fileUrl);
+      } else {
+        alert("Bitte erlauben Sie Pop-ups für diese Anwendung.");
+      }
+    } else {
+      alert("Datei nicht gefunden.");
+    }
+  } catch (err) {
+    showAlert('Fehler beim Öffnen der Datei aus IndexedDB.');
+    console.error('IndexedDB Error:', err);
+  }
+}
+
+function loadData() {
+  const selectedValue = yearSelect.value;
+  isTestMode = (selectedValue === 'TESTMODE');
+  const prefix = isTestMode ? 'test_' : '';
+
+  belege = JSON.parse(localStorage.getItem(prefix + 'belege')) || [];
+  fahrten = JSON.parse(localStorage.getItem(prefix + 'fahrten')) || [];
+  vertraege = JSON.parse(localStorage.getItem(prefix + 'vertraege')) || [];
+  nebenkosten = JSON.parse(localStorage.getItem(prefix + 'nebenkosten')) || [];
+  nkSettings = JSON.parse(localStorage.getItem(prefix + 'nkSettings')) || { eg: 0, og: 0 };
+
+  const yearBox = document.getElementById('yearBox');
+  const yearBoxText = document.getElementById('yearBoxText');
+  if (isTestMode) {
+    yearBox.classList.add('testmode');
+    yearBoxText.innerText = '🧪 ÜBUNGSMODUS (Testdaten aktiv):';
+  } else {
+    yearBox.classList.remove('testmode');
+    yearBoxText.innerText = '📅 Aktives Steuerjahr:';
+  }
+
+  document.getElementById('nk_abs_eg').value = nkSettings.eg || '';
+  document.getElementById('nk_abs_og').value = nkSettings.og || '';
+
+  updateTabellen();
+}
+
+function switchYear() {
+  loadData();
+}
+
+function saveData() {
+  const prefix = isTestMode ? 'test_' : '';
+  localStorage.setItem(prefix + 'belege', JSON.stringify(belege));
+  localStorage.setItem(prefix + 'fahrten', JSON.stringify(fahrten));
+  localStorage.setItem(prefix + 'vertraege', JSON.stringify(vertraege));
+  localStorage.setItem(prefix + 'nebenkosten', JSON.stringify(nebenkosten));
+  localStorage.setItem(prefix + 'nkSettings', JSON.stringify(nkSettings));
+}
+
+// --- JSON BACKUP MODUL ---
+async function exportBackupJSON() {
+  try {
+    const localStorageData = {};
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      localStorageData[key] = localStorage.getItem(key);
+    }
+
+    const filesData = await getAllFilesFromDB();
+
+    const backupObject = {
+      version: 1,
+      timestamp: new Date().toISOString(),
+      config: APP_CONFIG,
+      localStorage: localStorageData,
+      files: filesData
+    };
+
+    const jsonString = JSON.stringify(backupObject, null, 2);
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    
+    const downloadLink = document.createElement('a');
+    const dateStr = new Date().toISOString().split('T')[0];
+    downloadLink.href = url;
+    downloadLink.download = `VermissterTool_Backup_${dateStr}.json`;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+    URL.revokeObjectURL(url);
+  } catch (err) {
+    alert("Fehler beim Erstellen des Backups: " + err.message);
+    console.error(err);
+  }
+}
+
+function triggerImportJSON() {
+  document.getElementById('jsonImportInput').click();
+}
+
+async function importBackupJSON(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const confirmMsg = "Achtung: Durch den Import werden alle aktuellen Daten im Browser überschrieben! Möchtest du fortfahren?";
+  if (!confirm(confirmMsg)) {
+    event.target.value = '';
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    try {
+      const backupData = JSON.parse(e.target.result);
+
+      if (!backupData || !backupData.localStorage) {
+        throw new Error("Ungültiges Backup-Format.");
+      }
+
+      localStorage.clear();
+      for (const [key, value] of Object.entries(backupData.localStorage)) {
+        localStorage.setItem(key, value);
+      }
+
+      await clearDB();
+      if (Array.isArray(backupData.files) && backupData.files.length > 0) {
+        const db = await openDB();
+        const tx = db.transaction('files', 'readwrite');
+        const store = tx.objectStore('files');
+        for (const fileObj of backupData.files) {
+          store.put(fileObj);
+        }
+        await new Promise((resolve, reject) => {
+          tx.oncomplete = () => resolve();
+          tx.onerror = () => reject(tx.error);
+        });
+      }
+
+      loadData();
+      alert("Backup erfolgreich wiederhergestellt!");
+    } catch (err) {
+      alert("Fehler beim Einlesen des Backups: " + err.message);
+      console.error(err);
+    } finally {
+      event.target.value = '';
+    }
+  };
+  reader.readAsText(file);
+}
+
+// --- OPENSTREETMAP AUTOCOMPLETE & OSRM ROUTING MODUL ---
+let debounceTimer;
+
+function searchAddress(type, query) {
+  clearTimeout(debounceTimer);
+  const suggestionBox = document.getElementById(`${type}Suggestions`);
+
+  if (!query || query.length < 3) {
+    suggestionBox.innerHTML = '';
+    return;
+  }
+
+  debounceTimer = setTimeout(() => {
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&countrycodes=de`;
+
+    fetch(url, { headers: { 'Accept-Language': 'de' } })
+      .then(res => res.json())
+      .then(data => {
+        suggestionBox.innerHTML = '';
+        data.forEach(item => {
+          const div = document.createElement('div');
+          div.className = 'suggestion-item';
+          div.textContent = item.display_name;
+          div.onclick = () => selectAddress(type, item);
+          suggestionBox.appendChild(div);
+        });
+      })
+      .catch(err => console.error('Fehler bei Adresssuche:', err));
+  }, 300);
+}
+
+function selectAddress(type, item) {
+  const fieldId = type === 'start' ? 'fStart' : 'fZiel';
+  document.getElementById(fieldId).value = item.display_name;
+  document.getElementById(`${type}Lat`).value = item.lat;
+  document.getElementById(`${type}Lon`).value = item.lon;
+  document.getElementById(`${type}Suggestions`).innerHTML = '';
+
+  if (document.getElementById('startLat').value && document.getElementById('zielLat').value) {
+    calculateRouteDistance();
+  }
+}
+
+function calculateRouteDistance() {
+  const startLat = document.getElementById('startLat').value;
+  const startLon = document.getElementById('startLon').value;
+  const zielLat = document.getElementById('zielLat').value;
+  const zielLon = document.getElementById('zielLon').value;
+
+  if (!startLat || !zielLat) {
+    alert('Bitte wähle Start- und Zieladresse aus den Vorschlägen aus, um die Route präzise zu berechnen.');
+    return;
+  }
+
+  const url = `https://router.project-osrm.org/route/v1/driving/${startLon},${startLat};${zielLon},${zielLat}?overview=false`;
+
+  fetch(url)
+    .then(res => res.json())
+    .then(data => {
+      if (data.routes && data.routes.length > 0) {
+        const distanzMeter = data.routes[0].distance;
+        const kmEinfach = distanzMeter / 1000;
+        const kmGesamt = Math.round(kmEinfach * 2 * 10) / 10;
+
+        document.getElementById('fKm').value = kmGesamt;
+        updateFahrtCalc();
+      } else {
+        alert('Route konnte nicht berechnet werden.');
+      }
+    })
+    .catch(err => {
+      console.error('Fehler bei Routenberechnung:', err);
+      alert('Fehler beim Abrufen der Route.');
+    });
+}
+
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.autocomplete-wrapper')) {
+    document.querySelectorAll('.suggestions-box').forEach(box => box.innerHTML = '');
+  }
+});
+
+// --- FAHRTENBUCH LOGIK ---
+function calculateReisekosten(hinRuckKm, verpflegungStunden = 0) {
+  const fahrtkosten = hinRuckKm * 0.30;
+  let verpflegungspauschale = 0;
+  if (verpflegungStunden >= 24) {
+    verpflegungspauschale = 32.00;
+  } else if (verpflegungStunden > 8) {
+    verpflegungspauschale = 16.00;
+  }
+  return { fahrtkosten, verpflegungspauschale };
+}
+
+function updateFahrtCalc() {
+  const km = parseFloat(document.getElementById('fKm').value) || 0;
+  const stunden = parseFloat(document.getElementById('fStunden').value) || 0;
+  const calc = calculateReisekosten(km, stunden);
+  const gesamt = calc.fahrtkosten + calc.verpflegungspauschale;
+
+  document.getElementById('kmInfo').innerHTML = `
+    📏 Fahrtkosten (0,30 €/km): ${calc.fahrtkosten.toFixed(2)} € | 🍱 Verpflegungspauschale: ${calc.verpflegungspauschale.toFixed(2)} €<br>
+    💰 Gesamt absetzbarer Betrag: ${gesamt.toFixed(2)} €
+  `;
+}
+
+function fillQuickDrive(zielAdresse, topName) {
+  document.getElementById('fZiel').value = zielAdresse;
+  document.getElementById('fGrund').value = "Kontrollfahrt / Objektbesichtigung " + topName;
+  document.getElementById('fKm').value = "15.0";
+  document.getElementById('fStunden').value = "2.0";
+  updateFahrtCalc();
+}
+
+document.getElementById('fahrtForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const km = parseFloat(document.getElementById('fKm').value) || 0;
+  const stunden = parseFloat(document.getElementById('fStunden').value) || 0;
+  const calc = calculateReisekosten(km, stunden);
+
+  fahrten.push({
+    id: Date.now().toString(),
+    datum: document.getElementById('fDatum').value,
+    zeit: document.getElementById('fZeit').value,
+    start: document.getElementById('fStart').value,
+    ziel: document.getElementById('fZiel').value,
+    grund: document.getElementById('fGrund').value,
+    km: km,
+    stunden: stunden,
+    fahrtkosten: calc.fahrtkosten,
+    verpflegung: calc.verpflegungspauschale
+  });
+
+  saveData();
+  updateTabellen();
+  e.target.reset();
+  document.getElementById('fStart').value = APP_CONFIG.vermieter.adresse;
+  document.getElementById('fDatum').valueAsDate = new Date();
+  document.getElementById('fZeit').value = new Date().toTimeString().substring(0,5);
+  updateFahrtCalc();
+});
+
+function deleteFahrt(id) {
+  fahrten = fahrten.filter(f => f.id !== id);
+  saveData();
+  updateTabellen();
+}
+
+// --- BELEGE MODUL ---
+document.getElementById('belegForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const id = Date.now().toString();
+  const fileInput = document.getElementById('bDatei');
+  const file = fileInput.files[0];
+
+  if (file) {
+    await saveFileToDB(id, file);
+  }
+
+  belege.push({
+    id: id,
+    datum: document.getElementById('bDatum').value,
+    zuordnung: document.getElementById('bZuordnung').value,
+    kategorie: document.getElementById('bKategorie').value,
+    geschaeft: document.getElementById('bGeschaeft').value,
+    betrag: parseFloat(document.getElementById('bBetrag').value) || 0,
+    grund: document.getElementById('bGrund').value,
+    hasFile: !!file
+  });
+
+  saveData();
+  updateTabellen();
+  e.target.reset();
+  document.getElementById('bDatum').valueAsDate = new Date();
+  checkHerstellungskosten();
+});
+
+async function deleteBeleg(id) {
+  const item = belege.find(b => b.id === id);
+  belege = belege.filter(b => b.id !== id);
+  if (item && item.hasFile) {
+    await deleteFileFromDB(id);
+  }
+  saveData();
+  updateTabellen();
+}
+
+// --- CHECKLISTEN HELFER ---
+function calcHandy() {
+  const monat = parseFloat(document.getElementById('ck_handy_monat').value) || 0;
+  const prozent = parseFloat(document.getElementById('ck_handy_prozent').value) || 0;
+  document.getElementById('ck_handy_val').value = ((monat * 12) * (prozent / 100)).toFixed(2);
+}
+
+function calcKauf() {
+  const preis = parseFloat(document.getElementById('ck_kauf_preis').value) || 0;
+  const prozent = parseFloat(document.getElementById('ck_kauf_prozent').value) || 0;
+  document.getElementById('ck_kauf_val').value = (preis * (prozent / 100)).toFixed(2);
+}
+
+function toggleKontoInput() {
+  const typ = document.getElementById('ck_konto_typ').value;
+  const valInput = document.getElementById('ck_konto_val');
+  if (typ === 'pauschale') {
+    valInput.value = "16.00";
+    valInput.disabled = true;
+  } else {
+    valInput.disabled = false;
+  }
+}
+
+function toggleBueroInput() {
+  const typ = document.getElementById('ck_buero_typ').value;
+  const valInput = document.getElementById('ck_buero_val');
+  if (typ === 'pauschale') {
+    valInput.value = "20.00";
+    valInput.disabled = true;
+  } else {
+    valInput.disabled = false;
+  }
+}
+
+function calcHomeoffice() {
+  const tage = parseFloat(document.getElementById('ck_ho_tage').value) || 0;
+  document.getElementById('ck_ho_val').value = (tage * 6.0).toFixed(2);
+}
+
+function addChecklistItem(titel, valInputId, objSelectId, kategorie) {
+  const val = parseFloat(document.getElementById(valInputId).value) || 0;
+  const obj = document.getElementById(objSelectId).value;
+
+  if (val <= 0) {
+    alert("Bitte einen Betrag größer als 0 € eintragen.");
+    return;
+  }
+
+  belege.push({
+    id: Date.now().toString(),
+    datum: new Date().toISOString().split('T')[0],
+    zuordnung: obj,
+    kategorie: kategorie,
+    geschaeft: "Pauschale / Richtwert",
+    betrag: val,
+    grund: titel,
+    hasFile: false
+  });
+
+  saveData();
+  updateTabellen();
+  alert(`"${titel}" in Höhe von ${val.toFixed(2)} € wurde übernommen.`);
+}
+
+// --- NEBENKOSTEN MODUL ---
+function checkFristen() {
+  hideAlert();
+  const start = new Date(document.getElementById('nkStart').value);
+  const ende = new Date(document.getElementById('nkEnde').value);
+
+  if (!isNaN(start) && !isNaN(ende)) {
+    const diffMonths = (ende.getFullYear() - start.getFullYear()) * 12 + (ende.getMonth() - start.getMonth());
+    if (diffMonths > 12) {
+      showAlert('Achtung: Der Abrechnungszeitraum darf gemäß § 556 Abs. 1 BGB maximal 12 Monate betragen.');
+    }
+  }
+}
+
+function calcStromVerbrauch() {
+  const alt = parseFloat(document.getElementById('nkZaehlerAlt').value) || 0;
+  const neu = parseFloat(document.getElementById('nkZaehlerNeu').value) || 0;
+  const preis = parseFloat(document.getElementById('nkStromPreis').value) || 0;
+  
+  if (neu >= alt && neu > 0) {
+    const verbrauch = neu - alt;
+    document.getElementById('nkZaehlerVerbrauch').value = verbrauch.toFixed(1);
+    if (preis > 0) {
+      document.getElementById('nkBetrag').value = (verbrauch * preis).toFixed(2);
+    }
+  } else {
+    document.getElementById('nkZaehlerVerbrauch').value = '';
+  }
+}
+
+function autoFillDienstleister() {
+  const kat = document.getElementById('nkKategorie').value;
+  const gInput = document.getElementById('nkGeschaeft');
+  const stromBox = document.getElementById('stromDetails');
+
+  stromBox.style.display = (kat === 'Stromkosten') ? 'block' : 'none';
+
+  if (kat === 'Stromkosten') gInput.value = "Stadtwerke Buxtehude";
+  else if (kat === 'Brunata') gInput.value = "BRUNATA Wärmemesser Hagen GmbH & Co. KG";
+  else if (kat.includes('Rauchmelder')) gInput.value = "Wartungsdienst";
+  else if (kat.includes('Heizung')) gInput.value = "Heizungsfachbetrieb";
+  else if (kat.includes('Schornstein')) gInput.value = "Schornsteinfegermeister";
+  else if (['Grundsteuer', 'Entwässerung', 'Müll'].includes(kat)) gInput.value = "Stadt Buxtehude";
+}
+
+function saveNKSettings() {
+  nkSettings.eg = parseFloat(document.getElementById('nk_abs_eg').value) || 0;
+  nkSettings.og = parseFloat(document.getElementById('nk_abs_og').value) || 0;
+  saveData();
+}
+
+document.getElementById('nkForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const id = Date.now().toString();
+  const fileInput = document.getElementById('nkDatei');
+  const file = fileInput.files[0];
+  const kat = document.getElementById('nkKategorie').value;
+  
+  const totalBetrag = parseFloat(document.getElementById('nkBetrag').value) || 0;
+  const customLohn = parseFloat(document.getElementById('nkLohnanteil').value);
+  
+  let lohnAnteil = 0;
+  if (!isNaN(customLohn)) {
+    lohnAnteil = customLohn;
+  } else if (['Schornsteinfeger', 'Rauchmelder-Wartung', 'Heizung-Wartung', 'Gartenpflege', 'Hauswart'].some(k => kat.includes(k))) {
+    lohnAnteil = totalBetrag;
+  }
+
+  if (file) {
+    await saveFileToDB(id, file);
+  }
+
+  nebenkosten.push({
+    id: id,
+    datum: document.getElementById('nkDatum').value,
+    zuordnung: document.getElementById('nkZuordnung').value,
+    kategorie: kat,
+    geschaeft: document.getElementById('nkGeschaeft').value,
+    betrag: totalBetrag,
+    lohnAnteil: lohnAnteil,
+    grund: document.getElementById('nkGrund').value,
+    verbrauch: kat === 'Stromkosten' ? document.getElementById('nkZaehlerVerbrauch').value : null,
+    stromPreis: kat === 'Stromkosten' ? document.getElementById('nkStromPreis').value : null,
+    hasFile: !!file
+  });
+
+  saveData();
+  updateTabellen();
+  e.target.reset();
+  document.getElementById('nkDatum').valueAsDate = new Date();
+  autoFillDienstleister();
+});
+
+async function deleteNK(id) {
+  const item = nebenkosten.find(nk => nk.id === id);
+  nebenkosten = nebenkosten.filter(nk => nk.id !== id);
+  if (item && item.hasFile) {
+    await deleteFileFromDB(id);
+  }
+  saveData();
+  updateTabellen();
+}
+
+// --- MIETVERTRÄGE & MIETER MODUL ---
+document.getElementById('vertragForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const id = Date.now().toString();
+  const fileInput = document.getElementById('vDatei');
+  const file = fileInput.files[0];
+
+  if (file) {
+    await saveFileToDB(id, file);
+  }
+
+  const mieterData = {
+    vorname: document.getElementById('vVorname').value,
+    nachname: document.getElementById('vNachname').value,
+    geburtsdatum: document.getElementById('vGeburtsdatum').value,
+    strasse_hausnummer: document.getElementById('vStrasse').value,
+    plz_ort: document.getElementById('vPlzOrt').value
+  };
+
+  const mietobjektData = {
+    adresse: document.getElementById('vObjektAdresse').value,
+    wohnungsnummer: document.getElementById('vWohnungsnummer').value,
+    kaltmiete: parseFloat(document.getElementById('vKaltmiete').value) || 0,
+    nebenkosten_vorauszahlung: parseFloat(document.getElementById('vNKMonat').value) || 0,
+    kaution: parseFloat(document.getElementById('vKaution').value) || 0
+  };
+
+  vertraege.push({
+    id: id,
+    zuordnung: document.getElementById('vZuordnung').value,
+    mieter: mieterData,
+    mietobjekt: mietobjektData,
+    fileName: file ? file.name : 'Kein Anhang',
+    hasFile: !!file
+  });
+
+  saveData();
+  updateTabellen();
+  e.target.reset();
+});
+
+async function deleteVertrag(id) {
+  const item = vertraege.find(v => v.id === id);
+  vertraege = vertraege.filter(v => v.id !== id);
+  if (item && item.hasFile) {
+    await deleteFileFromDB(id);
+  }
+  saveData();
+  updateTabellen();
+}
+
+// --- TABELLEN UPDATE & RENDER ---
+function updateTabellen() {
+  const selectedYearVal = document.getElementById('selectedYear').value;
+
+  // 1. BELEGE TABELLE
+  const belegTbody = document.querySelector('#belegTabelle tbody');
+  let totalBelege = 0;
+
+  belegTbody.innerHTML = belege
+    .filter(b => isTestMode || b.datum.startsWith(selectedYearVal))
+    .map(b => {
+      totalBelege += b.betrag;
+      return `
+        <tr>
+          <td>${escapeHtml(b.datum)}</td>
+          <td><span class="badge">${escapeHtml(b.zuordnung)}</span></td>
+          <td>${escapeHtml(b.kategorie)}</td>
+          <td>${escapeHtml(b.geschaeft)} (${escapeHtml(b.grund || '-')})</td>
+          <td>${b.betrag.toFixed(2)} €</td>
+          <td>${b.hasFile ? `<button class="btn btn-secondary" onclick="openFile('${b.id}')">📎 Öffnen</button>` : 'Keine'}</td>
+          <td><button class="btn-danger" onclick="deleteBeleg('${b.id}')">❌</button></td>
+        </tr>
+      `;
+    }).join('');
+  document.getElementById('belegTabelleSumme').innerText = totalBelege.toFixed(2) + ' €';
+
+  // 2. FAHRTEN TABELLE
+  const fahrtTbody = document.querySelector('#fahrtTabelle tbody');
+  let totalKm = 0;
+  let totalFahrt = 0;
+  let totalVerpflegung = 0;
+
+  fahrtTbody.innerHTML = fahrten
+    .filter(f => isTestMode || f.datum.startsWith(selectedYearVal))
+    .map(f => {
+      totalKm += f.km;
+      totalFahrt += f.fahrtkosten;
+      totalVerpflegung += f.verpflegung;
+      return `
+        <tr>
+          <td>${escapeHtml(f.datum)} ${escapeHtml(f.zeit)}</td>
+          <td>${escapeHtml(f.start)} ➡️ ${escapeHtml(f.ziel)}</td>
+          <td>${escapeHtml(f.grund)}</td>
+          <td>${f.km.toFixed(1)} km</td>
+          <td>${f.fahrtkosten.toFixed(2)} €</td>
+          <td>${f.verpflegung.toFixed(2)} €</td>
+          <td><button class="btn-danger" onclick="deleteFahrt('${f.id}')">❌</button></td>
+        </tr>
+      `;
+    }).join('');
+
+  document.getElementById('fahrtTabelleSummeKM').innerText = totalKm.toFixed(1) + ' km';
+  document.getElementById('fahrtTabelleSummeFahrt').innerText = totalFahrt.toFixed(2) + ' €';
+  document.getElementById('fahrtTabelleSummeVerpflegung').innerText = totalVerpflegung.toFixed(2) + ' €';
+
+  // 3. NEBENKOSTEN TABELLE
+  const nkTbody = document.querySelector('#nkTabelle tbody');
+  let totalNK = 0;
+  let totalNKLohn = 0;
+
+  nkTbody.innerHTML = nebenkosten
+    .filter(nk => isTestMode || nk.datum.startsWith(selectedYearVal))
+    .map(nk => {
+      totalNK += nk.betrag;
+      totalNKLohn += (nk.lohnAnteil || 0);
+      return `
+        <tr>
+          <td>${escapeHtml(nk.datum)}</td>
+          <td><span class="badge">${escapeHtml(nk.zuordnung)}</span></td>
+          <td>${escapeHtml(nk.kategorie)}</td>
+          <td>${escapeHtml(nk.geschaeft)} (${escapeHtml(nk.grund || '-')})</td>
+          <td>${nk.betrag.toFixed(2)} €</td>
+          <td>${(nk.lohnAnteil || 0).toFixed(2)} €</td>
+          <td>${nk.hasFile ? `<button class="btn btn-secondary" onclick="openFile('${nk.id}')">📎 Öffnen</button>` : 'Keine'}</td>
+          <td><button class="btn-danger" onclick="deleteNK('${nk.id}')">❌</button></td>
+        </tr>
+      `;
+    }).join('');
+
+  document.getElementById('nkTabelleSumme').innerText = totalNK.toFixed(2) + ' €';
+  document.getElementById('nkTabelleLohnSumme').innerText = totalNKLohn.toFixed(2) + ' €';
+
+  // 4. MIETVERTRÄGE TABELLE
+  const vertragTbody = document.querySelector('#vertragTabelle tbody');
+  vertragTbody.innerHTML = vertraege.map(v => `
+    <tr>
+      <td><span class="badge">${escapeHtml(v.zuordnung)}</span></td>
+      <td><strong>${escapeHtml(v.mieter.vorname)} ${escapeHtml(v.mieter.nachname)}</strong></td>
+      <td>${escapeHtml(v.mieter.strasse_hausnummer)}, ${escapeHtml(v.mieter.plz_ort)}</td>
+      <td>
+        Kalt: ${v.mietobjekt.kaltmiete.toFixed(2)} €<br>
+        NK: ${v.mietobjekt.nebenkosten_vorauszahlung.toFixed(2)} €
+      </td>
+      <td>${v.hasFile ? `<button class="btn btn-secondary" onclick="openFile('${v.id}')">📄 Vertrag (${escapeHtml(v.fileName)})</button>` : 'Kein Anhang'}</td>
+      <td><button class="btn-danger" onclick="deleteVertrag('${v.id}')">❌</button></td>
+    </tr>
+  `).join('');
+}
+
+// --- NEBENKOSTENABRECHNUNG GENERATOR ---
+function generateAbrechnung(zielWohnung) {
+  const selectedYearVal = document.getElementById('selectedYear').value;
+  const jahr = isTestMode ? currentYear : selectedYearVal;
+
+  const isEG = zielWohnung.includes('EG');
+  const flaechenAnteil = isEG ? (70 / 170) : (100 / 170);
+  const flaecheM2 = isEG ? 70 : 100;
+  const monatsAbschlag = isEG ? (nkSettings.eg || 0) : (nkSettings.og || 0);
+
+  // Mieter & Vertragsdaten laden
+  const vertrag = vertraege.find(v => v.zuordnung.includes(isEG ? 'EG' : 'OG'));
+
+  let mieterName = vertrag ? `${vertrag.mieter.vorname} ${vertrag.mieter.nachname}` : "Max Mustermann";
+  let mieterStrasse = vertrag ? vertrag.mieter.strasse_hausnummer : "An den Geestbergen 12";
+  let mieterPlzOrt = vertrag ? vertrag.mieter.plz_ort : "21614 Buxtehude";
+  let wohnungsNr = vertrag ? vertrag.mietobjekt.wohnungsnummer : (isEG ? "EG Links" : "OG Rechts");
+  let objektAdresse = vertrag ? vertrag.mietobjekt.adresse : "An den Geestbergen 12, 21614 Buxtehude";
+
+  // Befüllen des Druckbereichs
+  document.getElementById('pVermieterName').innerText = APP_CONFIG.vermieter.name;
+  document.getElementById('pVermieterAdresse').innerText = APP_CONFIG.vermieter.adresse;
+  document.getElementById('pAbrechnungsDatum').innerText = new Date().toLocaleDateString('de-DE');
+
+  document.getElementById('pMieterName').innerText = mieterName;
+  document.getElementById('pMieterStrasse').innerText = mieterStrasse;
+  document.getElementById('pMieterPlzOrt').innerText = mieterPlzOrt;
+
+  document.getElementById('pJahr').innerText = jahr;
+  document.getElementById('pJahrPeriod1').innerText = jahr;
+  document.getElementById('pJahrPeriod2').innerText = jahr;
+
+  document.getElementById('pObjektAdresse').innerText = objektAdresse;
+  document.getElementById('pEinheit').innerText = zielWohnung;
+  document.getElementById('pWohnungsnummer').innerText = wohnungsNr;
+  document.getElementById('pFlaeche').innerText = flaecheM2;
+
+  // Posten filtern & berechnen
+  const relevantePosten = nebenkosten.filter(nk => 
+    (isTestMode || nk.datum.startsWith(selectedYearVal)) &&
+    (nk.zuordnung === zielWohnung || nk.zuordnung.includes('Gesamtobjekt'))
+  );
+
+  let gesamtAnteilMieter = 0;
+  let gesamtLohn35a = 0;
+
+  const tableBody = document.getElementById('pPostenTable');
+  tableBody.innerHTML = relevantePosten.map(nk => {
+    let anteil = 0;
+    let verteilschluesselText = "";
+
+    if (nk.zuordnung === zielWohnung) {
+      anteil = nk.betrag;
+      verteilschluesselText = "100 % Direktzuordnung";
+      gesamtLohn35a += (nk.lohnAnteil || 0);
+    } else {
+      anteil = nk.betrag * flaechenAnteil;
+      verteilschluesselText = `Wohnfläche (${flaecheM2} / 170 m²)`;
+      gesamtLohn35a += ((nk.lohnAnteil || 0) * flaechenAnteil);
+    }
+
+    gesamtAnteilMieter += anteil;
+
+    return `
+      <tr>
+        <td style="border:1px solid #e5e5ea; padding:8px;">${escapeHtml(nk.kategorie)} (${escapeHtml(nk.geschaeft)})</td>
+        <td style="border:1px solid #e5e5ea; padding:8px;">${nk.betrag.toFixed(2)} €</td>
+        <td style="border:1px solid #e5e5ea; padding:8px;">${verteilschluesselText}</td>
+        <td style="border:1px solid #e5e5ea; padding:8px; font-weight:bold;">${anteil.toFixed(2)} €</td>
+      </tr>
+    `;
+  }).join('');
+
+  const geleistetGessamt = monatsAbschlag * 12;
+  const differenz = gesamtAnteilMieter - geleistetGessamt;
+
+  document.getElementById('pGesamtAnteil').innerText = gesamtAnteilMieter.toFixed(2);
+  document.getElementById('pMonatsAbschlag').innerText = monatsAbschlag.toFixed(2);
+  document.getElementById('pGeleistet').innerText = geleistetGessamt.toFixed(2);
+  document.getElementById('p35aBetrag').innerText = gesamtLohn35a.toFixed(2);
+
+  const finalResultElem = document.getElementById('pFinalResult');
+  const zahlungshinweisElem = document.getElementById('pZahlungshinweis');
+
+  if (differenz > 0) {
+    finalResultElem.innerHTML = `Nachzahlung zugunsten des Vermieters: <strong style="color:#d9534f;">+ ${differenz.toFixed(2)} €</strong>`;
+    zahlungshinweisElem.innerHTML = `
+      Bitte überweisen Sie den Nachzahlungsbetrag von <strong>${differenz.toFixed(2)} €</strong> innerhalb von 30 Tagen auf folgendes Konto:<br>
+      <strong>Kreditinstitut:</strong> ${APP_CONFIG.vermieter.bankverbindung.institut}<br>
+      <strong>IBAN:</strong> ${APP_CONFIG.vermieter.bankverbindung.iban}<br>
+      <strong>Verwendungszweck:</strong> Nebenkostenabrechnung ${jahr} ${zielWohnung}
+    `;
+  } else if (differenz < 0) {
+    const guthaben = Math.abs(differenz);
+    finalResultElem.innerHTML = `Guthaben zugunsten des Mieters: <strong style="color:#5cb85c;">- ${guthaben.toFixed(2)} €</strong>`;
+    zahlungshinweisElem.innerHTML = `
+      Das Guthaben in Höhe von <strong>${guthaben.toFixed(2)} €</strong> wird Ihnen in den nächsten Tagen auf Ihr bekanntes Bankkonto überwiesen bzw. mit der kommenden Miete verrechnet.
+    `;
+  } else {
+    finalResultElem.innerHTML = `Abrechnung ausgeglichen: <strong>0.00 €</strong>`;
+    zahlungshinweisElem.innerHTML = `Es ist keine Nachzahlung oder Erstattung erforderlich.`;
+  }
+
+  document.getElementById('printArea').style.display = 'block';
+  window.scrollTo({ top: document.getElementById('printArea').offsetTop, behavior: 'smooth' });
+}
+
+function printNKReport() {
+  document.body.classList.add('print-nk-mode');
+  window.print();
+  document.body.classList.remove('print-nk-mode');
+}
+
+function closeAbrechnung() {
+  document.getElementById('printArea').style.display = 'none';
+}
+
+// --- STEUERBERICHT PRINTER & CSV EXPORT ---
+function printTaxReport() {
+  document.body.classList.add('print-tax-mode');
+  window.print();
+  document.body.classList.remove('print-tax-mode');
+}
+
+function exportAnlageVCSV() {
+  const selectedYearVal = document.getElementById('selectedYear').value;
+  let csvContent = "data:text/csv;charset=utf-8,Typ;Datum;Zuordnung;Kategorie;Beschreibung;Betrag (€);Lohnanteil §35a (€)\n";
+
+  belege.filter(b => isTestMode || b.datum.startsWith(selectedYearVal)).forEach(b => {
+    csvContent += `Beleg;${b.datum};"${b.zuordnung}";"${b.kategorie}";"${b.geschaeft} - ${b.grund || ''}";${b.betrag.toFixed(2)};0.00\n`;
+  });
+
+  fahrten.filter(f => isTestMode || f.datum.startsWith(selectedYearVal)).forEach(f => {
+    const gesamtFahrt = f.fahrtkosten + f.verpflegung;
+    csvContent += `Fahrt;${f.datum};"Gesamtobjekt";"Fahrtkosten §9";"${f.start} -> ${f.ziel}: ${f.grund}";${gesamtFahrt.toFixed(2)};0.00\n`;
+  });
+
+  nebenkosten.filter(nk => isTestMode || nk.datum.startsWith(selectedYearVal)).forEach(nk => {
+    csvContent += `Betriebskosten;${nk.datum};"${nk.zuordnung}";"${nk.kategorie}";"${nk.geschaeft} - ${nk.grund || ''}";${nk.betrag.toFixed(2)};${(nk.lohnAnteil || 0).toFixed(2)}\n`;
+  });
+
+  const encodedUri = encodeURI(csvContent);
+  const link = document.createElement("a");
+  link.setAttribute("href", encodedUri);
+  link.setAttribute("download", `Anlage_V_Export_${selectedYearVal}.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+</script>
+
+</body>
+</html>

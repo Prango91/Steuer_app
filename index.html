@@ -6,7 +6,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Steuer-App">
-  <title>Vermieter-Tool Pro - Steuer-Manager & Nebenkostenabrechnung</title>
+  <title>Vermisster-Tool Pro - Steuer-Manager & Nebenkostenabrechnung</title>
 
   <style>
     :root {
@@ -388,7 +388,7 @@
       <div class="flex-row">
         <div>
           <label for="fStart">Startadresse</label>
-          <input type="text" id="fStart" value="Pippensen, Buxtehude" required>
+          <input type="text" id="fStart" value="Langenfelde 1, 21624 Buxtehude" required>
         </div>
         <div>
           <label for="fZiel">Zieladresse</label>
@@ -882,34 +882,89 @@
     </div>
   </div>
 
-  <!-- 6. MIETVERTRÄGE UPLOAD -->
+  <!-- 6. MIETVERTRÄGE & MIETERDATEN UPLOAD -->
   <div class="card">
-    <h2>📄 Mietverträge verwalten</h2>
+    <h2>📄 Mietverträge &amp; Mieterdaten verwalten</h2>
     <form id="vertragForm">
       <div class="flex-row">
         <div>
-          <label for="vZuordnung">Zuordnung</label>
+          <label for="vZuordnung">Wohnungs-Zuordnung</label>
           <select id="vZuordnung">
-            <option>Wohnung EG (70 m²)</option>
-            <option>Wohnung OG (100 m²)</option>
+            <option value="Wohnung EG (70 m²)">Wohnung EG (70 m²)</option>
+            <option value="Wohnung OG (100 m²)">Wohnung OG (100 m²)</option>
           </select>
         </div>
         <div>
-          <label for="vName">Mieter Name / Bezeichnung</label>
-          <input type="text" id="vName" placeholder="z. B. Max Mustermann" required>
+          <label for="vVorname">Vorname Mieter</label>
+          <input type="text" id="vVorname" placeholder="z. B. Max" required>
+        </div>
+        <div>
+          <label for="vNachname">Nachname Mieter</label>
+          <input type="text" id="vNachname" placeholder="z. B. Mustermann" required>
+        </div>
+      </div>
+
+      <div class="flex-row">
+        <div>
+          <label for="vGeburtsdatum">Geburtsdatum</label>
+          <input type="date" id="vGeburtsdatum">
+        </div>
+        <div>
+          <label for="vStrasse">Straße &amp; Hausnummer Mieter</label>
+          <input type="text" id="vStrasse" placeholder="z. B. An den Geestbergen 12">
+        </div>
+        <div>
+          <label for="vPlzOrt">PLZ &amp; Ort Mieter</label>
+          <input type="text" id="vPlzOrt" placeholder="z. B. 21614 Buxtehude">
+        </div>
+      </div>
+
+      <h3>Mietobjekt- &amp; Konditionen-Details</h3>
+      <div class="flex-row">
+        <div>
+          <label for="vObjektAdresse">Adresse Mietobjekt</label>
+          <input type="text" id="vObjektAdresse" placeholder="z. B. An den Geestbergen 12, 21614 Buxtehude">
+        </div>
+        <div>
+          <label for="vWohnungsnummer">Wohnungsnummer / Lage</label>
+          <input type="text" id="vWohnungsnummer" placeholder="z. B. WE 01 - EG Links">
+        </div>
+      </div>
+
+      <div class="flex-row">
+        <div>
+          <label for="vKaltmiete">Monatliche Kaltmiete (€)</label>
+          <input type="number" step="0.01" id="vKaltmiete" placeholder="0.00">
+        </div>
+        <div>
+          <label for="vNKMonat">Nebenkostenvorauszahlung (€)</label>
+          <input type="number" step="0.01" id="vNKMonat" placeholder="0.00">
+        </div>
+        <div>
+          <label for="vKaution">Kaution (€)</label>
+          <input type="number" step="0.01" id="vKaution" placeholder="0.00">
         </div>
       </div>
 
       <label for="vDatei">Mietvertrag hochladen (PDF oder Bild)</label>
       <input type="file" id="vDatei" accept="application/pdf,image/*">
 
-      <button type="submit" class="btn">📤 Mietvertrag speichern</button>
+      <button type="submit" class="btn">📤 Mieter &amp; Mietvertrag speichern</button>
     </form>
 
-    <h3>Gespeicherte Mietverträge</h3>
+    <h3>Gespeicherte Mietverträge &amp; Mieter</h3>
     <div class="table-responsive">
       <table id="vertragTabelle">
-        <thead><tr><th>Wohnung</th><th>Mieter</th><th>Datei</th><th>Aktion</th></tr></thead>
+        <thead>
+          <tr>
+            <th>Wohnung</th>
+            <th>Mieter</th>
+            <th>Adresse Mieter</th>
+            <th>Objekt &amp; Miete</th>
+            <th>Vertrag</th>
+            <th>Aktion</th>
+          </tr>
+        </thead>
         <tbody></tbody>
       </table>
     </div>
@@ -920,23 +975,23 @@
     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; border-bottom: 2px solid #0071e3; padding-bottom: 20px;">
       <div style="font-size:13px; line-height:1.6;">
         <strong style="color:#0071e3; font-size: 15px;">Vermieter:</strong><br>
-        <span id="pVermieterName">Daniel Prang</span><br>
-        <span id="pVermieterAdresse">Langenfelde 1, 21624 Buxtehude</span><br>
-        <span id="pVermieterBank">Haspa Buxtehude - IBAN: DE04 2005 0550 1385 4394 17</span>
+        <span id="pVermieterName"></span><br>
+        <span id="pVermieterAdresse"></span>
       </div>
       <div style="text-align:right; font-size:13px; line-height:1.6;">
         <strong>Datum:</strong> <span id="pAbrechnungsDatum"></span><br><br>
         <strong style="color:#0071e3; font-size: 15px;">Mieter / Empfänger:</strong><br>
         <span id="pMieterName" style="font-weight:bold;"></span><br>
-        <span id="pMieterAdresse">Buxtehude</span>
+        <span id="pMieterStrasse"></span><br>
+        <span id="pMieterPlzOrt"></span>
       </div>
     </div>
     
     <h2 style="color:#1d1d1f; font-size: 22px; margin-bottom: 20px;">Betriebskostenabrechnung für das Kalenderjahr <span id="pJahr"></span></h2>
     
     <div style="margin-bottom:24px; font-size:14px; line-height:1.7; background: #f9f9fb; padding: 16px; border-radius: 8px;">
-      <strong>Abrechnungsobjekt:</strong> <span id="pMietobjektAdresse">Buxtehude</span><br>
-      <strong>Mieteinheit:</strong> <span id="pEinheit"></span> (Wohnfläche: <span id="pFlaeche"></span> m² / Gesamtfläche Objekt: 170 m²)<br>
+      <strong>Abrechnungsobjekt:</strong> <span id="pObjektAdresse"></span><br>
+      <strong>Mieteinheit:</strong> <span id="pEinheit"></span> (<span id="pWohnungsnummer"></span> | Wohnfläche: <span id="pFlaeche"></span> m² / Gesamtfläche Objekt: 170 m²)<br>
       <strong>Abrechnungszeitraum:</strong> 01.01.<span id="pJahrPeriod1"></span> bis 31.12.<span id="pJahrPeriod2"></span>
     </div>
 
@@ -978,8 +1033,8 @@
 </div>
 
 <script>
-// --- EINGEFÜGTE STAMMDATEN KONFIGURATION ---
-const IMPORTER_DATA = {
+// --- ZENTRALES KONFIGURATIONSOBJEKT / STAMMDATEN ---
+const APP_CONFIG = {
   "vermieter": {
     "name": "Daniel Prang",
     "adresse": "Langenfelde 1, 21624 Buxtehude",
@@ -1121,7 +1176,6 @@ let fahrten = [];
 let vertraege = [];
 let nebenkosten = [];
 let nkSettings = { eg: 0, og: 0 };
-let importerData = IMPORTER_DATA;
 
 const yearSelect = document.getElementById('selectedYear');
 const currentYear = new Date().getFullYear();
@@ -1144,20 +1198,6 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('fDatum').valueAsDate = new Date();
   document.getElementById('nkDatum').valueAsDate = new Date();
   document.getElementById('fZeit').value = new Date().toTimeString().substring(0,5);
-  
-  // Stammdaten initialisieren, falls keine im LocalStorage vorhanden sind
-  if (!localStorage.getItem('importerData')) {
-    localStorage.setItem('importerData', JSON.stringify(IMPORTER_DATA));
-  } else {
-    importerData = JSON.parse(localStorage.getItem('importerData'));
-  }
-  
-  // Falls Mieter im JSON hinterlegt ist, diesen als Vorgabe in Verträge eintragen
-  const mieterNameFull = `${importerData.mieter.vorname} ${importerData.mieter.nachname}`.trim();
-  if (mieterNameFull && vertraege.length === 0) {
-    document.getElementById('vName').value = mieterNameFull;
-  }
-
   loadData();
   checkFristen();
 });
@@ -1266,6 +1306,7 @@ async function exportBackupJSON() {
     const backupObject = {
       version: 1,
       timestamp: new Date().toISOString(),
+      config: APP_CONFIG,
       localStorage: localStorageData,
       files: filesData
     };
@@ -1396,7 +1437,7 @@ document.getElementById('fahrtForm').addEventListener('submit', (e) => {
   saveData();
   updateTabellen();
   e.target.reset();
-  document.getElementById('fStart').value = "Pippensen, Buxtehude";
+  document.getElementById('fStart').value = APP_CONFIG.vermieter.adresse;
   document.getElementById('fDatum').valueAsDate = new Date();
   document.getElementById('fZeit').value = new Date().toTimeString().substring(0,5);
   updateFahrtCalc();
@@ -1615,7 +1656,7 @@ async function deleteNK(id) {
   updateTabellen();
 }
 
-// --- MIETVERTRÄGE MODUL ---
+// --- MIETVERTRÄGE & MIETER MODUL ---
 document.getElementById('vertragForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   const id = Date.now().toString();
@@ -1626,10 +1667,27 @@ document.getElementById('vertragForm').addEventListener('submit', async (e) => {
     await saveFileToDB(id, file);
   }
 
+  const mieterData = {
+    vorname: document.getElementById('vVorname').value,
+    nachname: document.getElementById('vNachname').value,
+    geburtsdatum: document.getElementById('vGeburtsdatum').value,
+    strasse_hausnummer: document.getElementById('vStrasse').value,
+    plz_ort: document.getElementById('vPlzOrt').value
+  };
+
+  const mietobjektData = {
+    adresse: document.getElementById('vObjektAdresse').value,
+    wohnungsnummer: document.getElementById('vWohnungsnummer').value,
+    kaltmiete: parseFloat(document.getElementById('vKaltmiete').value) || 0,
+    nebenkosten_vorauszahlung: parseFloat(document.getElementById('vNKMonat').value) || 0,
+    kaution: parseFloat(document.getElementById('vKaution').value) || 0
+  };
+
   vertraege.push({
     id: id,
     zuordnung: document.getElementById('vZuordnung').value,
-    name: document.getElementById('vName').value,
+    mieter: mieterData,
+    mietobjekt: mietobjektData,
     fileName: file ? file.name : 'Kein Anhang',
     hasFile: !!file
   });
@@ -1732,14 +1790,22 @@ function updateTabellen() {
 
   // 4. VERTRÄGE TABELLE
   const vTbody = document.querySelector('#vertragTabelle tbody');
-  vTbody.innerHTML = vertraege.map(v => `
-    <tr>
-      <td>${escapeHtml(v.zuordnung)}</td>
-      <td>${escapeHtml(v.name)}</td>
-      <td>${v.hasFile ? `<button class="btn btn-secondary" onclick="openFile('${v.id}')">📄 ${escapeHtml(v.fileName)}</button>` : 'Keine Datei'}</td>
-      <td><button class="btn-danger" onclick="deleteVertrag('${v.id}')">❌</button></td>
-    </tr>
-  `).join('');
+  vTbody.innerHTML = vertraege.map(v => {
+    const mieterName = v.mieter ? `${v.mieter.vorname} ${v.mieter.nachname}` : (v.name || 'Unbekannt');
+    const mieterAdresse = v.mieter ? `${v.mieter.strasse_hausnummer || '-'}, ${v.mieter.plz_ort || '-'}` : '-';
+    const mietDetails = v.mietobjekt ? `${v.mietobjekt.adresse || '-'} (${v.mietobjekt.wohnungsnummer || '-'})<br>Kalt: ${v.mietobjekt.kaltmiete.toFixed(2)}€ | NK: ${v.mietobjekt.nebenkosten_vorauszahlung.toFixed(2)}€` : '-';
+
+    return `
+      <tr>
+        <td>${escapeHtml(v.zuordnung)}</td>
+        <td><strong>${escapeHtml(mieterName)}</strong>${v.mieter && v.mieter.geburtsdatum ? '<br><small>geb. ' + escapeHtml(v.mieter.geburtsdatum) + '</small>' : ''}</td>
+        <td>${escapeHtml(mieterAdresse)}</td>
+        <td><small>${mietDetails}</small></td>
+        <td>${v.hasFile ? `<button class="btn btn-secondary" onclick="openFile('${v.id}')">📄 ${escapeHtml(v.fileName)}</button>` : 'Keine Datei'}</td>
+        <td><button class="btn-danger" onclick="deleteVertrag('${v.id}')">❌</button></td>
+      </tr>
+    `;
+  }).join('');
 }
 
 // --- DRUCK-DIVERSIFIZIERUNG ---
@@ -1753,10 +1819,6 @@ function printTaxReport() {
   window.print();
 }
 
-function closeAbrechnung() {
-  document.getElementById('printArea').style.display = 'none';
-}
-
 // --- GENERIERUNG RECHTSSICHERE NEBENKOSTENABRECHNUNG ---
 function generateAbrechnung(wohnung) {
   const selectedYearVal = document.getElementById('selectedYear').value;
@@ -1764,22 +1826,29 @@ function generateAbrechnung(wohnung) {
 
   const mieterObj = vertraege.find(v => v.zuordnung === wohnung);
   
-  // Stammdaten aus dem importierten JSON nutzen
-  const vName = importerData.vermieter.name || "Daniel Prang";
-  const vAdresse = importerData.vermieter.adresse || "Langenfelde 1, 21624 Buxtehude";
-  const vBank = `${importerData.vermieter.bankverbindung.institut || 'Haspa'} - IBAN: ${importerData.vermieter.bankverbindung.iban || ''}`;
+  // Mieterdaten aus APP_CONFIG oder lokalem Eintrag auslesen
+  let mieterName = "Unbekannt / Bitte Mieterdaten eintragen";
+  let mieterStrasse = "";
+  let mieterPlzOrt = "";
+  let objektAdresse = "Buxtehude";
+  let wohnungsNummer = wohnung;
 
-  const jsonMieterName = `${importerData.mieter.vorname} ${importerData.mieter.nachname}`.trim();
-  const mieterName = mieterObj ? mieterObj.name : (jsonMieterName || "Unbekannt / Bitte Mietvertrag eintragen");
-  const mieterAdresse = importerData.mieter.strasse_hausnummer ? `${importerData.mieter.strasse_hausnummer}, ${importerData.mieter.plz_ort}` : "Buxtehude";
-  const mietobjektAdresse = importerData.mietobjekt.adresse || "Buxtehude";
+  if (mieterObj && mieterObj.mieter) {
+    mieterName = `${mieterObj.mieter.vorname} ${mieterObj.mieter.nachname}`.trim() || mieterName;
+    mieterStrasse = mieterObj.mieter.strasse_hausnummer || "";
+    mieterPlzOrt = mieterObj.mieter.plz_ort || "";
+    
+    if (mieterObj.mietobjekt) {
+      objektAdresse = mieterObj.mietobjekt.adresse || objektAdresse;
+      wohnungsNummer = mieterObj.mietobjekt.wohnungsnummer || wohnung;
+    }
+  } else if (mieterObj && mieterObj.name) {
+    mieterName = mieterObj.name;
+  }
 
   const isEG = wohnung.includes('EG');
   const qm = isEG ? 70 : 100;
-  
-  // Monatsabschlag aus Einstellungen oder Fallback auf JSON-Stammdaten
-  const jsonVorauszahlung = parseFloat(importerData.mietobjekt.nebenkosten_vorauszahlung) || 0;
-  const monatsAbschlag = isEG ? (nkSettings.eg || jsonVorauszahlung) : (nkSettings.og || jsonVorauszahlung);
+  const monatsAbschlag = isEG ? (nkSettings.eg || 0) : (nkSettings.og || 0);
   const vorauszahlungGesamt = monatsAbschlag * 12;
 
   let tableBodyHtml = '';
@@ -1841,19 +1910,22 @@ function generateAbrechnung(wohnung) {
   const differenz = mieterGesamtAnteil - vorauszahlungGesamt;
 
   // Kopfdaten befüllen
-  document.getElementById('pVermieterName').innerText = vName;
-  document.getElementById('pVermieterAdresse').innerText = vAdresse;
-  document.getElementById('pVermieterBank').innerText = vBank;
+  document.getElementById('pVermieterName').innerText = APP_CONFIG.vermieter.name;
+  document.getElementById('pVermieterAdresse').innerText = APP_CONFIG.vermieter.adresse;
 
   document.getElementById('pAbrechnungsDatum').innerText = new Date().toLocaleDateString('de-DE');
   document.getElementById('pJahr').innerText = displayYear;
   document.getElementById('pJahrPeriod1').innerText = selectedYearVal === 'TESTMODE' ? currentYear : selectedYearVal;
   document.getElementById('pJahrPeriod2').innerText = selectedYearVal === 'TESTMODE' ? currentYear : selectedYearVal;
+  
+  document.getElementById('pObjektAdresse').innerText = escapeHtml(objektAdresse);
   document.getElementById('pEinheit').innerText = wohnung;
+  document.getElementById('pWohnungsnummer').innerText = escapeHtml(wohnungsNummer);
   document.getElementById('pFlaeche').innerText = qm;
+
   document.getElementById('pMieterName').innerText = escapeHtml(mieterName);
-  document.getElementById('pMieterAdresse').innerText = escapeHtml(mieterAdresse);
-  document.getElementById('pMietobjektAdresse').innerText = escapeHtml(mietobjektAdresse);
+  document.getElementById('pMieterStrasse').innerText = escapeHtml(mieterStrasse);
+  document.getElementById('pMieterPlzOrt').innerText = escapeHtml(mieterPlzOrt);
 
   document.getElementById('pPostenTable').innerHTML = tableBodyHtml;
   document.getElementById('pGesamtAnteil').innerText = mieterGesamtAnteil.toFixed(2);
@@ -1865,15 +1937,17 @@ function generateAbrechnung(wohnung) {
   targetDate.setDate(targetDate.getDate() + 30);
   const zahlungszielStr = targetDate.toLocaleDateString('de-DE');
 
+  const bankInfoStr = `${APP_CONFIG.vermieter.bankverbindung.institut} | IBAN: ${APP_CONFIG.vermieter.bankverbindung.iban}`;
+
   if (differenz > 0) {
     document.getElementById('pFinalResult').innerHTML = `<strong>Nachforderung zu Gunsten des Vermieters: <span style="color:#d9534f;">+ ${differenz.toFixed(2)} €</span></strong>`;
     document.getElementById('pZahlungshinweis').innerHTML = `
-      Bitte überweisen Sie den Nachforderungsbetrag in Höhe von <strong>${differenz.toFixed(2)} €</strong> bis zum <strong>${zahlungszielStr}</strong> auf das Konto:<br>
-      <strong>${vBank}</strong><br><br>
+      Bitte überweisen Sie den Nachforderungsbetrag in Höhe von <strong>${differenz.toFixed(2)} €</strong> bis zum <strong>${zahlungszielStr}</strong> auf folgendes Vermieterkonto:<br>
+      <strong>Bankverbindung:</strong> ${bankInfoStr}<br><br>
       Gegen diese Abrechnung kann innerhalb von 12 Monaten nach Zugang schriftlich Einwand erhoben werden (§ 556 Abs. 3 BGB).<br><br>
       Mit freundlichen Grüßen,<br><br>
       ____________________________________<br>
-      ${vName} (Vermieter)
+      ${APP_CONFIG.vermieter.name} (Vermieter)
     `;
   } else if (differenz < 0) {
     const guthabenBetrag = Math.abs(differenz).toFixed(2);
@@ -1883,7 +1957,7 @@ function generateAbrechnung(wohnung) {
       Gegen diese Abrechnung kann innerhalb von 12 Monaten nach Zugang schriftlich Einwand erhoben werden (§ 556 Abs. 3 BGB).<br><br>
       Mit freundlichen Grüßen,<br><br>
       ____________________________________<br>
-      ${vName} (Vermieter)
+      ${APP_CONFIG.vermieter.name} (Vermieter)
     `;
   } else {
     document.getElementById('pFinalResult').innerHTML = `<strong>Abrechnung schließt ausgeglichen ab: 0.00 €</strong>`;
@@ -1891,13 +1965,85 @@ function generateAbrechnung(wohnung) {
       Die Abrechnung schließt ausgeglichen ab. Es besteht weder eine Nachforderung noch ein Guthaben.<br><br>
       Mit freundlichen Grüßen,<br><br>
       ____________________________________<br>
-      ${vName} (Vermieter)
+      ${APP_CONFIG.vermieter.name} (Vermieter)
     `;
   }
 
   document.getElementById('printArea').style.display = 'block';
   document.getElementById('printArea').scrollIntoView({ behavior: 'smooth' });
 }
+
+function closeAbrechnung() {
+  document.getElementById('printArea').style.display = 'none';
+}
+
+// --- EXPORT MODUL (ANLAGE V CSV MIT SUMMENZEILE) ---
+function exportAnlageVCSV() {
+  const selectedYearVal = document.getElementById('selectedYear').value;
+  let csvRows = ["Typ;Datum/Kategorie;Zuordnung/Beschreibung;Betrag (EUR)"];
+
+  const escapeCSV = (str) => {
+    if (!str) return '""';
+    return '"' + String(str).replace(/"/g, '""') + '"';
+  };
+
+  let summeFahrten = 0;
+  let summeVerpflegung = 0;
+  let summeBelege = 0;
+  let summeNK = 0;
+
+  // Fahrten exportieren
+  fahrten
+    .filter(f => isTestMode || f.datum.startsWith(selectedYearVal))
+    .forEach(f => {
+      if (f.fahrtkosten > 0) {
+        summeFahrten += f.fahrtkosten;
+        csvRows.push(`"Fahrtkosten";${escapeCSV(f.datum)};${escapeCSV(f.grund + ' (' + f.km + ' km)')};${f.fahrtkosten.toFixed(2).replace('.', ',')}`);
+      }
+      if (f.verpflegung > 0) {
+        summeVerpflegung += f.verpflegung;
+        csvRows.push(`"Verpflegungspauschale";${escapeCSV(f.datum)};${escapeCSV(f.grund + ' (' + f.stunden + ' Std)')};${f.verpflegung.toFixed(2).replace('.', ',')}`);
+      }
+    });
+
+  // Belege exportieren
+  belege
+    .filter(b => isTestMode || b.datum.startsWith(selectedYearVal))
+    .forEach(b => {
+      summeBelege += b.betrag;
+      csvRows.push(`"Beleg";${escapeCSV(b.datum + ' / ' + b.kategorie)};${escapeCSV(b.geschaeft + ' - ' + b.zuordnung + (b.grund ? ' (' + b.grund + ')' : ''))};${b.betrag.toFixed(2).replace('.', ',')}`);
+    });
+
+  // Nebenkosten exportieren
+  nebenkosten
+    .filter(nk => isTestMode || nk.datum.startsWith(selectedYearVal))
+    .forEach(nk => {
+      summeNK += nk.betrag;
+      csvRows.push(`"Nebenkosten/Betriebskosten";${escapeCSV(nk.datum + ' / ' + nk.kategorie)};${escapeCSV(nk.geschaeft + ' - ' + nk.zuordnung + (nk.grund ? ' (' + nk.grund + ')' : ''))};${nk.betrag.toFixed(2).replace('.', ',')}`);
+    });
+
+  const gesamtsumme = summeFahrten + summeVerpflegung + summeBelege + summeNK;
+
+  // Leerzeile und Summenblock am Ende der CSV
+  csvRows.push(';;;');
+  csvRows.push(`"SUMMEN-ÜBERSICHT";"Fahrtkosten Gesamtsumme";;${summeFahrten.toFixed(2).replace('.', ',')}`);
+  csvRows.push(`"SUMMEN-ÜBERSICHT";"Verpflegungspauschalen Gesamtsumme";;${summeVerpflegung.toFixed(2).replace('.', ',')}`);
+  csvRows.push(`"SUMMEN-ÜBERSICHT";"Belege & Pauschalen Gesamtsumme";;${summeBelege.toFixed(2).replace('.', ',')}`);
+  csvRows.push(`"SUMMEN-ÜBERSICHT";"Nebenkosten Gesamtsumme";;${summeNK.toFixed(2).replace('.', ',')}`);
+  csvRows.push(`"GESAMTSUMME WERBUNGSKOSTEN";"${selectedYearVal}";;${gesamtsumme.toFixed(2).replace('.', ',')}`);
+
+  const csvString = '\uFEFF' + csvRows.join('\n'); // Byte Order Mark (BOM) für korrekte Umlautdarstellung z.B. in MS Excel
+  const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.setAttribute('href', url);
+  link.setAttribute('download', `Anlage_V_Export_${selectedYearVal}.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
 </script>
+
 </body>
 </html>

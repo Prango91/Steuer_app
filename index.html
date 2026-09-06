@@ -1087,10 +1087,10 @@
 const APP_CONFIG = {
   "vermieter": {
     "name": "Daniel Prang",
-    "adresse": "Langenfelde 1, 21614 Buxtehude",
+    "adresse": "Buxtehude",
     "bankverbindung": {
-      "institut": "Haspa Buxtehude",
-      "iban": "DE04 2005 0550 1385 4394 17"
+      "institut": "Konto Vermietung",
+      "iban": "DE12 3456 7890 1234 5678 90"
     }
   },
   "mieter": {
@@ -1101,7 +1101,7 @@ const APP_CONFIG = {
     "plz_ort": ""
   },
   "mietobjekt": {
-    "adresse": "",
+    "adresse": "An den Geestbergen 12, 21614 Buxtehude",
     "wohnungsnummer": "",
     "kaltmiete": 0.00,
     "nebenkosten_vorauszahlung": 0.00,
@@ -1910,7 +1910,7 @@ function updateTabellen() {
           <td>${escapeHtml(nk.datum)}</td>
           <td><span class="badge">${escapeHtml(nk.zuordnung)}</span></td>
           <td>${escapeHtml(nk.kategorie)}</td>
-          <td>${escapeHtml(nk.geschaeft)} (${escapeHtml(nk.grund || '-')})</td>
+          <td>${escapeHtml(nk.geschaeft)} ${nk.grund ? '(' + escapeHtml(nk.grund) + ')' : ''}</td>
           <td>${nk.betrag.toFixed(2)} €</td>
           <td>${(nk.lohnAnteil || 0).toFixed(2)} €</td>
           <td>${nk.hasFile ? `<button class="btn btn-secondary" onclick="openFile('${nk.id}')">📎 Öffnen</button>` : 'Keine'}</td>
@@ -1929,121 +1929,109 @@ function updateTabellen() {
       <td><span class="badge">${escapeHtml(v.zuordnung)}</span></td>
       <td><strong>${escapeHtml(v.mieter.vorname)} ${escapeHtml(v.mieter.nachname)}</strong></td>
       <td>${escapeHtml(v.mieter.strasse_hausnummer)}, ${escapeHtml(v.mieter.plz_ort)}</td>
-      <td>
-        Kalt: ${v.mietobjekt.kaltmiete.toFixed(2)} €<br>
-        NK: ${v.mietobjekt.nebenkosten_vorauszahlung.toFixed(2)} €
-      </td>
-      <td>${v.hasFile ? `<button class="btn btn-secondary" onclick="openFile('${v.id}')">📄 Vertrag (${escapeHtml(v.fileName)})</button>` : 'Kein Anhang'}</td>
+      <td>Kalt: ${v.mietobjekt.kaltmiete.toFixed(2)} € | NK: ${v.mietobjekt.nebenkosten_vorauszahlung.toFixed(2)} €</td>
+      <td>${v.hasFile ? `<button class="btn btn-secondary" onclick="openFile('${v.id}')">📄 Vertrag Öffnen</button>` : 'Kein Scan'}</td>
       <td><button class="btn-danger" onclick="deleteVertrag('${v.id}')">❌</button></td>
     </tr>
   `).join('');
 }
 
-// --- NEBENKOSTENABRECHNUNG GENERATOR ---
-function generateAbrechnung(zielWohnung) {
+// --- ABRECHNUNG GENERIEREN & DRUCKEN ---
+function generateAbrechnung(wohnungKey) {
   const selectedYearVal = document.getElementById('selectedYear').value;
-  const jahr = isTestMode ? currentYear : selectedYearVal;
+  const targetVertrag = vertraege.find(v => v.zuordnung.includes(wohnungKey.includes('EG') ? 'EG' : 'OG'));
 
-  const isEG = zielWohnung.includes('EG');
-  const flaechenAnteil = isEG ? (70 / 170) : (100 / 170);
-  const flaecheM2 = isEG ? 70 : 100;
+  const isEG = wohnungKey.includes('EG');
+  const m2Wohnung = isEG ? 70 : 100;
+  const m2Gesamt = 170;
   const monatsAbschlag = isEG ? (nkSettings.eg || 0) : (nkSettings.og || 0);
+  const geleistetTotal = monatsAbschlag * 12;
 
-  // Mieter & Vertragsdaten laden
-  const vertrag = vertraege.find(v => v.zuordnung.includes(isEG ? 'EG' : 'OG'));
-
-  let mieterName = vertrag ? `${vertrag.mieter.vorname} ${vertrag.mieter.nachname}` : "Max Mustermann";
-  let mieterStrasse = vertrag ? vertrag.mieter.strasse_hausnummer : "An den Geestbergen 12";
-  let mieterPlzOrt = vertrag ? vertrag.mieter.plz_ort : "21614 Buxtehude";
-  let wohnungsNr = vertrag ? vertrag.mietobjekt.wohnungsnummer : (isEG ? "EG Links" : "OG Rechts");
-  let objektAdresse = vertrag ? vertrag.mietobjekt.adresse : "An den Geestbergen 12, 21614 Buxtehude";
-
-  // Befüllen des Druckbereichs
-  document.getElementById('pVermieterName').innerText = APP_CONFIG.vermieter.name;
-  document.getElementById('pVermieterAdresse').innerText = APP_CONFIG.vermieter.adresse;
+  // Kopfdaten befüllen
+  document.getElementById('pVermissterName').innerText = APP_CONFIG.vermieter.name;
+  document.getElementById('pVermissterAdresse').innerText = APP_CONFIG.vermieter.adresse;
   document.getElementById('pAbrechnungsDatum').innerText = new Date().toLocaleDateString('de-DE');
 
-  document.getElementById('pMieterName').innerText = mieterName;
-  document.getElementById('pMieterStrasse').innerText = mieterStrasse;
-  document.getElementById('pMieterPlzOrt').innerText = mieterPlzOrt;
+  if (targetVertrag) {
+    document.getElementById('pMieterName').innerText = `${targetVertrag.mieter.vorname} ${targetVertrag.mieter.nachname}`;
+    document.getElementById('pMieterStrasse').innerText = targetVertrag.mieter.strasse_hausnummer;
+    document.getElementById('pMieterPlzOrt').innerText = targetVertrag.mieter.plz_ort;
+    document.getElementById('pObjektAdresse').innerText = targetVertrag.mietobjekt.adresse || APP_CONFIG.mietobjekt.adresse;
+    document.getElementById('pWohnungsnummer').innerText = targetVertrag.mietobjekt.wohnungsnummer || (isEG ? 'WE 01 (EG)' : 'WE 02 (OG)');
+  } else {
+    document.getElementById('pMieterName').innerText = "Mieter " + (isEG ? "EG" : "OG");
+    document.getElementById('pMieterStrasse').innerText = APP_CONFIG.mietobjekt.adresse;
+    document.getElementById('pMieterPlzOrt').innerText = "21614 Buxtehude";
+    document.getElementById('pObjektAdresse').innerText = APP_CONFIG.mietobjekt.adresse;
+    document.getElementById('pWohnungsnummer').innerText = isEG ? 'WE 01 (EG)' : 'WE 02 (OG)';
+  }
 
-  document.getElementById('pJahr').innerText = jahr;
-  document.getElementById('pJahrPeriod1').innerText = jahr;
-  document.getElementById('pJahrPeriod2').innerText = jahr;
+  document.getElementById('pJahr').innerText = selectedYearVal;
+  document.getElementById('pJahrPeriod1').innerText = selectedYearVal;
+  document.getElementById('pJahrPeriod2').innerText = selectedYearVal;
+  document.getElementById('pEinheit').innerText = wohnungKey;
+  document.getElementById('pFlaeche').innerText = m2Wohnung;
 
-  document.getElementById('pObjektAdresse').innerText = objektAdresse;
-  document.getElementById('pEinheit').innerText = zielWohnung;
-  document.getElementById('pWohnungsnummer').innerText = wohnungsNr;
-  document.getElementById('pFlaeche').innerText = flaecheM2;
+  // Posten berechnen
+  const filterNK = nebenkosten.filter(nk => isTestMode || nk.datum.startsWith(selectedYearVal));
+  let mieterAnteilGesamt = 0;
+  let lohnAnteilGesamt = 0;
+  let rowsHtml = '';
 
-  // Posten filtern & berechnen
-  const relevantePosten = nebenkosten.filter(nk => 
-    (isTestMode || nk.datum.startsWith(selectedYearVal)) &&
-    (nk.zuordnung === zielWohnung || nk.zuordnung.includes('Gesamtobjekt'))
-  );
-
-  let gesamtAnteilMieter = 0;
-  let gesamtLohn35a = 0;
-
-  const tableBody = document.getElementById('pPostenTable');
-  tableBody.innerHTML = relevantePosten.map(nk => {
+  filterNK.forEach(nk => {
     let anteil = 0;
-    let verteilschluesselText = "";
+    let lohnAnteil = 0;
+    let schluesselText = '';
 
-    if (nk.zuordnung === zielWohnung) {
+    if (nk.zuordnung.includes('Gesamtobjekt')) {
+      anteil = nk.betrag * (m2Wohnung / m2Gesamt);
+      lohnAnteil = (nk.lohnAnteil || 0) * (m2Wohnung / m2Gesamt);
+      schluesselText = `Wohnfläche (${m2Wohnung}/${m2Gesamt} m²)`;
+    } else if (nk.zuordnung.includes(isEG ? 'EG' : 'OG')) {
       anteil = nk.betrag;
-      verteilschluesselText = "100 % Direktzuordnung";
-      gesamtLohn35a += (nk.lohnAnteil || 0);
+      lohnAnteil = nk.lohnAnteil || 0;
+      schluesselText = 'Direktzuordnung (100%)';
     } else {
-      anteil = nk.betrag * flaechenAnteil;
-      verteilschluesselText = `Wohnfläche (${flaecheM2} / 170 m²)`;
-      gesamtLohn35a += ((nk.lohnAnteil || 0) * flaechenAnteil);
+      return; // Gehört zur anderen Wohnung
     }
 
-    gesamtAnteilMieter += anteil;
+    mieterAnteilGesamt += anteil;
+    lohnAnteilGesamt += lohnAnteil;
 
-    return `
+    rowsHtml += `
       <tr>
-        <td style="border:1px solid #e5e5ea; padding:8px;">${escapeHtml(nk.kategorie)} (${escapeHtml(nk.geschaeft)})</td>
-        <td style="border:1px solid #e5e5ea; padding:8px;">${nk.betrag.toFixed(2)} €</td>
-        <td style="border:1px solid #e5e5ea; padding:8px;">${verteilschluesselText}</td>
-        <td style="border:1px solid #e5e5ea; padding:8px; font-weight:bold;">${anteil.toFixed(2)} €</td>
+        <td style="border:1px solid #e5e5ea; padding:8px;">${escapeHtml(nk.kategorie)} - ${escapeHtml(nk.geschaeft)}</td>
+        <td style="border:1px solid #e5e5ea; padding:8px; text-align:right;">${nk.betrag.toFixed(2)} €</td>
+        <td style="border:1px solid #e5e5ea; padding:8px;">${schluesselText}</td>
+        <td style="border:1px solid #e5e5ea; padding:8px; text-align:right;"><strong>${anteil.toFixed(2)} €</strong></td>
       </tr>
     `;
-  }).join('');
+  });
 
-  const geleistetGessamt = monatsAbschlag * 12;
-  const differenz = gesamtAnteilMieter - geleistetGessamt;
-
-  document.getElementById('pGesamtAnteil').innerText = gesamtAnteilMieter.toFixed(2);
+  document.getElementById('pPostenTable').innerHTML = rowsHtml;
+  document.getElementById('pGesamtAnteil').innerText = mieterAnteilGesamt.toFixed(2);
   document.getElementById('pMonatsAbschlag').innerText = monatsAbschlag.toFixed(2);
-  document.getElementById('pGeleistet').innerText = geleistetGessamt.toFixed(2);
-  document.getElementById('p35aBetrag').innerText = gesamtLohn35a.toFixed(2);
+  document.getElementById('pGeleistet').innerText = geleistetTotal.toFixed(2);
+  document.getElementById('p35aBetrag').innerText = lohnAnteilGesamt.toFixed(2);
 
-  const finalResultElem = document.getElementById('pFinalResult');
-  const zahlungshinweisElem = document.getElementById('pZahlungshinweis');
+  const diff = mieterAnteilGesamt - geleistetTotal;
+  const finalBox = document.getElementById('pFinalResult');
+  const hinweisBox = document.getElementById('pZahlungshinweis');
 
-  if (differenz > 0) {
-    finalResultElem.innerHTML = `Nachzahlung zugunsten des Vermieters: <strong style="color:#d9534f;">+ ${differenz.toFixed(2)} €</strong>`;
-    zahlungshinweisElem.innerHTML = `
-      Bitte überweisen Sie den Nachzahlungsbetrag von <strong>${differenz.toFixed(2)} €</strong> innerhalb von 30 Tagen auf folgendes Konto:<br>
-      <strong>Kreditinstitut:</strong> ${APP_CONFIG.vermieter.bankverbindung.institut}<br>
-      <strong>IBAN:</strong> ${APP_CONFIG.vermieter.bankverbindung.iban}<br>
-      <strong>Verwendungszweck:</strong> Nebenkostenabrechnung ${jahr} ${zielWohnung}
-    `;
-  } else if (differenz < 0) {
-    const guthaben = Math.abs(differenz);
-    finalResultElem.innerHTML = `Guthaben zugunsten des Mieters: <strong style="color:#5cb85c;">- ${guthaben.toFixed(2)} €</strong>`;
-    zahlungshinweisElem.innerHTML = `
-      Das Guthaben in Höhe von <strong>${guthaben.toFixed(2)} €</strong> wird Ihnen in den nächsten Tagen auf Ihr bekanntes Bankkonto überwiesen bzw. mit der kommenden Miete verrechnet.
-    `;
+  if (diff > 0) {
+    finalBox.innerHTML = `<strong style="color:var(--danger);">Nachforderung: ${diff.toFixed(2)} €</strong>`;
+    hinweisBox.innerHTML = `Bitte überweisen Sie den Nachforderungsbetrag von <strong>${diff.toFixed(2)} €</strong> innerhalb von 30 Tagen auf das bekannte Mietkonto (${APP_CONFIG.vermieter.bankverbindung.iban}).`;
+  } else if (diff < 0) {
+    const guthaben = Math.abs(diff);
+    finalBox.innerHTML = `<strong style="color:var(--success);">Guthaben: ${guthaben.toFixed(2)} €</strong>`;
+    hinweisBox.innerHTML = `Das Guthaben in Höhe von <strong>${guthaben.toFixed(2)} €</strong> wird Ihnen in den nächsten Tagen auf Ihr Konto überwiesen bzw. mit der kommenden Miete verrechnet.`;
   } else {
-    finalResultElem.innerHTML = `Abrechnung ausgeglichen: <strong>0.00 €</strong>`;
-    zahlungshinweisElem.innerHTML = `Es ist keine Nachzahlung oder Erstattung erforderlich.`;
+    finalBox.innerHTML = `<strong>Abrechnung ausgeglichen (0,00 €)</strong>`;
+    hinweisBox.innerHTML = `Die Vorauszahlungen entsprachen exakt den angefallenen Kosten. Es ist keine Nachzahlung oder Erstattung erforderlich.`;
   }
 
   document.getElementById('printArea').style.display = 'block';
-  window.scrollTo({ top: document.getElementById('printArea').offsetTop, behavior: 'smooth' });
+  document.getElementById('printArea').scrollIntoView({ behavior: 'smooth' });
 }
 
 function printNKReport() {
@@ -2052,32 +2040,30 @@ function printNKReport() {
   document.body.classList.remove('print-nk-mode');
 }
 
-function closeAbrechnung() {
-  document.getElementById('printArea').style.display = 'none';
-}
-
-// --- STEUERBERICHT PRINTER & CSV EXPORT ---
 function printTaxReport() {
   document.body.classList.add('print-tax-mode');
   window.print();
   document.body.classList.remove('print-tax-mode');
 }
 
+function closeAbrechnung() {
+  document.getElementById('printArea').style.display = 'none';
+}
+
+// --- CSV EXPORT FÜR ANLAGE V ---
 function exportAnlageVCSV() {
   const selectedYearVal = document.getElementById('selectedYear').value;
-  let csvContent = "data:text/csv;charset=utf-8,Typ;Datum;Zuordnung;Kategorie;Beschreibung;Betrag (€);Lohnanteil §35a (€)\n";
+  let csvContent = "data:text/csv;charset=utf-8,Datum;Typ;Kategorie;Zuordnung;Beschreibung;Betrag Brutto EUR\n";
 
-  belege.filter(b => isTestMode || b.datum.startsWith(selectedYearVal)).forEach(b => {
-    csvContent += `Beleg;${b.datum};"${b.zuordnung}";"${b.kategorie}";"${b.geschaeft} - ${b.grund || ''}";${b.betrag.toFixed(2)};0.00\n`;
+  const filterBelege = belege.filter(b => isTestMode || b.datum.startsWith(selectedYearVal));
+  filterBelege.forEach(b => {
+    csvContent += `${b.datum};Beleg;${b.kategorie};${b.zuordnung};"${b.geschaeft} - ${b.grund || ''}";${b.betrag.toFixed(2).replace('.', ',')}\n`;
   });
 
-  fahrten.filter(f => isTestMode || f.datum.startsWith(selectedYearVal)).forEach(f => {
-    const gesamtFahrt = f.fahrtkosten + f.verpflegung;
-    csvContent += `Fahrt;${f.datum};"Gesamtobjekt";"Fahrtkosten §9";"${f.start} -> ${f.ziel}: ${f.grund}";${gesamtFahrt.toFixed(2)};0.00\n`;
-  });
-
-  nebenkosten.filter(nk => isTestMode || nk.datum.startsWith(selectedYearVal)).forEach(nk => {
-    csvContent += `Betriebskosten;${nk.datum};"${nk.zuordnung}";"${nk.kategorie}";"${nk.geschaeft} - ${nk.grund || ''}";${nk.betrag.toFixed(2)};${(nk.lohnAnteil || 0).toFixed(2)}\n`;
+  const filterFahrten = fahrten.filter(f => isTestMode || f.datum.startsWith(selectedYearVal));
+  filterFahrten.forEach(f => {
+    const fKosten = f.fahrtkosten + f.verpflegung;
+    csvContent += `${f.datum};Fahrtkosten;Fahrtkosten / Reisekosten;Gesamtobjekt;"Fahrt: ${f.start} -> ${f.ziel} (${f.grund})";${fKosten.toFixed(2).replace('.', ',')}\n`;
   });
 
   const encodedUri = encodeURI(csvContent);

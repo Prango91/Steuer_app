@@ -1637,7 +1637,7 @@
           `;
         }
       });
-      bBody.innerHTML = bHtml || `<tr><td colspan="7" style="text-align:center; color:#8e8e93;">Keine Belege für diesen Modus/Jahr erfasst</td></tr>`;
+      bBody.innerHTML = bHtml || `<tr><td colspan="7" style="text-align:center; color:#8e8e93;">Keine Einzelbelege erfasst</td></tr>`;
       document.getElementById('belegTabelleSumme').innerText = `${summeBelege.toFixed(2)} €`;
 
       // 3. Fahrt-Tabelle & Summen
@@ -1647,32 +1647,36 @@
       let summeKosten = 0;
       fahrten.forEach((f, i) => {
         if (isTestMode || f.datum.startsWith(selectedYearVal)) {
-          summeKM += parseFloat(f.kmGesamt || 0);
-          summeKosten += parseFloat(f.kosten || 0);
+          const km = parseFloat(f.kmGesamt) || 0;
+          const kst = parseFloat(f.kosten) || 0;
+          summeKM += km;
+          summeKosten += kst;
+
           fHtml += `
             <tr>
-              <td>${escapeHtml(f.datum)} ${escapeHtml(f.zeit)}</td>
+              <td>${escapeHtml(f.datum)} ${escapeHtml(f.zeit || '')}</td>
               <td>${escapeHtml(f.start)}</td>
               <td>${escapeHtml(f.ziel)}</td>
               <td>${escapeHtml(f.grund)}</td>
-              <td>${parseFloat(f.kmGesamt || 0).toFixed(1)} km</td>
-              <td>${parseFloat(f.kosten || 0).toFixed(2)} €</td>
+              <td>${km.toFixed(1)} km</td>
+              <td>${kst.toFixed(2)} €</td>
               <td><button type="button" class="btn-danger" onclick="deleteFahrt(${i})">❌</button></td>
             </tr>
           `;
         }
       });
-      fBody.innerHTML = fHtml || `<tr><td colspan="7" style="text-align:center; color:#8e8e93;">Keine Fahrten für diesen Modus/Jahr erfasst</td></tr>`;
+      fBody.innerHTML = fHtml || `<tr><td colspan="7" style="text-align:center; color:#8e8e93;">Keine Fahrten erfasst</td></tr>`;
       document.getElementById('fahrtTabelleSummeKM').innerText = `${summeKM.toFixed(1)} km`;
       document.getElementById('fahrtTabelleSummeEuro').innerText = `${summeKosten.toFixed(2)} €`;
 
-      // 4. Mietverträge-Tabelle
+      // 4. Mietverträge Tabelle
       const vBody = document.querySelector('#vertragTabelle tbody');
       let vHtml = '';
       vertraege.forEach((v, i) => {
         const fileLink = v.dataUrl 
           ? `<span class="file-link" onclick="openDataUrlInNewTab(vertraege[${i}].dataUrl, '${escapeHtml(v.filename)}')">📄 ${escapeHtml(v.filename)}</span>` 
           : 'Kein Anhang';
+
         vHtml += `
           <tr>
             <td>${escapeHtml(v.zuordnung)}</td>
@@ -1691,9 +1695,8 @@
       window.print();
     }
 
-    // Initialisierung beim Seitenstart
+    // App initialisieren
     loadData();
-    autoFillDienstleister();
 </script>
 </body>
 </html>

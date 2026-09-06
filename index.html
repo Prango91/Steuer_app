@@ -389,11 +389,11 @@
       </div>
 
       <label for="fStart">Startadresse</label>
-      <input type="text" id="fStart" value="Langenfelde 1, 21614 Buxtehude" required>
+      <input type="text" id="fStart" value="Pippensen, Buxtehude" required>
 
       <label for="fZiel">Zieladresse (Tippen für Vorschläge)</label>
       <div class="autocomplete-wrapper">
-        <input type="text" id="fZiel" placeholder="z. B. An den Geestbergen 12, Buxtehude" autocomplete="off" required>
+        <input type="text" id="fZiel" placeholder="z. B. Buxtehude" autocomplete="off" required>
         <div id="suggestions" class="suggestions" style="display: none;"></div>
       </div>
 
@@ -840,7 +840,7 @@
         </div>
         <div>
           <label for="vName">Mieter Name / Bezeichnung</label>
-          <input type="text" id="vName" placeholder="z. B. Mert Aykaya" required>
+          <input type="text" id="vName" value="Mert Aykaya" placeholder="z. B. Mert Aykaya" required>
         </div>
       </div>
 
@@ -865,22 +865,20 @@
       <div style="font-size:13px; line-height:1.6;">
         <strong style="color:#0071e3; font-size: 15px;">Vermieter:</strong><br>
         Daniel Prang<br>
-        Langenfelde 1<br>
-        21614 Buxtehude
+        Buxtehude
       </div>
       <div style="text-align:right; font-size:13px; line-height:1.6;">
         <strong>Datum:</strong> <span id="pAbrechnungsDatum"></span><br><br>
         <strong style="color:#0071e3; font-size: 15px;">Mieter / Empfänger:</strong><br>
         <span id="pMieterName" style="font-weight:bold;"></span><br>
-        An den Geestbergen 12<br>
-        21614 Buxtehude
+        Buxtehude
       </div>
     </div>
     
     <h2 style="color:#1d1d1f; font-size: 22px; margin-bottom: 20px;">Betriebskostenabrechnung für das Kalenderjahr <span id="pJahr"></span></h2>
     
     <div style="margin-bottom:24px; font-size:14px; line-height:1.7; background: #f9f9fb; padding: 16px; border-radius: 8px;">
-      <strong>Abrechnungsobjekt:</strong> An den Geestbergen 12, 21614 Buxtehude<br>
+      <strong>Abrechnungsobjekt:</strong> Buxtehude<br>
       <strong>Mieteinheit:</strong> <span id="pEinheit"></span> (Wohnfläche: <span id="pFlaeche"></span> m² / Gesamtfläche Objekt: 170 m²)<br>
       <strong>Abrechnungszeitraum:</strong> 01.01.<span id="pJahrPeriod1"></span> bis 31.12.<span id="pJahrPeriod2"></span>
     </div>
@@ -1188,7 +1186,7 @@
       saveData();
       updateTabellen();
       e.target.reset();
-      document.getElementById('fStart').value = "Langenfelde 1, 21614 Buxtehude";
+      document.getElementById('fStart').value = "Pippensen, Buxtehude";
       document.getElementById('fDatum').valueAsDate = new Date();
       document.getElementById('fZeit').value = new Date().toTimeString().substring(0,5);
       document.getElementById('kmInfo').innerHTML = "📏 Einfache Strecke: 0.0 km (Gesamt Hin & Zurück: 0.0 km)<br>💰 Absetzbarer Betrag: 0.00 €";
@@ -1291,14 +1289,11 @@
       if (differenz > 0) {
         document.getElementById('pFinalResult').innerHTML = `<strong>Nachforderung zu Gunsten des Vermieters: <span style="color:#d9534f;">+ ${differenz.toFixed(2)} €</span></strong>`;
         document.getElementById('pZahlungshinweis').innerHTML = `
-          Bitte überweisen Sie den Nachforderungsbetrag in Höhe von <strong>${differenz.toFixed(2)} €</strong> bis zum <strong>${zahlungszielStr}</strong> auf folgendes Bankkonto:<br><br>
-          <strong>Kontoinhaber:</strong> Daniel Prang<br>
-          <strong>Bank:</strong> Haspa Buxtehude<br>
-          <strong>IBAN:</strong> DE04 2005 0550 1385 4394 17<br><br>
+          Bitte überweisen Sie den Nachforderungsbetrag in Höhe von <strong>${differenz.toFixed(2)} €</strong> bis zum <strong>${zahlungszielStr}</strong> auf Ihr bekanntes Vermieterkonto.<br><br>
           Gegen diese Abrechnung kann innerhalb von 12 Monaten nach Zugang schriftlich Einwand erhoben werden (§ 556 Abs. 3 BGB).<br><br>
           Mit freundlichen Grüßen,<br><br><br>
           ____________________________________<br>
-          Daniel Prang (Vermisster)
+          Daniel Prang (Vermieter)
         `;
       } else if (differenz < 0) {
         const guthabenBetrag = Math.abs(differenz).toFixed(2);
@@ -1335,8 +1330,8 @@
     function fillQuickDrive(wohnung) {
       document.getElementById('fDatum').valueAsDate = new Date();
       document.getElementById('fZeit').value = new Date().toTimeString().substring(0,5);
-      document.getElementById('fStart').value = "Langenfelde 1, 21614 Buxtehude";
-      document.getElementById('fZiel').value = "An den Geestbergen 12, 21614 Buxtehude";
+      document.getElementById('fStart').value = "Pippensen, Buxtehude";
+      document.getElementById('fZiel').value = "Buxtehude";
       document.getElementById('fGrund').value = `Objektkontrolle & Schnittprüfung (${wohnung})`;
 
       fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(document.getElementById('fZiel').value)}`)

@@ -308,7 +308,7 @@
       color: var(--text-color);
     }
 
-    /* OTIMIERTER DRUCK-MODUS (Präzise Steuerung) */
+    /* OPTIMIERTER DRUCK-MODUS (Präzise Steuerung) */
     @media print {
       body { background: white; padding: 0; color: black; }
       .container { max-width: 100%; margin: 0; padding: 0; }
@@ -1316,7 +1316,6 @@ document.getElementById('fahrtForm').addEventListener('submit', (e) => {
   updateFahrtCalc();
 });
 
-// BUGFIX: Korrekte Filter-Funktion beim Löschen
 function deleteFahrt(id) {
   fahrten = fahrten.filter(f => f.id !== id);
   saveData();
@@ -1764,7 +1763,7 @@ function generateAbrechnung(wohnung) {
       Gegen diese Abrechnung kann innerhalb von 12 Monaten nach Zugang schriftlich Einwand erhoben werden (§ 556 Abs. 3 BGB).<br><br>
       Mit freundlichen Grüßen,<br><br>
       ____________________________________<br>
-      Daniel Prang (Vermisster)
+      Daniel Prang (Vermieter)
     `;
   } else if (differenz < 0) {
     const guthabenBetrag = Math.abs(differenz).toFixed(2);
@@ -1842,21 +1841,17 @@ function exportAnlageVCSV() {
       csvRows.push(`"Umlagefähige Betriebskosten";"${nk.datum}";${escapeCSV(desc)};"${betragStr}"`);
     });
 
-  // SUMMENZEILE FÜR EIGENE BUCHHALTUNG AM ENDE
-  const gesamtAusgaben = summeFahrten + summeVerpflegung + summeBelege + summeNK;
+  // SUMMENZEILE HINZUFÜGEN
+  const gesamtSumme = summeFahrten + summeVerpflegung + summeBelege + summeNK;
   csvRows.push("");
-  csvRows.push(`"SUMMEN-ZUSAMMENFASSUNG";"";"";""`);
-  csvRows.push(`"Gesamtsumme Fahrtkosten";"";"";"${summeFahrten.toFixed(2).replace('.', ',')}"`);
-  csvRows.push(`"Gesamtsumme Verpflegungsmehraufwand";"";"";"${summeVerpflegung.toFixed(2).replace('.', ',')}"`);
-  csvRows.push(`"Gesamtsumme Werbungskosten / Belege";"";"";"${summeBelege.toFixed(2).replace('.', ',')}"`);
-  csvRows.push(`"Gesamtsumme Umlagefähige Betriebskosten";"";"";"${summeNK.toFixed(2).replace('.', ',')}"`);
-  csvRows.push(`"GESAMTABZUG ANLAGE V";"";"";"${gesamtAusgaben.toFixed(2).replace('.', ',')}"`);
+  csvRows.push(`"SUMME GESAMT";"";"Alle Erfassungen (${selectedYearVal})";"${gesamtSumme.toFixed(2).replace('.', ',')}"`);
 
-  const csvString = csvRows.join("\n");
-  const blob = new Blob(["\ufeff" + csvString], { type: 'text/csv;charset=utf-8;' });
-  const link = document.createElement("a");
+  // CSV DATEI ERZEUGEN UND DOWNLOAD TRRIGGERN (inkl. UTF-8 BOM für Excel)
+  const csvContent = "\uFEFF" + csvRows.join("\n");
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   
+  const link = document.createElement("a");
   link.setAttribute("href", url);
   link.setAttribute("download", `Anlage_V_Export_${selectedYearVal}.csv`);
   document.body.appendChild(link);

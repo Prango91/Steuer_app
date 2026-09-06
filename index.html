@@ -400,41 +400,93 @@
     <h2>🚗 Fahrt fürs Fahrtenbuch erfassen (§ 9 EStG Auswärtstätigkeit)</h2>
     
     <div style="margin-bottom: 16px;">
-      <label>Schnell-Eingabe (Vorlagen für Kontrollfahrten):</label>
-      <div class="flex-row">
-        <button type="button" class="btn btn-orange" onclick="fillQuickDrive('An den Geestbergen 12, 21614 Buxtehude', 'EG')">⚡ Kontrollfahrt Wohnung EG</button>
-        <button type="button" class="btn btn-orange" onclick="fillQuickDrive('An den Geestbergen 12, 21614 Buxtehude', 'OG')">⚡ Kontrollfahrt Wohnung OG</button>
+  <label>Schnell-Eingabe (Vorlagen für Kontrollfahrten):</label>
+  <div class="flex-row">
+    <button type="button" class="btn btn-orange" onclick="fillQuickDrive('Langenfelde 1, 21614 Buxtehude', 'An den Geestbergen 12, 21614 Buxtehude', 'EG')">⚡ Kontrollfahrt Wohnung EG</button>
+    <button type="button" class="btn btn-orange" onclick="fillQuickDrive('Langenfelde 1, 21614 Buxtehude', 'An den Geestbergen 12, 21614 Buxtehude', 'OG')">⚡ Kontrollfahrt Wohnung OG</button>
+  </div>
+</div>
+
+<form id="fahrtForm">
+  <div class="flex-row">
+    <div>
+      <label for="fDatum">Datum</label>
+      <input type="date" id="fDatum" required>
+    </div>
+    <div>
+      <label for="fZeit">Uhrzeit</label>
+      <input type="time" id="fZeit" required>
+    </div>
+  </div>
+
+  <div class="flex-row">
+    <div>
+      <label for="fStart">Startadresse (z. B. Heimatadresse)</label>
+      <div class="autocomplete-wrapper">
+        <input type="text" id="fStart" value="Langenfelde 1, 21614 Buxtehude" placeholder="Straße, Hausnummer, PLZ Ort" oninput="searchAddress('start', this.value)" autocomplete="off" required>
+        <div id="startSuggestions" class="suggestions-box"></div>
       </div>
     </div>
-
-    <form id="fahrtForm">
-      <div class="flex-row">
-        <div>
-          <label for="fDatum">Datum</label>
-          <input type="date" id="fDatum" required>
-        </div>
-        <div>
-          <label for="fZeit">Uhrzeit</label>
-          <input type="time" id="fZeit" required>
-        </div>
+    <div>
+      <label for="fZiel">Zieladresse (Objekt / Werkstatt / Baumarkt)</label>
+      <div class="autocomplete-wrapper">
+        <input type="text" id="fZiel" placeholder="Straße, Hausnummer, PLZ Ort" oninput="searchAddress('ziel', this.value)" autocomplete="off" required>
+        <div id="zielSuggestions" class="suggestions-box"></div>
       </div>
+    </div>
+  </div>
 
-      <div class="flex-row">
-        <div>
-          <label for="fStart">Startadresse (z. B. Heimatadresse)</label>
-          <div class="autocomplete-wrapper">
-            <input type="text" id="fStart" placeholder="Straße, Hausnummer, PLZ Ort" oninput="searchAddress('start', this.value)" autocomplete="off" required>
-            <div id="startSuggestions" class="suggestions-box"></div>
-          </div>
-        </div>
-        <div>
-          <label for="fZiel">Zieladresse (Objekt / Werkstatt / Baumarkt)</label>
-          <div class="autocomplete-wrapper">
-            <input type="text" id="fZiel" placeholder="Straße, Hausnummer, PLZ Ort" oninput="searchAddress('ziel', this.value)" autocomplete="off" required>
-            <div id="zielSuggestions" class="suggestions-box"></div>
-          </div>
-        </div>
-      </div>
+  <div class="flex-row" style="margin-top: 10px;">
+    <div>
+      <label for="fEntfernung">Entfernung (km)</label>
+      <input type="text" id="fEntfernung" readonly placeholder="Wird automatisch berechnet...">
+    </div>
+  </div>
+</form>
+
+<script>
+// Vorlagen-Funktion: Befüllt Adressen und stößt die OSRM-Berechnung an
+async function fillQuickDrive(start, ziel, typ) {
+  document.getElementById('fStart').value = start;
+  document.getElementById('fZiel').value = ziel;
+  
+  await calculateOsrmDistance(start, ziel);
+}
+
+// Hilfsfunktion: Wandelt Textadresse via Nominatim in Koordination um und berechnet via OSRM die Distanz
+async function calculateOsrmDistance(startAddr, zielAddr) {
+  try {
+    const startCoord = await geocodeAddress(startAddr);
+    const zielCoord = await geocodeAddress(zielAddr);
+
+    if (!startCoord || !zielCoord) return;
+
+    // OSRM Route-API aufrufen (Längengrad,Breitengrad)
+    const osrmUrl = `https://router.project-osrm.org/route/v1/driving/${startCoord.lon},${startCoord.lat};${zielCoord.lon},${zielCoord.lat}?overview=false`;
+    const response = await fetch(osrmUrl);
+    const data = await response.json();
+
+    if (data.routes && data.routes.length > 0) {
+      // Entfernung in Metern -> Umrechnung in km (auf 1 Nachkommastelle gerundet)
+      const distanceKm = (data.routes[0].distance / 1000).toFixed(1);
+      document.getElementById('fEntfernung').value = `${distanceKm} km`;
+    }
+  } catch (error) {
+    console.error('Fehler bei der OSRM-Berechnung:', error);
+  }
+}
+
+// Geocoding via Nominatim (OpenStreetMap)
+async function geocodeAddress(address) {
+  const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`;
+  const response = await fetch(url);
+  const data = await response.json();
+  if (data && data.length > 0) {
+    return { lat: data[0].lat, lon: data[0].lon };
+  }
+  return null;
+}
+</script>
 
       <div style="margin-top: 10px; margin-bottom: 10px;">
         <button type="button" class="btn btn-secondary" style="width: 100%;" onclick="calculateRouteDistance()">

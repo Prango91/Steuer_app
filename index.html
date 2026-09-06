@@ -1885,12 +1885,9 @@ function exportAnlageVCSV() {
       csvRows.push(`"Betriebskosten";"${nk.datum}";${escapeCSV(desc)};"${betragStr}"`);
     });
 
-  const gesamtSumme = summeFahrten + summeVerpflegung + summeBelege + summeNK;
-  const gesamtSummeStr = gesamtSumme.toFixed(2).replace('.', ',');
-  
-  // Trennzeile & Summenzeile für einfache Weiterverarbeitung
-  csvRows.push(`"---";"---";"---";"---"`);
-  csvRows.push(`"GESAMTSUMME WERBUNGSKOSTEN";"${selectedYearVal}";"Alle absetzbaren Positionen";"${gesamtSummeStr}"`);
+  // SUMMENZEILE
+  const gesamtsumme = summeFahrten + summeVerpflegung + summeBelege + summeNK;
+  csvRows.push(`"SUMME GESAMT";"${selectedYearVal}";"Alle Positionen Anlage V";"${gesamtsumme.toFixed(2).replace('.', ',')}"`);
 
   const csvContent = "data:text/csv;charset=utf-8,\uFEFF" + csvRows.join("\n");
   const encodedUri = encodeURI(csvContent);

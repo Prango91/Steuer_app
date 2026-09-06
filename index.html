@@ -29,6 +29,7 @@
       --border-radius: 16px;
       --focus-ring: rgba(0, 113, 227, 0.25);
       --box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+      --hover-bg: #f2f2f7;
     }
 
     * { box-sizing: border-box; }
@@ -191,6 +192,40 @@
     }
     .btn-danger:hover { background: var(--danger); color: white; }
 
+    /* AUTOCOMPLETE & ROUTEN STYLES */
+    .autocomplete-wrapper {
+      position: relative;
+    }
+
+    .suggestions-box {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--card-bg, #ffffff);
+      border: 1px solid var(--border-color, #e5e5ea);
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .suggestion-item {
+      padding: 10px 12px;
+      cursor: pointer;
+      font-size: 13px;
+      border-bottom: 1px solid var(--border-color, #f2f2f7);
+    }
+
+    .suggestion-item:last-child {
+      border-bottom: none;
+    }
+
+    .suggestion-item:hover {
+      background-color: var(--hover-bg, #f2f2f7);
+    }
+
     .table-responsive {
       width: 100%;
       overflow-x: auto;
@@ -320,17 +355,15 @@
       color: var(--text-color);
     }
 
-    /* OPTIMIERTER DRUCK-MODUS */
+    /* DRUCK-MODUS */
     @media print {
       body { background: white; padding: 0; color: black; }
       .container { max-width: 100%; margin: 0; padding: 0; }
       button, .no-print, form, .checklist-item, #yearBox, header, .year-select-box, input, select, textarea { display: none !important; }
       
-      /* Modus A: Nebenkostenabrechnung einzeln drucken */
       body.print-nk-mode .card, body.print-nk-mode #exportCard { display: none !important; }
       body.print-nk-mode #printArea { display: block !important; border: none !important; box-shadow: none !important; padding: 0 !important; }
 
-      /* Modus B: Gesamter Steuerbericht drucken */
       body.print-tax-mode #printArea { display: none !important; }
       body.print-tax-mode .card { display: none !important; }
       body.print-tax-mode #exportCard { display: block !important; border: none !important; box-shadow: none !important; padding: 0 !important; }
@@ -361,15 +394,15 @@
 
   <div id="alertBox" class="alert"></div>
 
-  <!-- 1. FAHRTENBUCH -->
+  <!-- 1. FAHRTENBUCH MIT ROUTENBERECHNER & AUTOCOMPLETE -->
   <div class="card">
     <h2>🚗 Fahrt fürs Fahrtenbuch erfassen (§ 9 EStG Auswärtstätigkeit)</h2>
     
     <div style="margin-bottom: 16px;">
       <label>Schnell-Eingabe (Vorlagen für Kontrollfahrten):</label>
       <div class="flex-row">
-        <button type="button" class="btn btn-orange" onclick="fillQuickDrive('An den Geestbergen 12, 21614')">⚡ Kontrollfahrt Wohnung EG</button>
-        <button type="button" class="btn btn-orange" onclick="fillQuickDrive('An den Geestbergen 12, 21614')">⚡ Kontrollfahrt Wohnung OG</button>
+        <button type="button" class="btn btn-orange" onclick="fillQuickDrive('An den Geestbergen 12, 21614 Buxtehude', 'EG')">⚡ Kontrollfahrt Wohnung EG</button>
+        <button type="button" class="btn btn-orange" onclick="fillQuickDrive('An den Geestbergen 12, 21614 Buxtehude', 'OG')">⚡ Kontrollfahrt Wohnung OG</button>
       </div>
     </div>
 
@@ -387,13 +420,25 @@
 
       <div class="flex-row">
         <div>
-          <label for="fStart">Startadresse</label>
-          <input type="text" id="fStart" value="Langenfelde 1, 21614 Buxtehude" required>
+          <label for="fStart">Startadresse (z. B. Heimatadresse)</label>
+          <div class="autocomplete-wrapper">
+            <input type="text" id="fStart" placeholder="Straße, Hausnummer, PLZ Ort" oninput="searchAddress('start', this.value)" autocomplete="off" required>
+            <div id="startSuggestions" class="suggestions-box"></div>
+          </div>
         </div>
         <div>
-          <label for="fZiel">Zieladresse</label>
-          <input type="text" id="fZiel" placeholder="z. B. Buxtehude Bahnhofstraße" required>
+          <label for="fZiel">Zieladresse (Objekt / Werkstatt / Baumarkt)</label>
+          <div class="autocomplete-wrapper">
+            <input type="text" id="fZiel" placeholder="Straße, Hausnummer, PLZ Ort" oninput="searchAddress('ziel', this.value)" autocomplete="off" required>
+            <div id="zielSuggestions" class="suggestions-box"></div>
+          </div>
         </div>
+      </div>
+
+      <div style="margin-top: 10px; margin-bottom: 10px;">
+        <button type="button" class="btn btn-secondary" style="width: 100%;" onclick="calculateRouteDistance()">
+          🗺️ Strecke & km automatisch berechnen (OSRM)
+        </button>
       </div>
 
       <label for="fGrund">Anlass / Grund der Fahrt</label>
@@ -401,12 +446,12 @@
 
       <div class="flex-row">
         <div>
-          <label for="fKm">Gefahrene Strecke (Hin &amp; Rück in km)</label>
-          <input type="number" id="fKm" step="0.1" placeholder="z. B. 45.0" oninput="updateFahrtCalc()" required>
+          <label for="fKm">Gefahrene km (Hin & Rück)</label>
+          <input type="number" id="fKm" step="0.1" placeholder="0.0" oninput="updateFahrtCalc()" required>
         </div>
         <div>
           <label for="fStunden">Dauer der Abwesenheit (Stunden)</label>
-          <input type="number" id="fStunden" placeholder="z. B. 9.0" step="0.5" oninput="updateFahrtCalc()">
+          <input type="number" id="fStunden" placeholder="z. B. 2.0" step="0.5" oninput="updateFahrtCalc()">
         </div>
       </div>
 
@@ -414,6 +459,10 @@
         📏 Fahrtkosten (0,30 €/km): 0.00 € | 🍱 Verpflegungspauschale: 0.00 €<br>
         💰 Gesamt absetzbarer Betrag: 0.00 €
       </div>
+
+      <!-- Versteckte Speicherfelder für Koordinaten -->
+      <input type="hidden" id="startLat"><input type="hidden" id="startLon">
+      <input type="hidden" id="zielLat"><input type="hidden" id="zielLon">
 
       <button type="submit" class="btn">💾 Fahrt speichern</button>
     </form>
@@ -1037,7 +1086,7 @@
 const APP_CONFIG = {
   "vermieter": {
     "name": "Daniel Prang",
-    "adresse": "Langenfelde 1, 21624 Buxtehude",
+    "adresse": "Langenfelde 1, 21614 Buxtehude",
     "bankverbindung": {
       "institut": "Haspa Buxtehude",
       "iban": "DE04 2005 0550 1385 4394 17"
@@ -1198,6 +1247,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('fDatum').valueAsDate = new Date();
   document.getElementById('nkDatum').valueAsDate = new Date();
   document.getElementById('fZeit').value = new Date().toTimeString().substring(0,5);
+  document.getElementById('fStart').value = APP_CONFIG.vermieter.adresse;
   loadData();
   checkFristen();
 });
@@ -1318,7 +1368,7 @@ async function exportBackupJSON() {
     const downloadLink = document.createElement('a');
     const dateStr = new Date().toISOString().split('T')[0];
     downloadLink.href = url;
-    downloadLink.download = `VermieterTool_Backup_${dateStr}.json`;
+    downloadLink.download = `VermissterTool_Backup_${dateStr}.json`;
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);
@@ -1383,7 +1433,89 @@ async function importBackupJSON(event) {
   reader.readAsText(file);
 }
 
-// --- FAHRTENBUCH MODUL ---
+// --- OPENSTREETMAP AUTOCOMPLETE & OSRM ROUTING MODUL ---
+let debounceTimer;
+
+function searchAddress(type, query) {
+  clearTimeout(debounceTimer);
+  const suggestionBox = document.getElementById(`${type}Suggestions`);
+
+  if (!query || query.length < 3) {
+    suggestionBox.innerHTML = '';
+    return;
+  }
+
+  debounceTimer = setTimeout(() => {
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&countrycodes=de`;
+
+    fetch(url, { headers: { 'Accept-Language': 'de' } })
+      .then(res => res.json())
+      .then(data => {
+        suggestionBox.innerHTML = '';
+        data.forEach(item => {
+          const div = document.createElement('div');
+          div.className = 'suggestion-item';
+          div.textContent = item.display_name;
+          div.onclick = () => selectAddress(type, item);
+          suggestionBox.appendChild(div);
+        });
+      })
+      .catch(err => console.error('Fehler bei Adresssuche:', err));
+  }, 300);
+}
+
+function selectAddress(type, item) {
+  const fieldId = type === 'start' ? 'fStart' : 'fZiel';
+  document.getElementById(fieldId).value = item.display_name;
+  document.getElementById(`${type}Lat`).value = item.lat;
+  document.getElementById(`${type}Lon`).value = item.lon;
+  document.getElementById(`${type}Suggestions`).innerHTML = '';
+
+  if (document.getElementById('startLat').value && document.getElementById('zielLat').value) {
+    calculateRouteDistance();
+  }
+}
+
+function calculateRouteDistance() {
+  const startLat = document.getElementById('startLat').value;
+  const startLon = document.getElementById('startLon').value;
+  const zielLat = document.getElementById('zielLat').value;
+  const zielLon = document.getElementById('zielLon').value;
+
+  if (!startLat || !zielLat) {
+    alert('Bitte wähle Start- und Zieladresse aus den Vorschlägen aus, um die Route präzise zu berechnen.');
+    return;
+  }
+
+  const url = `https://router.project-osrm.org/route/v1/driving/${startLon},${startLat};${zielLon},${zielLat}?overview=false`;
+
+  fetch(url)
+    .then(res => res.json())
+    .then(data => {
+      if (data.routes && data.routes.length > 0) {
+        const distanzMeter = data.routes[0].distance;
+        const kmEinfach = distanzMeter / 1000;
+        const kmGesamt = Math.round(kmEinfach * 2 * 10) / 10;
+
+        document.getElementById('fKm').value = kmGesamt;
+        updateFahrtCalc();
+      } else {
+        alert('Route konnte nicht berechnet werden.');
+      }
+    })
+    .catch(err => {
+      console.error('Fehler bei Routenberechnung:', err);
+      alert('Fehler beim Abrufen der Route.');
+    });
+}
+
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.autocomplete-wrapper')) {
+    document.querySelectorAll('.suggestions-box').forEach(box => box.innerHTML = '');
+  }
+});
+
+// --- FAHRTENBUCH LOGIK ---
 function calculateReisekosten(hinRuckKm, verpflegungStunden = 0) {
   const fahrtkosten = hinRuckKm * 0.30;
   let verpflegungspauschale = 0;
@@ -1407,9 +1539,9 @@ function updateFahrtCalc() {
   `;
 }
 
-function fillQuickDrive(wohnung) {
-  document.getElementById('fZiel').value = wohnung + " Buxtehude";
-  document.getElementById('fGrund').value = "Kontrollfahrt / Objektbesichtigung " + wohnung;
+function fillQuickDrive(zielAdresse, topName) {
+  document.getElementById('fZiel').value = zielAdresse;
+  document.getElementById('fGrund').value = "Kontrollfahrt / Objektbesichtigung " + topName;
   document.getElementById('fKm').value = "15.0";
   document.getElementById('fStunden').value = "2.0";
   updateFahrtCalc();
@@ -1747,16 +1879,17 @@ function updateTabellen() {
       totalVerpflegung += f.verpflegung;
       return `
         <tr>
-          <td>${escapeHtml(f.datum)}</td>
-          <td>${escapeHtml(f.start)} ➔ ${escapeHtml(f.ziel)}</td>
+          <td>${escapeHtml(f.datum)} ${escapeHtml(f.zeit)}</td>
+          <td>${escapeHtml(f.start)} ➡️ ${escapeHtml(f.ziel)}</td>
           <td>${escapeHtml(f.grund)}</td>
-          <td>${f.km} km</td>
+          <td>${f.km.toFixed(1)} km</td>
           <td>${f.fahrtkosten.toFixed(2)} €</td>
           <td>${f.verpflegung.toFixed(2)} €</td>
           <td><button class="btn-danger" onclick="deleteFahrt('${f.id}')">❌</button></td>
         </tr>
       `;
     }).join('');
+
   document.getElementById('fahrtTabelleSummeKM').innerText = totalKm.toFixed(1) + ' km';
   document.getElementById('fahrtTabelleSummeFahrt').innerText = totalFahrt.toFixed(2) + ' €';
   document.getElementById('fahrtTabelleSummeVerpflegung').innerText = totalVerpflegung.toFixed(2) + ' €';
@@ -1764,14 +1897,13 @@ function updateTabellen() {
   // 3. NEBENKOSTEN TABELLE
   const nkTbody = document.querySelector('#nkTabelle tbody');
   let totalNK = 0;
-  let totalLohn = 0;
+  let totalNKLohn = 0;
 
   nkTbody.innerHTML = nebenkosten
     .filter(nk => isTestMode || nk.datum.startsWith(selectedYearVal))
     .map(nk => {
       totalNK += nk.betrag;
-      const lohn = nk.lohnAnteil || 0;
-      totalLohn += lohn;
+      totalNKLohn += nk.lohnAnteil;
       return `
         <tr>
           <td>${escapeHtml(nk.datum)}</td>
@@ -1779,271 +1911,165 @@ function updateTabellen() {
           <td>${escapeHtml(nk.kategorie)}</td>
           <td>${escapeHtml(nk.geschaeft)} (${escapeHtml(nk.grund || '-')})</td>
           <td>${nk.betrag.toFixed(2)} €</td>
-          <td>${lohn > 0 ? lohn.toFixed(2) + ' €' : '-'}</td>
+          <td>${nk.lohnAnteil > 0 ? nk.lohnAnteil.toFixed(2) + ' €' : '-'}</td>
           <td>${nk.hasFile ? `<button class="btn btn-secondary" onclick="openFile('${nk.id}')">📎 Öffnen</button>` : 'Keine'}</td>
           <td><button class="btn-danger" onclick="deleteNK('${nk.id}')">❌</button></td>
         </tr>
       `;
     }).join('');
+
   document.getElementById('nkTabelleSumme').innerText = totalNK.toFixed(2) + ' €';
-  document.getElementById('nkTabelleLohnSumme').innerText = totalLohn.toFixed(2) + ' €';
+  document.getElementById('nkTabelleLohnSumme').innerText = totalNKLohn.toFixed(2) + ' €';
 
   // 4. VERTRÄGE TABELLE
-  const vTbody = document.querySelector('#vertragTabelle tbody');
-  vTbody.innerHTML = vertraege.map(v => {
-    const mieterName = v.mieter ? `${v.mieter.vorname} ${v.mieter.nachname}` : (v.name || 'Unbekannt');
-    const mieterAdresse = v.mieter ? `${v.mieter.strasse_hausnummer || '-'}, ${v.mieter.plz_ort || '-'}` : '-';
-    const mietDetails = v.mietobjekt ? `${v.mietobjekt.adresse || '-'} (${v.mietobjekt.wohnungsnummer || '-'})<br>Kalt: ${v.mietobjekt.kaltmiete.toFixed(2)}€ | NK: ${v.mietobjekt.nebenkosten_vorauszahlung.toFixed(2)}€` : '-';
-
-    return `
-      <tr>
-        <td>${escapeHtml(v.zuordnung)}</td>
-        <td><strong>${escapeHtml(mieterName)}</strong>${v.mieter && v.mieter.geburtsdatum ? '<br><small>geb. ' + escapeHtml(v.mieter.geburtsdatum) + '</small>' : ''}</td>
-        <td>${escapeHtml(mieterAdresse)}</td>
-        <td><small>${mietDetails}</small></td>
-        <td>${v.hasFile ? `<button class="btn btn-secondary" onclick="openFile('${v.id}')">📄 ${escapeHtml(v.fileName)}</button>` : 'Keine Datei'}</td>
-        <td><button class="btn-danger" onclick="deleteVertrag('${v.id}')">❌</button></td>
-      </tr>
-    `;
-  }).join('');
+  const vertragTbody = document.querySelector('#vertragTabelle tbody');
+  vertragTbody.innerHTML = vertraege.map(v => `
+    <tr>
+      <td><span class="badge">${escapeHtml(v.zuordnung)}</span></td>
+      <td><strong>${escapeHtml(v.mieter.vorname)} ${escapeHtml(v.mieter.nachname)}</strong></td>
+      <td>${escapeHtml(v.mieter.strasse_hausnummer)}, ${escapeHtml(v.mieter.plz_ort)}</td>
+      <td>
+        ${escapeHtml(v.mietobjekt.adresse)} (${escapeHtml(v.mietobjekt.wohnungsnummer)})<br>
+        <small>Kalt: ${v.mietobjekt.kaltmiete.toFixed(2)} € | NK: ${v.mietobjekt.nebenkosten_vorauszahlung.toFixed(2)} €</small>
+      </td>
+      <td>${v.hasFile ? `<button class="btn btn-secondary" onclick="openFile('${v.id}')">📎 ${escapeHtml(v.fileName)}</button>` : 'Kein Anhang'}</td>
+      <td><button class="btn-danger" onclick="deleteVertrag('${v.id}')">❌</button></td>
+    </tr>
+  `).join('');
 }
 
-// --- DRUCK-DIVERSIFIZIERUNG ---
-function printNKReport() {
-  document.body.className = 'print-nk-mode';
-  window.print();
+// --- EXPORT & DRUCK-FUNKTIONEN ---
+function exportAnlageVCSV() {
+  const year = yearSelect.value;
+  let csv = 'Datum;Kategorie;Zuordnung;Beschreibung/Geschäft;Betrag (€)\n';
+
+  belege.filter(b => isTestMode || b.datum.startsWith(year)).forEach(b => {
+    csv += `"${b.datum}";"${b.kategorie}";"${b.zuordnung}";"${b.geschaeft} - ${b.grund}";"${b.betrag.toFixed(2)}"\n`;
+  });
+
+  fahrten.filter(f => isTestMode || f.datum.startsWith(year)).forEach(f => {
+    csv += `"${f.datum}";"Fahrtkosten §9";"Gesamtobjekt";"Fahrt: ${f.start} -> ${f.ziel} (${f.grund})";"${(f.fahrtkosten + f.verpflegung).toFixed(2)}"\n`;
+  });
+
+  const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.setAttribute('href', url);
+  link.setAttribute('download', `Anlage_V_Export_${year}.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 }
 
 function printTaxReport() {
   document.body.className = 'print-tax-mode';
   window.print();
+  document.body.className = '';
 }
 
-// --- GENERIERUNG RECHTSSICHERE NEBENKOSTENABRECHNUNG ---
+// --- RECHTSSECKE NEBENKOSTENABRECHNUNG GENERIEREN ---
 function generateAbrechnung(wohnung) {
-  const selectedYearVal = document.getElementById('selectedYear').value;
-  const displayYear = isTestMode ? `${currentYear} (Übung)` : selectedYearVal;
-
-  const mieterObj = vertraege.find(v => v.zuordnung === wohnung);
-  
-  // Mieterdaten aus APP_CONFIG oder lokalem Eintrag auslesen
-  let mieterName = "Unbekannt / Bitte Mieterdaten eintragen";
-  let mieterStrasse = "";
-  let mieterPlzOrt = "";
-  let objektAdresse = "Buxtehude";
-  let wohnungsNummer = wohnung;
-
-  if (mieterObj && mieterObj.mieter) {
-    mieterName = `${mieterObj.mieter.vorname} ${mieterObj.mieter.nachname}`.trim() || mieterName;
-    mieterStrasse = mieterObj.mieter.strasse_hausnummer || "";
-    mieterPlzOrt = mieterObj.mieter.plz_ort || "";
-    
-    if (mieterObj.mietobjekt) {
-      objektAdresse = mieterObj.mietobjekt.adresse || objektAdresse;
-      wohnungsNummer = mieterObj.mietobjekt.wohnungsnummer || wohnung;
-    }
-  } else if (mieterObj && mieterObj.name) {
-    mieterName = mieterObj.name;
-  }
-
+  const selectedYearVal = yearSelect.value;
   const isEG = wohnung.includes('EG');
-  const qm = isEG ? 70 : 100;
-  const monatsAbschlag = isEG ? (nkSettings.eg || 0) : (nkSettings.og || 0);
-  const vorauszahlungGesamt = monatsAbschlag * 12;
+  const flaeche = isEG ? 70 : 100;
+  const quote = flaeche / 170;
+  const monatsAbschlag = isEG ? nkSettings.eg : nkSettings.og;
 
-  let tableBodyHtml = '';
-  let mieterGesamtAnteil = 0.0;
-  let paragraph35aGesamt = 0.0;
+  const mVertrag = vertraege.find(v => v.zuordnung.includes(isEG ? 'EG' : 'OG'));
 
-  nebenkosten.forEach(nk => {
-    if (isTestMode || nk.datum.startsWith(selectedYearVal)) {
-      let verteiler = "";
-      let anteil = 0.0;
-      let lohnAnteilMieter = 0.0;
-      const betrag = parseFloat(nk.betrag);
-      const rawLohn = parseFloat(nk.lohnAnteil) || 0;
+  const vName = mVertrag ? `${mVertrag.mieter.vorname} ${mVertrag.mieter.nachname}` : 'Max Mustermann';
+  const vStrasse = mVertrag ? mVertrag.mieter.strasse_hausnummer : 'An den Geestbergen 12';
+  const vPlzOrt = mVertrag ? mVertrag.mieter.plz_ort : '21614 Buxtehude';
+  const vObjekt = mVertrag ? mVertrag.mietobjekt.adresse : 'An den Geestbergen 12, 21614 Buxtehude';
+  const vNr = mVertrag ? mVertrag.mietobjekt.wohnungsnummer : (isEG ? 'WE 01 (EG)' : 'WE 02 (OG)');
 
-      if (nk.zuordnung === wohnung) {
-        if (nk.kategorie === 'Stromkosten') {
-          let details = nk.verbrauch ? ` (${nk.verbrauch} kWh${nk.stromPreis ? ' @ ' + nk.stromPreis + ' €/kWh' : ''})` : '';
-          verteiler = `Direktzuordnung nach Zwischenzähler${details}`;
-        } else if (nk.kategorie === 'Brunata') {
-          verteiler = "Direktübernahme laut Brunata-Einzelabrechnung";
-        } else {
-          verteiler = "100% Direktzuordnung";
-        }
-        anteil = betrag;
-        lohnAnteilMieter = rawLohn;
-      } else if (nk.zuordnung.includes('Gesamtobjekt')) {
-        if (isEG) {
-          anteil = betrag * (70.0 / 170.0);
-          lohnAnteilMieter = rawLohn * (70.0 / 170.0);
-          verteiler = "Fläche (70 m² / 170 m² = 41,18%)";
-        } else {
-          anteil = betrag * (100.0 / 170.0);
-          lohnAnteilMieter = rawLohn * (100.0 / 170.0);
-          verteiler = "Fläche (100 m² / 170 m² = 58,82%)";
-        }
-      } else {
-        return;
-      }
-
-      mieterGesamtAnteil += anteil;
-      paragraph35aGesamt += lohnAnteilMieter;
-
-      tableBodyHtml += `
-        <tr>
-          <td style="border:1px solid #ddd; padding:8px;">${escapeHtml(nk.kategorie)} (${escapeHtml(nk.geschaeft)})</td>
-          <td style="border:1px solid #ddd; padding:8px;">${betrag.toFixed(2)} €</td>
-          <td style="border:1px solid #ddd; padding:8px;">${verteiler}</td>
-          <td style="border:1px solid #ddd; padding:8px; font-weight:bold;">${anteil.toFixed(2)} €</td>
-        </tr>
-      `;
-    }
-  });
-
-  if (!tableBodyHtml) {
-    alert(`Keine Nebenkostenpositionen für ${wohnung} im ausgewählten Steuerjahr/Modus erfasst!`);
-    return;
-  }
-
-  const differenz = mieterGesamtAnteil - vorauszahlungGesamt;
-
-  // Kopfdaten befüllen
   document.getElementById('pVermieterName').innerText = APP_CONFIG.vermieter.name;
   document.getElementById('pVermieterAdresse').innerText = APP_CONFIG.vermieter.adresse;
-
   document.getElementById('pAbrechnungsDatum').innerText = new Date().toLocaleDateString('de-DE');
-  document.getElementById('pJahr').innerText = displayYear;
-  document.getElementById('pJahrPeriod1').innerText = selectedYearVal === 'TESTMODE' ? currentYear : selectedYearVal;
-  document.getElementById('pJahrPeriod2').innerText = selectedYearVal === 'TESTMODE' ? currentYear : selectedYearVal;
-  
-  document.getElementById('pObjektAdresse').innerText = escapeHtml(objektAdresse);
+  document.getElementById('pMieterName').innerText = vName;
+  document.getElementById('pMieterStrasse').innerText = vStrasse;
+  document.getElementById('pMieterPlzOrt').innerText = vPlzOrt;
+
+  document.getElementById('pJahr').innerText = selectedYearVal;
+  document.getElementById('pJahrPeriod1').innerText = selectedYearVal;
+  document.getElementById('pJahrPeriod2').innerText = selectedYearVal;
+  document.getElementById('pObjektAdresse').innerText = vObjekt;
   document.getElementById('pEinheit').innerText = wohnung;
-  document.getElementById('pWohnungsnummer').innerText = escapeHtml(wohnungsNummer);
-  document.getElementById('pFlaeche').innerText = qm;
+  document.getElementById('pWohnungsnummer').innerText = vNr;
+  document.getElementById('pFlaeche').innerText = flaeche;
 
-  document.getElementById('pMieterName').innerText = escapeHtml(mieterName);
-  document.getElementById('pMieterStrasse').innerText = escapeHtml(mieterStrasse);
-  document.getElementById('pMieterPlzOrt').innerText = escapeHtml(mieterPlzOrt);
+  const relevantNK = nebenkosten.filter(nk => isTestMode || nk.datum.startsWith(selectedYearVal));
+  const postenTable = document.getElementById('pPostenTable');
+  postenTable.innerHTML = '';
 
-  document.getElementById('pPostenTable').innerHTML = tableBodyHtml;
-  document.getElementById('pGesamtAnteil').innerText = mieterGesamtAnteil.toFixed(2);
+  let gesamtMieterAnteil = 0;
+  let gesamt35aLohn = 0;
+
+  relevantNK.forEach(nk => {
+    let anteil = 0;
+    let schluesselText = '';
+
+    if (nk.zuordnung.includes('Gesamtobjekt')) {
+      anteil = nk.betrag * quote;
+      schluesselText = `Wohnfläche (${flaeche}/170 m²)`;
+      gesamt35aLohn += (nk.lohnAnteil * quote);
+    } else if (nk.zuordnung.includes(isEG ? 'EG' : 'OG')) {
+      anteil = nk.betrag;
+      schluesselText = 'Direktzuordnung (100%)';
+      gesamt35aLohn += nk.lohnAnteil;
+    } else {
+      return;
+    }
+
+    gesamtMieterAnteil += anteil;
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td style="border:1px solid #e5e5ea; padding:8px;">${escapeHtml(nk.kategorie)} (${escapeHtml(nk.geschaeft)})</td>
+      <td style="border:1px solid #e5e5ea; padding:8px;">${nk.betrag.toFixed(2)} €</td>
+      <td style="border:1px solid #e5e5ea; padding:8px;">${schluesselText}</td>
+      <td style="border:1px solid #e5e5ea; padding:8px;"><strong>${anteil.toFixed(2)} €</strong></td>
+    `;
+    postenTable.appendChild(tr);
+  });
+
+  const geleistet = monatsAbschlag * 12;
+  const saldo = gesamtMieterAnteil - geleistet;
+
+  document.getElementById('pGesamtAnteil').innerText = gesamtMieterAnteil.toFixed(2);
   document.getElementById('pMonatsAbschlag').innerText = monatsAbschlag.toFixed(2);
-  document.getElementById('pGeleistet').innerText = vorauszahlungGesamt.toFixed(2);
-  document.getElementById('p35aBetrag').innerText = paragraph35aGesamt.toFixed(2);
+  document.getElementById('pGeleistet').innerText = geleistet.toFixed(2);
+  document.getElementById('p35aBetrag').innerText = gesamt35aLohn.toFixed(2);
 
-  let targetDate = new Date();
-  targetDate.setDate(targetDate.getDate() + 30);
-  const zahlungszielStr = targetDate.toLocaleDateString('de-DE');
+  const resEl = document.getElementById('pFinalResult');
+  const hinweisEl = document.getElementById('pZahlungshinweis');
 
-  const bankInfoStr = `${APP_CONFIG.vermieter.bankverbindung.institut} | IBAN: ${APP_CONFIG.vermieter.bankverbindung.iban}`;
-
-  if (differenz > 0) {
-    document.getElementById('pFinalResult').innerHTML = `<strong>Nachforderung zu Gunsten des Vermieters: <span style="color:#d9534f;">+ ${differenz.toFixed(2)} €</span></strong>`;
-    document.getElementById('pZahlungshinweis').innerHTML = `
-      Bitte überweisen Sie den Nachforderungsbetrag in Höhe von <strong>${differenz.toFixed(2)} €</strong> bis zum <strong>${zahlungszielStr}</strong> auf folgendes Vermieterkonto:<br>
-      <strong>Bankverbindung:</strong> ${bankInfoStr}<br><br>
-      Gegen diese Abrechnung kann innerhalb von 12 Monaten nach Zugang schriftlich Einwand erhoben werden (§ 556 Abs. 3 BGB).<br><br>
-      Mit freundlichen Grüßen,<br><br>
-      ____________________________________<br>
-      ${APP_CONFIG.vermieter.name} (Vermieter)
-    `;
-  } else if (differenz < 0) {
-    const guthabenBetrag = Math.abs(differenz).toFixed(2);
-    document.getElementById('pFinalResult').innerHTML = `<strong>Guthaben zu Gunsten des Mieters: <span style="color:#34c759;">${guthabenBetrag} €</span></strong>`;
-    document.getElementById('pZahlungshinweis').innerHTML = `
-      Das Guthaben in Höhe von <strong>${guthabenBetrag} €</strong> wird zeitnah auf Ihr bekanntes Bankkonto überwiesen.<br><br>
-      Gegen diese Abrechnung kann innerhalb von 12 Monaten nach Zugang schriftlich Einwand erhoben werden (§ 556 Abs. 3 BGB).<br><br>
-      Mit freundlichen Grüßen,<br><br>
-      ____________________________________<br>
-      ${APP_CONFIG.vermieter.name} (Vermieter)
-    `;
+  if (saldo > 0) {
+    resEl.innerHTML = `<strong style="color:var(--danger);">Nachzahlung zu Gunsten des Vermieters: ${saldo.toFixed(2)} €</strong>`;
+    hinweisEl.innerHTML = `Bitte überweisen Sie den Nachzahlungsbetrag von <strong>${saldo.toFixed(2)} €</strong> innerhalb von 30 Tagen auf folgendes Konto:<br>
+    <strong>Bank:</strong> ${APP_CONFIG.vermieter.bankverbindung.institut} | <strong>IBAN:</strong> ${APP_CONFIG.vermieter.bankverbindung.iban}`;
+  } else if (saldo < 0) {
+    const guthaben = Math.abs(saldo);
+    resEl.innerHTML = `<strong style="color:var(--success);">Guthaben zu Gunsten des Mieters: ${guthaben.toFixed(2)} €</strong>`;
+    hinweisEl.innerHTML = `Der Guthabenbetrag von <strong>${guthaben.toFixed(2)} €</strong> wird Ihnen in den nächsten Tagen auf Ihr bekanntes Bankkonto überwiesen oder mit der nächsten Miete verrechnet.`;
   } else {
-    document.getElementById('pFinalResult').innerHTML = `<strong>Abrechnung schließt ausgeglichen ab: 0.00 €</strong>`;
-    document.getElementById('pZahlungshinweis').innerHTML = `
-      Die Abrechnung schließt ausgeglichen ab. Es besteht weder eine Nachforderung noch ein Guthaben.<br><br>
-      Mit freundlichen Grüßen,<br><br>
-      ____________________________________<br>
-      ${APP_CONFIG.vermieter.name} (Vermieter)
-    `;
+    resEl.innerHTML = `<strong style="color:var(--primary);">Abrechnung ausgeglichen (0.00 €)</strong>`;
+    hinweisEl.innerHTML = `Es besteht weder eine Nachzahlung noch ein Guthaben.`;
   }
 
   document.getElementById('printArea').style.display = 'block';
   document.getElementById('printArea').scrollIntoView({ behavior: 'smooth' });
 }
 
+function printNKReport() {
+  document.body.className = 'print-nk-mode';
+  window.print();
+  document.body.className = '';
+}
+
 function closeAbrechnung() {
   document.getElementById('printArea').style.display = 'none';
 }
-
-// --- EXPORT MODUL (ANLAGE V CSV MIT SUMMENZEILE) ---
-function exportAnlageVCSV() {
-  const selectedYearVal = document.getElementById('selectedYear').value;
-  let csvRows = ["Typ;Datum/Kategorie;Zuordnung/Beschreibung;Betrag (EUR)"];
-
-  const escapeCSV = (str) => {
-    if (!str) return '""';
-    return '"' + String(str).replace(/"/g, '""') + '"';
-  };
-
-  let summeFahrten = 0;
-  let summeVerpflegung = 0;
-  let summeBelege = 0;
-  let summeNK = 0;
-
-  // Fahrten exportieren
-  fahrten
-    .filter(f => isTestMode || f.datum.startsWith(selectedYearVal))
-    .forEach(f => {
-      if (f.fahrtkosten > 0) {
-        summeFahrten += f.fahrtkosten;
-        csvRows.push(`"Fahrtkosten";${escapeCSV(f.datum)};${escapeCSV(f.grund + ' (' + f.km + ' km)')};${f.fahrtkosten.toFixed(2).replace('.', ',')}`);
-      }
-      if (f.verpflegung > 0) {
-        summeVerpflegung += f.verpflegung;
-        csvRows.push(`"Verpflegungspauschale";${escapeCSV(f.datum)};${escapeCSV(f.grund + ' (' + f.stunden + ' Std)')};${f.verpflegung.toFixed(2).replace('.', ',')}`);
-      }
-    });
-
-  // Belege exportieren
-  belege
-    .filter(b => isTestMode || b.datum.startsWith(selectedYearVal))
-    .forEach(b => {
-      summeBelege += b.betrag;
-      csvRows.push(`"Beleg";${escapeCSV(b.datum + ' / ' + b.kategorie)};${escapeCSV(b.geschaeft + ' - ' + b.zuordnung + (b.grund ? ' (' + b.grund + ')' : ''))};${b.betrag.toFixed(2).replace('.', ',')}`);
-    });
-
-  // Nebenkosten exportieren
-  nebenkosten
-    .filter(nk => isTestMode || nk.datum.startsWith(selectedYearVal))
-    .forEach(nk => {
-      summeNK += nk.betrag;
-      csvRows.push(`"Nebenkosten/Betriebskosten";${escapeCSV(nk.datum + ' / ' + nk.kategorie)};${escapeCSV(nk.geschaeft + ' - ' + nk.zuordnung + (nk.grund ? ' (' + nk.grund + ')' : ''))};${nk.betrag.toFixed(2).replace('.', ',')}`);
-    });
-
-  const gesamtsumme = summeFahrten + summeVerpflegung + summeBelege + summeNK;
-
-  // Leerzeile und Summenblock am Ende der CSV
-  csvRows.push(';;;');
-  csvRows.push(`"SUMMEN-ÜBERSICHT";"Fahrtkosten Gesamtsumme";;${summeFahrten.toFixed(2).replace('.', ',')}`);
-  csvRows.push(`"SUMMEN-ÜBERSICHT";"Verpflegungspauschalen Gesamtsumme";;${summeVerpflegung.toFixed(2).replace('.', ',')}`);
-  csvRows.push(`"SUMMEN-ÜBERSICHT";"Belege & Pauschalen Gesamtsumme";;${summeBelege.toFixed(2).replace('.', ',')}`);
-  csvRows.push(`"SUMMEN-ÜBERSICHT";"Nebenkosten Gesamtsumme";;${summeNK.toFixed(2).replace('.', ',')}`);
-  csvRows.push(`"GESAMTSUMME WERBUNGSKOSTEN";"${selectedYearVal}";;${gesamtsumme.toFixed(2).replace('.', ',')}`);
-
-  const csvString = '\uFEFF' + csvRows.join('\n'); // Byte Order Mark (BOM) für korrekte Umlautdarstellung z.B. in MS Excel
-  const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.setAttribute('href', url);
-  link.setAttribute('download', `Anlage_V_Export_${selectedYearVal}.csv`);
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
-}
 </script>
-
 </body>
 </html>

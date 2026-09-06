@@ -1852,52 +1852,58 @@ function exportAnlageVCSV() {
   let summeBelege = 0;
   let summeNK = 0;
 
+  // Fahrten exportieren
   fahrten
     .filter(f => isTestMode || f.datum.startsWith(selectedYearVal))
     .forEach(f => {
       if (f.fahrtkosten > 0) {
         summeFahrten += f.fahrtkosten;
-        const betragStr = f.fahrtkosten.toFixed(2).replace('.', ',');
-        csvRows.push(`"Fahrtkosten";"${f.datum}";${escapeCSV((f.grund || '') + ' (' + f.km + ' km)')};"${betragStr}"`);
+        csvRows.push(`"Fahrtkosten";${escapeCSV(f.datum)};${escapeCSV(f.grund + ' (' + f.km + ' km)')};${f.fahrtkosten.toFixed(2).replace('.', ',')}`);
       }
       if (f.verpflegung > 0) {
         summeVerpflegung += f.verpflegung;
-        const betragStr = f.verpflegung.toFixed(2).replace('.', ',');
-        csvRows.push(`"Verpflegungsmehraufwand";"${f.datum}";${escapeCSV((f.grund || '') + ' (' + f.stunden + ' Std.)')};"${betragStr}"`);
+        csvRows.push(`"Verpflegungspauschale";${escapeCSV(f.datum)};${escapeCSV(f.grund + ' (' + f.stunden + ' Std)')};${f.verpflegung.toFixed(2).replace('.', ',')}`);
       }
     });
 
+  // Belege exportieren
   belege
     .filter(b => isTestMode || b.datum.startsWith(selectedYearVal))
     .forEach(b => {
       summeBelege += b.betrag;
-      const desc = (b.kategorie || '') + ' - ' + (b.zuordnung || '') + ' (' + (b.geschaeft || '') + ')';
-      const betragStr = b.betrag.toFixed(2).replace('.', ',');
-      csvRows.push(`"Werbungskosten";"${b.datum}";${escapeCSV(desc)};"${betragStr}"`);
+      csvRows.push(`"Beleg";${escapeCSV(b.datum + ' / ' + b.kategorie)};${escapeCSV(b.geschaeft + ' - ' + b.zuordnung + (b.grund ? ' (' + b.grund + ')' : ''))};${b.betrag.toFixed(2).replace('.', ',')}`);
     });
 
+  // Nebenkosten exportieren
   nebenkosten
     .filter(nk => isTestMode || nk.datum.startsWith(selectedYearVal))
     .forEach(nk => {
       summeNK += nk.betrag;
-      const desc = (nk.kategorie || '') + ' - ' + (nk.zuordnung || '') + ' (' + (nk.geschaeft || '') + ')';
-      const betragStr = nk.betrag.toFixed(2).replace('.', ',');
-      csvRows.push(`"Betriebskosten";"${nk.datum}";${escapeCSV(desc)};"${betragStr}"`);
+      csvRows.push(`"Nebenkosten/Betriebskosten";${escapeCSV(nk.datum + ' / ' + nk.kategorie)};${escapeCSV(nk.geschaeft + ' - ' + nk.zuordnung + (nk.grund ? ' (' + nk.grund + ')' : ''))};${nk.betrag.toFixed(2).replace('.', ',')}`);
     });
 
-  // SUMMENZEILE
   const gesamtsumme = summeFahrten + summeVerpflegung + summeBelege + summeNK;
-  csvRows.push(`"SUMME GESAMT";"${selectedYearVal}";"Alle Positionen Anlage V";"${gesamtsumme.toFixed(2).replace('.', ',')}"`);
 
-  const csvContent = "data:text/csv;charset=utf-8,\uFEFF" + csvRows.join("\n");
-  const encodedUri = encodeURI(csvContent);
-  const link = document.createElement("a");
-  link.setAttribute("href", encodedUri);
-  link.setAttribute("download", `Anlage_V_Export_${selectedYearVal}.csv`);
+  // Leerzeile und Summenblock am Ende der CSV
+  csvRows.push(';;;');
+  csvRows.push(`"SUMMEN-ÜBERSICHT";"Fahrtkosten Gesamtsumme";;${summeFahrten.toFixed(2).replace('.', ',')}`);
+  csvRows.push(`"SUMMEN-ÜBERSICHT";"Verpflegungspauschalen Gesamtsumme";;${summeVerpflegung.toFixed(2).replace('.', ',')}`);
+  csvRows.push(`"SUMMEN-ÜBERSICHT";"Belege & Pauschalen Gesamtsumme";;${summeBelege.toFixed(2).replace('.', ',')}`);
+  csvRows.push(`"SUMMEN-ÜBERSICHT";"Nebenkosten Gesamtsumme";;${summeNK.toFixed(2).replace('.', ',')}`);
+  csvRows.push(`"GESAMTSUMME WERBUNGSKOSTEN";"${selectedYearVal}";;${gesamtsumme.toFixed(2).replace('.', ',')}`);
+
+  const csvString = '\uFEFF' + csvRows.join('\n'); // Byte Order Mark (BOM) für korrekte Umlautdarstellung z.B. in MS Excel
+  const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.setAttribute('href', url);
+  link.setAttribute('download', `Anlage_V_Export_${selectedYearVal}.csv`);
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
+  URL.revokeObjectURL(url);
 }
 </script>
+
 </body>
 </html>

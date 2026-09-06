@@ -260,6 +260,18 @@
       margin-bottom: 20px;
       display: none;
     }
+
+    .warning-box {
+      padding: 14px 18px;
+      border-radius: 10px;
+      background: #fff8e6;
+      border: 1px solid var(--warning);
+      color: #8a5700;
+      font-size: 13px;
+      font-weight: 500;
+      margin-top: 10px;
+      display: none;
+    }
     
     .checklist-item { 
       border: 1px solid var(--border-color); 
@@ -449,12 +461,16 @@
       <div class="flex-row">
         <div>
           <label for="bBetrag">Bruttobetrag (€)</label>
-          <input type="number" step="0.01" id="bBetrag" placeholder="0.00" required>
+          <input type="number" step="0.01" id="bBetrag" placeholder="0.00" oninput="checkHerstellungskosten()" required>
         </div>
         <div>
           <label for="bGrund">Grund / Beschreibung</label>
           <input type="text" id="bGrund" placeholder="z. B. Ersatz-Wasserhahn Bad">
         </div>
+      </div>
+
+      <div id="herstellungskostenWarning" class="warning-box">
+        ⚠️ <strong>Hinweis § 6b / § 15 EStG (Anschaffungsnahe Herstellungskosten):</strong> Beträge über 4.000 € innerh. der ersten 3 Jahre nach Kauf müssen ggf. aktiviert und über die Gebäude-AfA abgeschrieben werden.
       </div>
 
       <label for="bDatei">📷 Beleg / Kassenbon hochladen (PDF / Bild)</label>
@@ -716,7 +732,6 @@
             <option value="Brunata">Brunata Abrechnung (Einzelbogen Anlage)</option>
             <option value="Straßenreinigung">Straßenreinigung</option>
             <option value="Schornsteinfeger">Schornsteinfeger (§ 35a relevante Lohnkosten)</option>
-            <option value="Schornsteinfeger">Schornsteinfeger Brandstättenschau (§ 35a relevante Lohnkosten)</option>
             <option value="Rauchmelder-Wartung">Sonstige (Rauchmelder-Wartung § 35a)</option>
             <option value="Heizung-Wartung">Sonstige (Heizung-Wartung § 35a)</option>
           </select>
@@ -1122,6 +1137,17 @@ function hideAlert() {
   document.getElementById('alertBox').style.display = 'none';
 }
 
+function checkHerstellungskosten() {
+  const val = parseFloat(document.getElementById('bBetrag').value) || 0;
+  const kat = document.getElementById('bKategorie').value;
+  const warnBox = document.getElementById('herstellungskostenWarning');
+  if (val >= 4000 && kat === 'Erhaltungsaufwand') {
+    warnBox.style.display = 'block';
+  } else {
+    warnBox.style.display = 'none';
+  }
+}
+
 async function openFile(id) {
   try {
     const record = await getFileFromDB(id);
@@ -1366,6 +1392,7 @@ document.getElementById('belegForm').addEventListener('submit', async (e) => {
   updateTabellen();
   e.target.reset();
   document.getElementById('bDatum').valueAsDate = new Date();
+  checkHerstellungskosten();
 });
 
 async function deleteBeleg(id) {
@@ -1855,26 +1882,24 @@ function exportAnlageVCSV() {
       summeNK += nk.betrag;
       const desc = (nk.kategorie || '') + ' - ' + (nk.zuordnung || '') + ' (' + (nk.geschaeft || '') + ')';
       const betragStr = nk.betrag.toFixed(2).replace('.', ',');
-      csvRows.push(`"Umlagefähige Betriebskosten";"${nk.datum}";${escapeCSV(desc)};"${betragStr}"`);
+      csvRows.push(`"Betriebskosten";"${nk.datum}";${escapeCSV(desc)};"${betragStr}"`);
     });
 
-  // SUMMENZEILE HINZUFÜGEN
   const gesamtSumme = summeFahrten + summeVerpflegung + summeBelege + summeNK;
-  csvRows.push("");
-  csvRows.push(`"SUMME GESAMT";"";"Alle Erfassungen (${selectedYearVal})";"${gesamtSumme.toFixed(2).replace('.', ',')}"`);
-
-  // CSV DATEI ERZEUGEN UND DOWNLOAD TRIGGERN
-  const csvContent = "\uFEFF" + csvRows.join("\n");
-  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
+  const gesamtSummeStr = gesamtSumme.toFixed(2).replace('.', ',');
   
+  // Trennzeile & Summenzeile für einfache Weiterverarbeitung
+  csvRows.push(`"---";"---";"---";"---"`);
+  csvRows.push(`"GESAMTSUMME WERBUNGSKOSTEN";"${selectedYearVal}";"Alle absetzbaren Positionen";"${gesamtSummeStr}"`);
+
+  const csvContent = "data:text/csv;charset=utf-8,\uFEFF" + csvRows.join("\n");
+  const encodedUri = encodeURI(csvContent);
   const link = document.createElement("a");
-  link.setAttribute("href", url);
+  link.setAttribute("href", encodedUri);
   link.setAttribute("download", `Anlage_V_Export_${selectedYearVal}.csv`);
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
-  URL.revokeObjectURL(url);
 }
 </script>
 </body>
